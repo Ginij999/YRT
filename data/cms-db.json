@@ -1,0 +1,2238 @@
+{
+  "users": [],
+  "admin_users": [
+    {
+      "name": "Aarav Shrestha",
+      "email": "admin@yrtesports.gg",
+      "passwordHash": "$2b$10$PApvxzk7p6YG1wDNtjj4CufrIJVATFfr..qLzkWiLAP2muWEUltyK",
+      "role": "super_admin",
+      "avatarUrl": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "active": true,
+      "_id": "e02256ae0575de6a09043eb4",
+      "createdAt": "2026-11-20T14:59:59.593Z",
+      "updatedAt": "2026-11-20T15:08:57.836Z",
+      "lastLogin": "2026-11-20T15:08:57.836Z"
+    },
+    {
+      "name": "Elena Rostova",
+      "email": "editor@yrtesports.gg",
+      "passwordHash": "$2b$10$UVgUNLkoefoAVW5rnZsoPedFxSdjAs75nIqPN.LgI7qgqRE5meF0O",
+      "role": "content_manager",
+      "avatarUrl": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "active": true,
+      "_id": "9050cb1fc3086cdda9b64a19",
+      "createdAt": "2026-11-20T14:59:59.594Z",
+      "updatedAt": "2026-11-20T14:59:59.594Z"
+    },
+    {
+      "name": "Devon Mercer",
+      "email": "hr@yrtesports.gg",
+      "passwordHash": "$2b$10$J4pJNXs1J6GaUXGnwEwbheiB/pUPhqeO6QSRpYRXvcbcsT66Nneba",
+      "role": "hr_manager",
+      "avatarUrl": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "active": true,
+      "_id": "5baf359086a83280dcc29cc8",
+      "createdAt": "2026-11-20T14:59:59.594Z",
+      "updatedAt": "2026-11-20T14:59:59.594Z"
+    }
+  ],
+  "site_settings": [
+    {
+      "organizationName": "YRT Esports",
+      "tagline": "International Esports Production & Tournament Agency",
+      "description": "End-to-end tournament operations, YRT Production broadcast studios, competitive roster management, and strategic brand partnerships.",
+      "logoLightUrl": "/assets/aistudio/LOGO-Photoroom_0f89e0c2.png",
+      "logoDarkUrl": "/assets/aistudio/LOGO-Photoroom_0f89e0c2.png",
+      "faviconUrl": "/assets/aistudio/LOGO-Photoroom_0f89e0c2.png",
+      "activeThemeId": "2f74a359966f937e3215d7b5",
+      "contactEmail": "partnerships@yrtesports.gg",
+      "contactPhone": "+977 1-555-0194",
+      "headquarters": "Kathmandu · Singapore · London",
+      "footerCopyright": "YRT Esports & YRT Production. All rights reserved.",
+      "footerBio": "YRT Esports architects championship-grade competitive circuits, live arena broadcasts under YRT Production, and commercial esports partnerships worldwide.",
+      "visitorCount": 48290,
+      "analyticsId": "G-YRT2026",
+      "socialLinks": {
+        "twitter": "https://x.com",
+        "instagram": "https://instagram.com",
+        "youtube": "https://youtube.com",
+        "twitch": "https://twitch.tv",
+        "linkedin": "https://linkedin.com",
+        "discord": "https://discord.com"
+      },
+      "_id": "25febe0cf47316225416f500",
+      "createdAt": "2026-11-20T14:59:59.595Z",
+      "updatedAt": "2026-11-20T14:59:59.595Z"
+    }
+  ],
+  "themes": [
+    {
+      "slug": "competitive-esports",
+      "name": "Competitive Esports",
+      "description": "High-contrast obsidian black, matte charcoal surfaces, bold crimson highlights, and condensed athletic typography.",
+      "bgColor": "#08080A",
+      "surfaceColor": "#111115",
+      "surfaceElevatedColor": "#18181D",
+      "textColor": "#F8FAFC",
+      "mutedTextColor": "#94A3B8",
+      "primaryColor": "#DC2626",
+      "primaryHoverColor": "#B91C1C",
+      "secondaryColor": "#EF4444",
+      "borderColor": "rgba(255, 255, 255, 0.09)",
+      "headingFont": "Barlow Condensed",
+      "bodyFont": "Plus Jakarta Sans",
+      "buttonStyle": "sharp",
+      "gradientAccent": "linear-gradient(135deg, #DC2626 0%, #7F1D1D 100%)",
+      "isDefault": true,
+      "_id": "2f74a359966f937e3215d7b5",
+      "createdAt": "2026-11-20T14:59:59.594Z",
+      "updatedAt": "2026-11-20T14:59:59.594Z"
+    },
+    {
+      "slug": "luxury-gold",
+      "name": "Luxury Gold",
+      "description": "Deep jet-black canvas paired with metallic champagne gold accents, refined serif & geometric display pairings, and architectural borders.",
+      "bgColor": "#070708",
+      "surfaceColor": "#101012",
+      "surfaceElevatedColor": "#17171B",
+      "textColor": "#F5F2EB",
+      "mutedTextColor": "#A19D94",
+      "primaryColor": "#D4AF37",
+      "primaryHoverColor": "#B89427",
+      "secondaryColor": "#F3E5AB",
+      "borderColor": "rgba(212, 175, 55, 0.22)",
+      "headingFont": "Playfair Display",
+      "bodyFont": "DM Sans",
+      "buttonStyle": "editorial",
+      "gradientAccent": "linear-gradient(135deg, #D4AF37 0%, #8C6D1F 100%)",
+      "isDefault": false,
+      "_id": "e2febf879b8b8e07cc569926",
+      "createdAt": "2026-11-20T14:59:59.594Z",
+      "updatedAt": "2026-11-20T14:59:59.594Z"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "Home",
+      "status": "published",
+      "_id": "36b95fd1091687d1e85f59ef",
+      "createdAt": "2026-11-20T14:59:59.598Z",
+      "updatedAt": "2026-11-20T14:59:59.598Z"
+    },
+    {
+      "slug": "about",
+      "title": "About Us",
+      "status": "published",
+      "_id": "f6ab51ee97f45f203326ab64",
+      "createdAt": "2026-11-20T14:59:59.598Z",
+      "updatedAt": "2026-11-20T14:59:59.598Z"
+    },
+    {
+      "slug": "services",
+      "title": "Services",
+      "status": "published",
+      "_id": "3dc823454b15999143d5da57",
+      "createdAt": "2026-11-20T14:59:59.598Z",
+      "updatedAt": "2026-11-20T14:59:59.598Z"
+    },
+    {
+      "slug": "portfolio",
+      "title": "Portfolio",
+      "status": "published",
+      "_id": "9a49a479fb15b4dc4bed9049",
+      "createdAt": "2026-11-20T14:59:59.599Z",
+      "updatedAt": "2026-11-20T14:59:59.599Z"
+    },
+    {
+      "slug": "events",
+      "title": "Events & Tournaments",
+      "status": "published",
+      "_id": "d9ce05059fc315abe9ff328f",
+      "createdAt": "2026-11-20T14:59:59.599Z",
+      "updatedAt": "2026-11-20T14:59:59.599Z"
+    },
+    {
+      "slug": "team",
+      "title": "Our Team",
+      "status": "published",
+      "_id": "9cdfdb626f0ebb69374adad1",
+      "createdAt": "2026-11-20T14:59:59.599Z",
+      "updatedAt": "2026-11-20T14:59:59.599Z"
+    },
+    {
+      "slug": "careers",
+      "title": "Careers",
+      "status": "published",
+      "_id": "68d57008251ccfcfe6a3dd06",
+      "createdAt": "2026-11-20T14:59:59.599Z",
+      "updatedAt": "2026-11-20T14:59:59.599Z"
+    },
+    {
+      "slug": "blog",
+      "title": "Blog & News",
+      "status": "published",
+      "_id": "cd5266beff9501e40204052d",
+      "createdAt": "2026-11-20T14:59:59.599Z",
+      "updatedAt": "2026-11-20T14:59:59.599Z"
+    },
+    {
+      "slug": "contact",
+      "title": "Contact",
+      "status": "published",
+      "_id": "d71abcdbeaef8a6a54cc8c91",
+      "createdAt": "2026-11-20T14:59:59.600Z",
+      "updatedAt": "2026-11-20T14:59:59.600Z"
+    }
+  ],
+  "page_sections": [
+    {
+      "pageSlug": "home",
+      "sectionKey": "hero",
+      "title": "Engineering the Next Era of Global Esports",
+      "subtitle": "YRT Esports & YRT Production",
+      "description": "We design, operate, and broadcast championship-caliber esports leagues, arena spectacles, and commercial brand ecosystems across Asia, Europe, and global digital stages.",
+      "imageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "ctaText": "Start a Project",
+      "ctaLink": "/contact",
+      "secondaryCtaText": "Explore Our Work",
+      "secondaryCtaLink": "/portfolio",
+      "layout": "split",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "e54a3aa4e7f87bc1a522c449",
+      "createdAt": "2026-11-20T14:59:59.600Z",
+      "updatedAt": "2026-11-20T14:59:59.600Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "organization_intro",
+      "title": "Built for Broadcast Precision and Competitive Integrity",
+      "subtitle": "Organization Overview",
+      "description": "From packed LAN finals to multi-language remote studio feeds powered by YRT Production, YRT Esports unites tournament architecture, real-time broadcast graphics, and sponsorship activation under one roof.",
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "ctaText": "About YRT Esports",
+      "ctaLink": "/about",
+      "layout": "split",
+      "order": 2,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "cf98a7ce63ada2fcbd15ea6a",
+      "createdAt": "2026-11-20T14:59:59.600Z",
+      "updatedAt": "2026-11-20T14:59:59.600Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "company_stats",
+      "title": "Operational Scale Across Global Circuits",
+      "subtitle": "Verified Impact",
+      "description": "Audited performance metrics across our global tournament and broadcast operations (2021–2026).",
+      "layout": "stats",
+      "order": 3,
+      "enabled": true,
+      "isDraft": false,
+      "items": [
+        {
+          "id": "s1",
+          "value": "140+",
+          "label": "Sanctioned Tournaments Produced",
+          "meta": "LAN & Regional Circuits"
+        },
+        {
+          "id": "s2",
+          "value": "68M+",
+          "label": "Live Broadcast Hours Watched",
+          "meta": "Multi-Platform Distribution"
+        },
+        {
+          "id": "s3",
+          "value": "$14.5M",
+          "label": "Prize Pools Administered",
+          "meta": "Zero Payout Delays"
+        },
+        {
+          "id": "s4",
+          "value": "32",
+          "label": "Countries Reached",
+          "meta": "12 Broadcast Languages"
+        }
+      ],
+      "_id": "051a6a95d5ba38f947a8b6f6",
+      "createdAt": "2026-11-20T14:59:59.600Z",
+      "updatedAt": "2026-11-20T14:59:59.600Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "services_showcase",
+      "title": "Core Agency Capabilities",
+      "subtitle": "Full-Stack Esports Execution",
+      "description": "Modular production and advisory units engineered for game publishers, global hardware brands, and competitive franchises.",
+      "ctaText": "View All Services",
+      "ctaLink": "/services",
+      "layout": "grid",
+      "order": 4,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "1d0caeb0a16439800274ce62",
+      "createdAt": "2026-11-20T14:59:59.601Z",
+      "updatedAt": "2026-11-20T14:59:59.601Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "featured_events",
+      "title": "Tournaments & Live Circuits",
+      "subtitle": "Competitive Calendar",
+      "description": "Flagship championships currently in production, live broadcast, and seasonal archive.",
+      "ctaText": "Full Event Calendar",
+      "ctaLink": "/events",
+      "layout": "grid",
+      "order": 5,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "a8b19766d450a6001b753177",
+      "createdAt": "2026-11-20T14:59:59.601Z",
+      "updatedAt": "2026-11-20T14:59:59.601Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "portfolio_showcase",
+      "title": "Selected Case Studies",
+      "subtitle": "Our Work",
+      "description": "Recent arena builds, publisher activations, and international league operations.",
+      "ctaText": "Browse Full Portfolio",
+      "ctaLink": "/portfolio",
+      "layout": "grid",
+      "order": 6,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "587865a892009560724a6e1e",
+      "createdAt": "2026-11-20T14:59:59.601Z",
+      "updatedAt": "2026-11-20T14:59:59.601Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "partners_strip",
+      "title": "Trusted by Publishers & Global Sponsors",
+      "subtitle": "Partner Network",
+      "description": "Long-term production and commercial partnerships across gaming hardware, telecom, and publishing.",
+      "layout": "grid",
+      "order": 7,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "28afb84391e1193f006e6ca9",
+      "createdAt": "2026-11-20T14:59:59.602Z",
+      "updatedAt": "2026-11-20T14:59:59.602Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "leadership_team",
+      "title": "The Leadership Behind the Broadcast",
+      "subtitle": "Executive & Production Leads",
+      "description": "Veterans of international arena production, competitive integrity, and publisher marketing.",
+      "ctaText": "Meet Full Directory",
+      "ctaLink": "/team",
+      "layout": "grid",
+      "order": 8,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "7dffeebf9631a6613cc88dcd",
+      "createdAt": "2026-11-20T14:59:59.602Z",
+      "updatedAt": "2026-11-20T14:59:59.602Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "testimonials_section",
+      "title": "Partner Outcomes & Client Perspectives",
+      "subtitle": "Client Feedback",
+      "description": "Verified impact reports from league commissioners and global brand directors.",
+      "layout": "grid",
+      "order": 9,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "b97a782a1a10f405085d3ab0",
+      "createdAt": "2026-11-20T14:59:59.603Z",
+      "updatedAt": "2026-11-20T14:59:59.603Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "latest_blog",
+      "title": "Dispatches & Industry Analysis",
+      "subtitle": "Editorial Journal",
+      "description": "Post-mortems, broadcast engineering notes, and market intelligence from the YRT Production desk.",
+      "ctaText": "Read All Articles",
+      "ctaLink": "/blog",
+      "layout": "grid",
+      "order": 10,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "e62b9335f8b7035022af6555",
+      "createdAt": "2026-11-20T14:59:59.603Z",
+      "updatedAt": "2026-11-20T14:59:59.603Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "careers_callout",
+      "title": "Build Championship Moments With YRT Esports",
+      "subtitle": "Open Roles",
+      "description": "We are hiring broadcast directors, tournament administrators, real-time motion designers, and partnership strategists across Kathmandu, Singapore, London, and remote hubs.",
+      "ctaText": "Explore Open Positions",
+      "ctaLink": "/careers",
+      "layout": "banner",
+      "order": 11,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "f65119befab2cc151f2cb661",
+      "createdAt": "2026-11-20T14:59:59.604Z",
+      "updatedAt": "2026-11-20T14:59:59.604Z"
+    },
+    {
+      "pageSlug": "home",
+      "sectionKey": "contact_cta",
+      "title": "Ready to Launch Your Next Tournament or Campaign?",
+      "subtitle": "Direct Consultation",
+      "description": "Share your tournament brief, broadcast timeline, or sponsorship objectives. Our executive producers respond within 24 business hours.",
+      "ctaText": "Request Production Proposal",
+      "ctaLink": "/contact",
+      "layout": "centered",
+      "order": 12,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "528c4203d495e170c10e474f",
+      "createdAt": "2026-11-20T14:59:59.604Z",
+      "updatedAt": "2026-11-20T14:59:59.604Z"
+    },
+    {
+      "pageSlug": "about",
+      "sectionKey": "about_hero",
+      "title": "Where Competitive Rigor Meets Broadcast Craft",
+      "subtitle": "About YRT Esports",
+      "description": "Founded by competitive esports pioneers and broadcast engineers, YRT Esports and its studio arm YRT Production bridge grassroots competition with stadium-scale media production.",
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "layout": "split",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "d4a1e0285efe54118f4dc077",
+      "createdAt": "2026-11-20T14:59:59.604Z",
+      "updatedAt": "2026-11-20T14:59:59.604Z"
+    },
+    {
+      "pageSlug": "about",
+      "sectionKey": "mission_vision",
+      "title": "Mission, Vision & Competitive Values",
+      "subtitle": "Operating Principles",
+      "description": "Every decision on stage and in the control room is governed by competitive fairness, technical redundancy, and measurable ROI for our publishing partners.",
+      "layout": "grid",
+      "order": 2,
+      "enabled": true,
+      "isDraft": false,
+      "items": [
+        {
+          "id": "mv1",
+          "title": "Our Mission",
+          "description": "Deliver zero-compromise tournament infrastructure and broadcast storytelling that elevates players, games, and partners worldwide."
+        },
+        {
+          "id": "mv2",
+          "title": "Our Vision",
+          "description": "Establish the premier international standard for sustainable esports ecosystems connecting South Asia, APAC, MENA, and Europe."
+        },
+        {
+          "id": "mv3",
+          "title": "Zero-Downtime Redundancy",
+          "description": "Dual fiber routing, backup observer rigs, and hardware failover on every live show."
+        },
+        {
+          "id": "mv4",
+          "title": "Competitive Integrity",
+          "description": "Independent referee panels, anti-cheat telemetry audits, and transparent rulebook governance."
+        }
+      ],
+      "_id": "912b2e7e0ba6ab7fea2c9ef6",
+      "createdAt": "2026-11-20T14:59:59.605Z",
+      "updatedAt": "2026-11-20T14:59:59.605Z"
+    },
+    {
+      "pageSlug": "about",
+      "sectionKey": "company_timeline",
+      "title": "Five Years of International Expansion",
+      "subtitle": "Company History",
+      "description": "Key milestones from our founding broadcast desk to multi-continental arena finals.",
+      "layout": "timeline",
+      "order": 3,
+      "enabled": true,
+      "isDraft": false,
+      "items": [
+        {
+          "id": "t1",
+          "year": "2021",
+          "title": "YRT Production Studio Launch",
+          "description": "Opened our first multi-booth esports broadcast control room and tournament admin desk."
+        },
+        {
+          "id": "t2",
+          "year": "2022",
+          "title": "Regional Publisher Series",
+          "description": "Appointed lead tournament operator for flagship South Asia and SEA tactical shooter circuits."
+        },
+        {
+          "id": "t3",
+          "year": "2024",
+          "title": "Singapore & London Expansion",
+          "description": "Expanded into 24/7 follow-the-sun broadcast operations with dedicated Unreal Engine graphics teams."
+        },
+        {
+          "id": "t4",
+          "year": "2026",
+          "title": "Global Championship Architecture",
+          "description": "Surpassed 68M live broadcast hours watched and $14.5M administered in tournament prize pools."
+        }
+      ],
+      "_id": "b1f33488c99d90818d92250a",
+      "createdAt": "2026-11-20T14:59:59.605Z",
+      "updatedAt": "2026-11-20T14:59:59.605Z"
+    },
+    {
+      "pageSlug": "about",
+      "sectionKey": "org_gallery",
+      "title": "Inside Our Arenas & Control Rooms",
+      "subtitle": "Production Gallery",
+      "description": "Snapshots from recent championship stages and YRT Production setups.",
+      "layout": "grid",
+      "order": 4,
+      "enabled": true,
+      "isDraft": false,
+      "items": [
+        {
+          "id": "g1",
+          "title": "Championship Main Stage",
+          "imageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+          "meta": "Arena Build · 2026"
+        },
+        {
+          "id": "g2",
+          "title": "YRT Master Control Room",
+          "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+          "meta": "4K HDR Broadcast"
+        },
+        {
+          "id": "g3",
+          "title": "Grand Finals Crowd Floor",
+          "imageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+          "meta": "12,000 Capacity LAN"
+        }
+      ],
+      "_id": "c6fca60c8c2ee8d9ad7c0191",
+      "createdAt": "2026-11-20T14:59:59.606Z",
+      "updatedAt": "2026-11-20T14:59:59.606Z"
+    },
+    {
+      "pageSlug": "services",
+      "sectionKey": "services_header",
+      "title": "End-to-End Esports Production & Advisory",
+      "subtitle": "Services",
+      "description": "Select any capability below to inspect deliverables, technical workflows, and past deployment benchmarks.",
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "2919e46984475350f2411c1b",
+      "createdAt": "2026-11-20T14:59:59.606Z",
+      "updatedAt": "2026-11-20T14:59:59.606Z"
+    },
+    {
+      "pageSlug": "portfolio",
+      "sectionKey": "portfolio_header",
+      "title": "Championships, Broadcasts & Activations",
+      "subtitle": "Our Work",
+      "description": "Filter completed engagements by competitive title, production discipline, year, and event format.",
+      "imageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "ad21430c849652c0c9fe2b32",
+      "createdAt": "2026-11-20T14:59:59.606Z",
+      "updatedAt": "2026-11-20T14:59:59.606Z"
+    },
+    {
+      "pageSlug": "events",
+      "sectionKey": "events_header",
+      "title": "Global Tournament Calendar & Results",
+      "subtitle": "Events & Tournaments",
+      "description": "Track upcoming qualifiers, live ongoing leagues, and verified standings from completed LAN championships.",
+      "imageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "8040c582cc2750974f3ad8b1",
+      "createdAt": "2026-11-20T14:59:59.607Z",
+      "updatedAt": "2026-11-20T14:59:59.607Z"
+    },
+    {
+      "pageSlug": "team",
+      "sectionKey": "team_header",
+      "title": "Producers, Operators & Strategists",
+      "subtitle": "Our Team",
+      "description": "Meet the permanent leadership, broadcast engineers, tournament referees, and alumni who power YRT Esports.",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "fadca1a234d8251522973b33",
+      "createdAt": "2026-11-20T14:59:59.607Z",
+      "updatedAt": "2026-11-20T14:59:59.607Z"
+    },
+    {
+      "pageSlug": "careers",
+      "sectionKey": "careers_header",
+      "title": "Join Our International Production Team",
+      "subtitle": "Careers & Recruitment",
+      "description": "Browse open full-time, contract, and seasonal tournament positions. Submit your CV directly to our HR pipeline.",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "1c785db88a7aed01517db6a1",
+      "createdAt": "2026-11-20T14:59:59.608Z",
+      "updatedAt": "2026-11-20T14:59:59.608Z"
+    },
+    {
+      "pageSlug": "blog",
+      "sectionKey": "blog_header",
+      "title": "Editorial Dispatches & Case Notes",
+      "subtitle": "Journal & News",
+      "description": "Deep dives into broadcast technology, tournament economics, and competitive ecosystem design.",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "2f2e97f9f2a62a145752077c",
+      "createdAt": "2026-11-20T14:59:59.608Z",
+      "updatedAt": "2026-11-20T14:59:59.608Z"
+    },
+    {
+      "pageSlug": "contact",
+      "sectionKey": "contact_header",
+      "title": "Start a Conversation With Our Executive Desk",
+      "subtitle": "Contact Us",
+      "description": "Whether commissioning a global championship or exploring brand sponsorships, connect with YRT Esports directly.",
+      "layout": "centered",
+      "order": 1,
+      "enabled": true,
+      "isDraft": false,
+      "_id": "7f6cccf6f1b30adc7bc6323a",
+      "createdAt": "2026-11-20T14:59:59.609Z",
+      "updatedAt": "2026-11-20T14:59:59.609Z"
+    }
+  ],
+  "services": [
+    {
+      "slug": "esports-tournament-organization",
+      "title": "Esports Tournament Organization",
+      "shortDescription": "Full-cycle league architecture, rulebooks, bracket operations, and international refereeing.",
+      "fullDescription": "We architect competitive circuits from open qualifiers to stadium finals. Our tournament administration unit handles anti-cheat compliance, player travel logistics, rulebook authoring, seeding algorithms, and verified prize pool disbursement.",
+      "deliverables": [
+        "Custom tournament format & competitive rulebook",
+        "Dedicated head admins & multilingual player support",
+        "Anti-cheat & integrity verification workflows",
+        "Automated bracket ops & prize disbursement"
+      ],
+      "processSteps": [
+        {
+          "title": "Format Blueprint",
+          "detail": "Calibrating regional slots, tiebreakers, and seasonal calendars."
+        },
+        {
+          "title": "Platform & Verification",
+          "detail": "Deploying player check-in, lobby orchestration, and anti-cheat checks."
+        },
+        {
+          "title": "Live Admin Execution",
+          "detail": "Real-time dispute resolution and schedule integrity across matchdays."
+        }
+      ],
+      "imageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "iconName": "Trophy",
+      "order": 1,
+      "featured": true,
+      "status": "published",
+      "_id": "4b4dc1c63806279365a0d695",
+      "createdAt": "2026-11-20T14:59:59.609Z",
+      "updatedAt": "2026-11-20T14:59:59.609Z"
+    },
+    {
+      "slug": "tournament-production",
+      "title": "Tournament Production",
+      "shortDescription": "Stage engineering, player booth setups, LAN networking, and show-calling for live venues.",
+      "fullDescription": "Turnkey arena and studio production designed for zero-latency LAN competition. From bespoke acoustic player booths and stage LED monoliths to match-day run-of-show execution.",
+      "deliverables": [
+        "Arena stage CAD & LED scenic design",
+        "Zero-latency LAN server & player PC provisioning",
+        "On-site show-calling & stage management",
+        "VIP hospitality & fan activation zones"
+      ],
+      "processSteps": [
+        {
+          "title": "Venue Technical Survey",
+          "detail": "Power, rigging, fiber redundancy, and acoustic mapping."
+        },
+        {
+          "title": "Hardware Staging",
+          "detail": "Identical tournament-spec PCs, monitors, and audio isolation."
+        },
+        {
+          "title": "Live Show Direction",
+          "detail": "Synchronized lighting, walkouts, and broadcast handoffs."
+        }
+      ],
+      "imageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "iconName": "Layers",
+      "order": 2,
+      "featured": true,
+      "status": "published",
+      "_id": "1605664c2f549127e8af3e93",
+      "createdAt": "2026-11-20T14:59:59.609Z",
+      "updatedAt": "2026-11-20T14:59:59.609Z"
+    },
+    {
+      "slug": "live-broadcast-production",
+      "title": "Live Broadcast Production",
+      "shortDescription": "Multi-camera 4K60 broadcast engineering, remote cloud workflows, and multi-language feeds.",
+      "fullDescription": "YRT Production master control rooms deliver resilient 4K60 HDR feeds across Twitch, YouTube, and linear sports networks, complete with dedicated observer teams and instant replay desks.",
+      "deliverables": [
+        "Multi-feed 4K60 live switching & replay",
+        "Dedicated in-game observer & replay directors",
+        "Simultaneous multilingual clean-feed distribution",
+        "Dual-path SRT/fiber redundancy"
+      ],
+      "processSteps": [
+        {
+          "title": "Signal Architecture",
+          "detail": "Designing cloud or on-prem MCR routing with dual-ISP failover."
+        },
+        {
+          "title": "Rehearsal & Calibration",
+          "detail": "Audio leveling, observer sync, and talent IFB testing."
+        },
+        {
+          "title": "Global Simulcast",
+          "detail": "Low-latency encoding to publisher and co-streamer endpoints."
+        }
+      ],
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "iconName": "Tv",
+      "order": 3,
+      "featured": true,
+      "status": "published",
+      "_id": "50fced086867c8b1a7c853f9",
+      "createdAt": "2026-11-20T14:59:59.610Z",
+      "updatedAt": "2026-11-20T14:59:59.610Z"
+    },
+    {
+      "slug": "broadcast-graphics",
+      "title": "Broadcast Graphics",
+      "shortDescription": "Real-time Vizrt/Unreal HUDs, live telemetry overlays, and dynamic match lower-thirds.",
+      "fullDescription": "Data-driven broadcast packages engineered to turn raw game API telemetry into broadcast-grade storytelling. We build custom match HUDs, draft screens, and augmented reality arena overlays.",
+      "deliverables": [
+        "Live game-API telemetry HUD integration",
+        "3D AR stage stingers & trophy reveals",
+        "Automated sponsor integration & lower-thirds",
+        "Complete motion identity toolkits"
+      ],
+      "processSteps": [
+        {
+          "title": "Visual System Design",
+          "detail": "Typography, motion physics, and legibility testing at 1080p/4K."
+        },
+        {
+          "title": "API Data Binding",
+          "detail": "Connecting live match state and player stats to real-time templates."
+        },
+        {
+          "title": "Operator Control",
+          "detail": "Streamlined control panels for live graphics operators."
+        }
+      ],
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "iconName": "Sparkles",
+      "order": 4,
+      "featured": true,
+      "status": "published",
+      "_id": "21f3dd78212c70aac426e725",
+      "createdAt": "2026-11-20T14:59:59.611Z",
+      "updatedAt": "2026-11-20T14:59:59.611Z"
+    },
+    {
+      "slug": "esports-marketing",
+      "title": "Esports Marketing",
+      "shortDescription": "Campaign creative, co-streamer amplification, and measurable audience acquisition.",
+      "fullDescription": "Performance-backed marketing campaigns tailored to gaming audiences. We align creator watch-parties, paid social distribution, and community activations around major competitive milestones.",
+      "deliverables": [
+        "Launch trailers & hype docuseries",
+        "Tier-1 co-streamer & creator watch-party programs",
+        "Cross-channel paid media & attribution",
+        "Community quest & drop campaigns"
+      ],
+      "processSteps": [
+        {
+          "title": "Audience Mapping",
+          "detail": "Identifying high-affinity titles, creators, and regional channels."
+        },
+        {
+          "title": "Creative Production",
+          "detail": "Producing cutdowns, key art, and creator toolkits."
+        },
+        {
+          "title": "Campaign Optimization",
+          "detail": "Live viewership tracking and conversion attribution."
+        }
+      ],
+      "imageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "iconName": "Megaphone",
+      "order": 5,
+      "featured": false,
+      "status": "published",
+      "_id": "43afc2d2586cd9001f5d0ec7",
+      "createdAt": "2026-11-20T14:59:59.611Z",
+      "updatedAt": "2026-11-20T14:59:59.611Z"
+    },
+    {
+      "slug": "event-management",
+      "title": "Event Management",
+      "shortDescription": "End-to-end venue operations, ticketing, talent hospitality, and on-ground security.",
+      "fullDescription": "Comprehensive live-event logistics covering venue contracting, accreditation, player and VIP hospitality, booth exhibitor management, and crowd safety.",
+      "deliverables": [
+        "Venue sourcing & floorplan engineering",
+        "Accreditation, security & crowd flow",
+        "Player travel, visa & hotel concierge",
+        "Exhibitor & merchandise village operations"
+      ],
+      "processSteps": [
+        {
+          "title": "Pre-Production Logistics",
+          "detail": "Permits, insurance, vendor RFPs, and travel manifests."
+        },
+        {
+          "title": "Load-In & Accreditation",
+          "detail": "Coordinating freight, exhibitor builds, and press desks."
+        },
+        {
+          "title": "Event Execution",
+          "detail": "On-site command center managing schedules and VIP operations."
+        }
+      ],
+      "imageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "iconName": "Calendar",
+      "order": 6,
+      "featured": false,
+      "status": "published",
+      "_id": "7d12eecd5848c1492434014b",
+      "createdAt": "2026-11-20T14:59:59.612Z",
+      "updatedAt": "2026-11-20T14:59:59.612Z"
+    },
+    {
+      "slug": "brand-partnerships",
+      "title": "Brand Partnerships",
+      "shortDescription": "Commercial rights packaging, sponsorship valuation, and authentic in-broadcast integrations.",
+      "fullDescription": "We connect non-endemic and hardware brands with premier esports properties through measurable sponsorship assets, broadcast segments, and physical booth experiences.",
+      "deliverables": [
+        "Sponsorship deck & valuation modeling",
+        "Native broadcast segment integration",
+        "Post-campaign Nielsen/StreamsCharts reporting",
+        "Long-term ambassador & team deals"
+      ],
+      "processSteps": [
+        {
+          "title": "Commercial Audit",
+          "detail": "Benchmarking inventory value and brand fit."
+        },
+        {
+          "title": "Activation Design",
+          "detail": "Crafting organic broadcast moments rather than banner clutter."
+        },
+        {
+          "title": "ROI Reporting",
+          "detail": "Verified media value, brand lift, and sentiment analytics."
+        }
+      ],
+      "imageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "iconName": "Handshake",
+      "order": 7,
+      "featured": false,
+      "status": "published",
+      "_id": "9f982bf8de419a326b583958",
+      "createdAt": "2026-11-20T14:59:59.612Z",
+      "updatedAt": "2026-11-20T14:59:59.612Z"
+    },
+    {
+      "slug": "social-media-management",
+      "title": "Social Media Management",
+      "shortDescription": "Real-time live clipping, editorial calendars, and multi-platform community growth.",
+      "fullDescription": "Always-on social newsrooms built for tournament pace. Our editors cut highlight reels within 90 seconds of match moments across X, TikTok, Instagram, and YouTube Shorts.",
+      "deliverables": [
+        "Live match-day real-time clipping desk",
+        "Platform-native vertical video production",
+        "Daily editorial calendar & copywriting",
+        "Community sentiment & growth reporting"
+      ],
+      "processSteps": [
+        {
+          "title": "Voice & Playbook",
+          "detail": "Establishing brand tone, visual templates, and response SLAs."
+        },
+        {
+          "title": "Live Publishing Desk",
+          "detail": "Real-time match reactions and instant highlight distribution."
+        },
+        {
+          "title": "Monthly Analytics",
+          "detail": "Engagement velocity, follower retention, and reach audits."
+        }
+      ],
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "iconName": "Share2",
+      "order": 8,
+      "featured": false,
+      "status": "published",
+      "_id": "4a3e67aba8f92ccd311f24db",
+      "createdAt": "2026-11-20T14:59:59.613Z",
+      "updatedAt": "2026-11-20T14:59:59.613Z"
+    },
+    {
+      "slug": "team-management",
+      "title": "Team Management",
+      "shortDescription": "Roster operations, performance coaching infrastructure, bootcamps, and player welfare.",
+      "fullDescription": "Structured operational support for competitive rosters—covering contract governance, international bootcamp logistics, sports psychology, and commercial appearance scheduling.",
+      "deliverables": [
+        "Roster operations & contract administration",
+        "Bootcamp facility & scrim scheduling",
+        "Player welfare & performance analytics",
+        "Commercial media training & deliverables"
+      ],
+      "processSteps": [
+        {
+          "title": "Roster Audit",
+          "detail": "Evaluating staff structure, scrim infrastructure, and compliance."
+        },
+        {
+          "title": "Operations Deployment",
+          "detail": "Dedicated team managers and performance tracking."
+        },
+        {
+          "title": "Season Review",
+          "detail": "Post-split contract, competitive, and commercial review."
+        }
+      ],
+      "imageUrl": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "iconName": "Users",
+      "order": 9,
+      "featured": false,
+      "status": "published",
+      "_id": "482184be2f49451ca50ac0f4",
+      "createdAt": "2026-11-20T14:59:59.614Z",
+      "updatedAt": "2026-11-20T14:59:59.614Z"
+    },
+    {
+      "slug": "esports-consulting",
+      "title": "Esports Consulting",
+      "shortDescription": "Market entry strategy, publisher league economics, and facility feasibility studies.",
+      "fullDescription": "Board-level advisory for game publishers, sports federations, and institutional investors entering competitive gaming—backed by proprietary cost models and global regulatory insight.",
+      "deliverables": [
+        "3-year league P&L & ecosystem roadmap",
+        "Publisher competitive policy & licensing strategy",
+        "Esports arena & studio CAPEX feasibility",
+        "M&A commercial due diligence"
+      ],
+      "processSteps": [
+        {
+          "title": "Discovery & Benchmarks",
+          "detail": "Auditing regional player bases, viewership, and cost structures."
+        },
+        {
+          "title": "Strategic Modeling",
+          "detail": "Building executable operational and financial roadmaps."
+        },
+        {
+          "title": "Executive Handover",
+          "detail": "Board presentation and implementation governance."
+        }
+      ],
+      "imageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "iconName": "Compass",
+      "order": 10,
+      "featured": false,
+      "status": "published",
+      "_id": "e8c592ddbfab64322a86f17d",
+      "createdAt": "2026-11-20T14:59:59.614Z",
+      "updatedAt": "2026-11-20T14:59:59.614Z"
+    }
+  ],
+  "portfolio": [
+    {
+      "title": "YRT Continental Masters — Kathmandu & Singapore Finals",
+      "slug": "yrt-continental-masters-finals",
+      "thumbnailUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "coverUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "gallery": [
+        "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+        "/src/assets/images/studio_broadcast_control_1795184431019.jpg"
+      ],
+      "description": "Full arena stage design, 12-team LAN tournament operations, and 4K HDR tri-lingual broadcast produced by YRT Production.",
+      "category": "Arena Championship",
+      "projectType": "End-to-End Production",
+      "gameTitle": "Valorant",
+      "client": "Regional Publisher Circuit",
+      "projectDate": "August 2026",
+      "year": 2026,
+      "location": "Singapore / Kathmandu",
+      "servicesProvided": [
+        "Tournament Production",
+        "Live Broadcast Production",
+        "Broadcast Graphics"
+      ],
+      "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "externalUrl": "https://example.com",
+      "metrics": "284,000 Peak Concurrent Viewers · 11,500 Live Attendees",
+      "featured": true,
+      "status": "published",
+      "_id": "9ee8aa384a5ea1891d0fa555",
+      "createdAt": "2026-11-20T14:59:59.615Z",
+      "updatedAt": "2026-11-20T14:59:59.615Z"
+    },
+    {
+      "title": "Meridian Global Invitational",
+      "slug": "meridian-global-invitational",
+      "thumbnailUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "coverUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "gallery": [
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+        "/src/assets/images/hero_arena_stage_1795184428898.jpg"
+      ],
+      "description": "20-squad international Battle Royale invitational featuring custom observer camera automation, live map telemetry overlays, and multi-stage VIP hospitality.",
+      "category": "International Invitational",
+      "projectType": "Broadcast & Admin",
+      "gameTitle": "PUBG Mobile",
+      "client": "Meridian Gaming Group",
+      "projectDate": "May 2026",
+      "year": 2026,
+      "location": "London, UK",
+      "servicesProvided": [
+        "Esports Tournament Organization",
+        "Broadcast Graphics",
+        "Event Management"
+      ],
+      "videoUrl": "",
+      "externalUrl": "https://example.com",
+      "metrics": "4.2M Total Broadcast Hours · 99.98% Stream Uptime",
+      "featured": true,
+      "status": "published",
+      "_id": "95dd581fd23fcac34206de37",
+      "createdAt": "2026-11-20T14:59:59.616Z",
+      "updatedAt": "2026-11-20T14:59:59.616Z"
+    },
+    {
+      "title": "South Asia Telecom Pro Circuit Season 4",
+      "slug": "south-asia-telecom-pro-circuit",
+      "thumbnailUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "coverUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "gallery": [
+        "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg"
+      ],
+      "description": "Eight-week regional franchise league operated from the YRT Production Master Control Room with real-time sponsor telemetry integrations.",
+      "category": "National League",
+      "projectType": "Remote Broadcast",
+      "gameTitle": "Counter-Strike 2",
+      "client": "Telco Esports Division",
+      "projectDate": "March 2026",
+      "year": 2026,
+      "location": "Kathmandu / Remote",
+      "servicesProvided": [
+        "Live Broadcast Production",
+        "Brand Partnerships",
+        "Social Media Management"
+      ],
+      "videoUrl": "",
+      "externalUrl": "https://example.com",
+      "metrics": "+162% YoY Brand Recall · 18M Social Impressions",
+      "featured": true,
+      "status": "published",
+      "_id": "3b09c89c54883e0dbb6ab8a3",
+      "createdAt": "2026-11-20T14:59:59.616Z",
+      "updatedAt": "2026-11-20T14:59:59.616Z"
+    },
+    {
+      "title": "APAC Mobile Legends Collegiate Cup",
+      "slug": "apac-collegiate-cup",
+      "thumbnailUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "coverUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "gallery": [
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+        "/src/assets/images/studio_broadcast_control_1795184431019.jpg"
+      ],
+      "description": "Pan-regional university tournament spanning 640 campuses across South & Southeast Asia with automated bracket verification.",
+      "category": "Collegiate & Grassroots",
+      "projectType": "Tournament Operations",
+      "gameTitle": "Mobile Legends",
+      "client": "Horizon Interactive",
+      "projectDate": "November 2025",
+      "year": 2025,
+      "location": "Singapore",
+      "servicesProvided": [
+        "Esports Tournament Organization",
+        "Esports Marketing"
+      ],
+      "videoUrl": "",
+      "externalUrl": "https://example.com",
+      "metrics": "3,200 Registered Teams · 420 Match Broadcasts",
+      "featured": false,
+      "status": "published",
+      "_id": "a60141b9c0d3564bc61be598",
+      "createdAt": "2026-11-20T14:59:59.617Z",
+      "updatedAt": "2026-11-20T14:59:59.617Z"
+    },
+    {
+      "title": "HyperCore Hardware Showcase LAN",
+      "slug": "hypercore-hardware-showcase",
+      "thumbnailUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "coverUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "gallery": [
+        "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+        "/src/assets/images/studio_broadcast_control_1795184431019.jpg"
+      ],
+      "description": "Bespoke creator showmatch and hardware launch broadcast integrating live peripheral latency telemetry into the broadcast HUD.",
+      "category": "Brand Activation",
+      "projectType": "Marketing & Showmatch",
+      "gameTitle": "Rocket League",
+      "client": "HyperCore Peripherals",
+      "projectDate": "September 2025",
+      "year": 2025,
+      "location": "Berlin, Germany",
+      "servicesProvided": [
+        "Brand Partnerships",
+        "Broadcast Graphics",
+        "Esports Marketing"
+      ],
+      "videoUrl": "",
+      "externalUrl": "https://example.com",
+      "metrics": "$1.8M Tracked Launch Revenue · 190K Live Peak",
+      "featured": false,
+      "status": "published",
+      "_id": "f388b9dca0cbc7dcf960d3c7",
+      "createdAt": "2026-11-20T14:59:59.618Z",
+      "updatedAt": "2026-11-20T14:59:59.618Z"
+    }
+  ],
+  "events": [
+    {
+      "title": "YRT Winter Major 2026",
+      "slug": "yrt-winter-major-2026",
+      "status": "upcoming",
+      "bannerUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "description": "Sixteen international contenders converge for our flagship winter championship, featuring a $500,000 prize pool and four-day arena finals produced by YRT Production.",
+      "gameCategory": "Counter-Strike 2",
+      "location": "Singapore Indoor Stadium",
+      "startDate": "2026-12-10",
+      "endDate": "2026-12-14",
+      "prizePool": "$500,000",
+      "teamsCount": 16,
+      "results": [],
+      "gallery": [
+        "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg"
+      ],
+      "featured": true,
+      "_id": "2608e3b394ed16a9f486d85e",
+      "createdAt": "2026-11-20T14:59:59.618Z",
+      "updatedAt": "2026-11-20T14:59:59.618Z"
+    },
+    {
+      "title": "YRT Masters Autumn Split",
+      "slug": "yrt-masters-autumn-split",
+      "status": "ongoing",
+      "bannerUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "description": "Live weekly Swiss-stage competition broadcasting every Thursday through Sunday across English, Nepali, Hindi, and Bahasa feeds.",
+      "gameCategory": "Valorant",
+      "location": "YRT Studio / Online",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-30",
+      "prizePool": "$250,000",
+      "teamsCount": 24,
+      "results": [],
+      "gallery": [
+        "/src/assets/images/studio_broadcast_control_1795184431019.jpg"
+      ],
+      "featured": true,
+      "_id": "f7104d4f217ab7ed19971a3c",
+      "createdAt": "2026-11-20T14:59:59.619Z",
+      "updatedAt": "2026-11-20T14:59:59.619Z"
+    },
+    {
+      "title": "Himalayan Invitational LAN 2026",
+      "slug": "himalayan-invitational-lan-2026",
+      "status": "completed",
+      "bannerUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "description": "Packed arena showdown showcasing top South Asian and APAC squads across five days of double-elimination competition.",
+      "gameCategory": "PUBG Mobile",
+      "location": "Kathmandu Arena",
+      "startDate": "2026-09-14",
+      "endDate": "2026-09-18",
+      "prizePool": "$400,000",
+      "teamsCount": 16,
+      "results": [
+        {
+          "placement": "1st Place",
+          "team": "YRT Crimson",
+          "prize": "$180,000"
+        },
+        {
+          "placement": "2nd Place",
+          "team": "Team Zenith APAC",
+          "prize": "$95,000"
+        },
+        {
+          "placement": "3rd Place",
+          "team": "Everest Five",
+          "prize": "$55,000"
+        },
+        {
+          "placement": "4th Place",
+          "team": "Kestrel Gaming",
+          "prize": "$35,000"
+        }
+      ],
+      "gallery": [
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+        "/src/assets/images/hero_arena_stage_1795184428898.jpg"
+      ],
+      "featured": true,
+      "_id": "0b842a615ab9d80f0cb84b3e",
+      "createdAt": "2026-11-20T14:59:59.619Z",
+      "updatedAt": "2026-11-20T14:59:59.619Z"
+    },
+    {
+      "title": "Summer Collegiate Championship Finals",
+      "slug": "summer-collegiate-championship-finals",
+      "status": "completed",
+      "bannerUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "description": "National inter-university LAN championship celebrating emerging amateur talent and broadcast production trainees.",
+      "gameCategory": "Mobile Legends",
+      "location": "London Studio Arena",
+      "startDate": "2026-07-08",
+      "endDate": "2026-07-10",
+      "prizePool": "$75,000",
+      "teamsCount": 16,
+      "results": [
+        {
+          "placement": "1st Place",
+          "team": "Imperial Phantoms",
+          "prize": "$35,000"
+        },
+        {
+          "placement": "2nd Place",
+          "team": "Manchester Owls",
+          "prize": "$20,000"
+        },
+        {
+          "placement": "3rd Place",
+          "team": "Edinburgh Stags",
+          "prize": "$12,000"
+        }
+      ],
+      "gallery": [
+        "/src/assets/images/event_championship_crowd_1795184429879.jpg"
+      ],
+      "featured": false,
+      "_id": "9ee4e1a4486f93dd1c595e3e",
+      "createdAt": "2026-11-20T14:59:59.620Z",
+      "updatedAt": "2026-11-20T14:59:59.620Z"
+    }
+  ],
+  "staff": [
+    {
+      "fullName": "Aarav Shrestha",
+      "jobTitle": "Founder & Chief Executive Officer",
+      "department": "Management",
+      "bio": "Founder of YRT Esports & YRT Production, directing international tournament circuits and publisher partnerships across Asia and Europe.",
+      "photoUrl": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "email": "aarav@yrtesports.gg",
+      "joiningDate": "2021-01-15",
+      "employmentStatus": "current",
+      "featured": true,
+      "order": 1,
+      "socialLinks": {
+        "twitter": "https://x.com",
+        "linkedin": "https://linkedin.com"
+      },
+      "_id": "894bfaaf5b60eb43f6fd3ae2",
+      "createdAt": "2026-11-20T14:59:59.627Z",
+      "updatedAt": "2026-11-20T14:59:59.627Z"
+    },
+    {
+      "fullName": "Elena Rostova",
+      "jobTitle": "VP of YRT Production",
+      "department": "Broadcast",
+      "bio": "Broadcast director overseeing multi-language 4K60 control rooms, observer workflows, and global satellite/SRT distribution.",
+      "photoUrl": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "email": "elena@yrtesports.gg",
+      "joiningDate": "2021-03-01",
+      "employmentStatus": "current",
+      "featured": true,
+      "order": 2,
+      "socialLinks": {
+        "twitter": "https://x.com",
+        "linkedin": "https://linkedin.com"
+      },
+      "_id": "625e409b358724fd78a33cf0",
+      "createdAt": "2026-11-20T14:59:59.627Z",
+      "updatedAt": "2026-11-20T14:59:59.627Z"
+    },
+    {
+      "fullName": "Devon Mercer",
+      "jobTitle": "Creative & Broadcast Graphics Director",
+      "department": "Graphics & Design",
+      "bio": "Leads real-time Unreal Engine AR stage packages, data-driven HUD systems, and brand identity across all YRT Esports properties.",
+      "photoUrl": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "email": "devon@yrtesports.gg",
+      "joiningDate": "2022-02-10",
+      "employmentStatus": "current",
+      "featured": true,
+      "order": 3,
+      "socialLinks": {
+        "twitter": "https://x.com",
+        "instagram": "https://instagram.com"
+      },
+      "_id": "13c3527584ae9bf1005392df",
+      "createdAt": "2026-11-20T14:59:59.628Z",
+      "updatedAt": "2026-11-20T14:59:59.628Z"
+    },
+    {
+      "fullName": "Kieran Okafor",
+      "jobTitle": "Head of Tournament Operations",
+      "department": "Tournament Management",
+      "bio": "Architects international rulebooks, anti-cheat governance, and 24-team LAN competitive schedules.",
+      "photoUrl": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "email": "kieran@yrtesports.gg",
+      "joiningDate": "2022-06-01",
+      "employmentStatus": "current",
+      "featured": false,
+      "order": 4,
+      "socialLinks": {
+        "linkedin": "https://linkedin.com"
+      },
+      "_id": "7150529b956e4de5cc651117",
+      "createdAt": "2026-11-20T14:59:59.628Z",
+      "updatedAt": "2026-11-20T14:59:59.628Z"
+    },
+    {
+      "fullName": "Hannah Lindqvist",
+      "jobTitle": "Director of Brand Partnerships",
+      "department": "Marketing",
+      "bio": "Structures commercial sponsorships, media valuation models, and co-branded fan activations with enterprise partners.",
+      "photoUrl": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "email": "hannah@yrtesports.gg",
+      "joiningDate": "2023-01-20",
+      "employmentStatus": "current",
+      "featured": false,
+      "order": 5,
+      "socialLinks": {
+        "linkedin": "https://linkedin.com"
+      },
+      "_id": "0e402a38b4bd18398e3978b2",
+      "createdAt": "2026-11-20T14:59:59.629Z",
+      "updatedAt": "2026-11-20T14:59:59.629Z"
+    },
+    {
+      "fullName": "Tariq Al-Mansoor",
+      "jobTitle": "Lead Systems & LAN Engineer",
+      "department": "Technical Team",
+      "bio": "Designs zero-latency local server topologies, redundant fiber routing, and stage hardware deployments.",
+      "photoUrl": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "email": "tariq@yrtesports.gg",
+      "joiningDate": "2023-08-12",
+      "employmentStatus": "current",
+      "featured": false,
+      "order": 6,
+      "socialLinks": {
+        "twitter": "https://x.com"
+      },
+      "_id": "1d6fb62b74cf70bac67d2842",
+      "createdAt": "2026-11-20T14:59:59.629Z",
+      "updatedAt": "2026-11-20T14:59:59.629Z"
+    },
+    {
+      "fullName": "Sora Takahashi",
+      "jobTitle": "Senior Show Producer (2021–2024)",
+      "department": "Production",
+      "bio": "Directed opening ceremonies and live stage call-sheets for 18 LAN championships before moving to Tokyo.",
+      "photoUrl": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "joiningDate": "2021-05-10",
+      "employmentStatus": "former",
+      "featured": false,
+      "order": 7,
+      "socialLinks": {
+        "linkedin": "https://linkedin.com"
+      },
+      "_id": "301ede77b1aca0ae6fc2ae87",
+      "createdAt": "2026-11-20T14:59:59.629Z",
+      "updatedAt": "2026-11-20T14:59:59.629Z"
+    },
+    {
+      "fullName": "Liam Gallagher",
+      "jobTitle": "Broadcast Observer Fellow (Class of 2024)",
+      "department": "Esports Operations",
+      "bio": "Completed our competitive observer residency and now serves as lead tactical observer on international circuit broadcasts.",
+      "photoUrl": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "joiningDate": "2024-01-15",
+      "employmentStatus": "alumni",
+      "featured": false,
+      "order": 8,
+      "socialLinks": {
+        "twitter": "https://x.com"
+      },
+      "_id": "2ce95c112aa18b87707dde90",
+      "createdAt": "2026-11-20T14:59:59.630Z",
+      "updatedAt": "2026-11-20T14:59:59.630Z"
+    }
+  ],
+  "departments": [
+    {
+      "name": "Management",
+      "slug": "management",
+      "description": "Management division",
+      "order": 1,
+      "_id": "ebc041d6d45fe84c6181d636",
+      "createdAt": "2026-11-20T14:59:59.621Z",
+      "updatedAt": "2026-11-20T14:59:59.621Z"
+    },
+    {
+      "name": "Administration",
+      "slug": "administration",
+      "description": "Administration division",
+      "order": 2,
+      "_id": "0467e538cf981d124af1cdee",
+      "createdAt": "2026-11-20T14:59:59.621Z",
+      "updatedAt": "2026-11-20T14:59:59.621Z"
+    },
+    {
+      "name": "Esports Operations",
+      "slug": "esports-operations",
+      "description": "Esports Operations division",
+      "order": 3,
+      "_id": "dc0c7c45e26f49aa5bc1c134",
+      "createdAt": "2026-11-20T14:59:59.622Z",
+      "updatedAt": "2026-11-20T14:59:59.622Z"
+    },
+    {
+      "name": "Tournament Management",
+      "slug": "tournament-management",
+      "description": "Tournament Management division",
+      "order": 4,
+      "_id": "97cc8f62bf73ff8306f01c95",
+      "createdAt": "2026-11-20T14:59:59.622Z",
+      "updatedAt": "2026-11-20T14:59:59.622Z"
+    },
+    {
+      "name": "Production",
+      "slug": "production",
+      "description": "Production division",
+      "order": 5,
+      "_id": "ff8f1d613d9aff0629f1c099",
+      "createdAt": "2026-11-20T14:59:59.623Z",
+      "updatedAt": "2026-11-20T14:59:59.623Z"
+    },
+    {
+      "name": "Broadcast",
+      "slug": "broadcast",
+      "description": "Broadcast division",
+      "order": 6,
+      "_id": "4e5651245989b0bc3ac9a95b",
+      "createdAt": "2026-11-20T14:59:59.623Z",
+      "updatedAt": "2026-11-20T14:59:59.623Z"
+    },
+    {
+      "name": "Graphics & Design",
+      "slug": "graphics-design",
+      "description": "Graphics & Design division",
+      "order": 7,
+      "_id": "6bae0d0750bee1ab2aa26cd1",
+      "createdAt": "2026-11-20T14:59:59.624Z",
+      "updatedAt": "2026-11-20T14:59:59.624Z"
+    },
+    {
+      "name": "Marketing",
+      "slug": "marketing",
+      "description": "Marketing division",
+      "order": 8,
+      "_id": "ae643c94750aa4adebd46f5e",
+      "createdAt": "2026-11-20T14:59:59.625Z",
+      "updatedAt": "2026-11-20T14:59:59.625Z"
+    },
+    {
+      "name": "Content Creation",
+      "slug": "content-creation",
+      "description": "Content Creation division",
+      "order": 9,
+      "_id": "502367b63cc76ba25502f62e",
+      "createdAt": "2026-11-20T14:59:59.625Z",
+      "updatedAt": "2026-11-20T14:59:59.625Z"
+    },
+    {
+      "name": "Technical Team",
+      "slug": "technical-team",
+      "description": "Technical Team division",
+      "order": 10,
+      "_id": "b7647d1e670746c84bf7702b",
+      "createdAt": "2026-11-20T14:59:59.626Z",
+      "updatedAt": "2026-11-20T14:59:59.626Z"
+    }
+  ],
+  "job_positions": [
+    {
+      "title": "Senior Live Broadcast Director",
+      "slug": "senior-live-broadcast-director",
+      "department": "Broadcast",
+      "employmentType": "Full-time",
+      "location": "Kathmandu / Singapore",
+      "workMode": "On-site",
+      "description": "Lead live show-calling and multi-camera switching from the YRT Production Master Control Room across premier international esports circuits.",
+      "qualifications": [
+        "4+ years directing live sports or tier-1 esports broadcasts",
+        "Deep familiarity with Ross/vMix switching, EVS replay, and SRT workflows",
+        "Ability to lead calm, decisive control room communications under live pressure"
+      ],
+      "responsibilities": [
+        "Call live camera, observer, and graphics cues for 8–10 hour match days",
+        "Manage technical rehearsals and broadcast run-of-show documents",
+        "Collaborate with executive producers on visual storytelling standards"
+      ],
+      "deadline": "2026-12-31",
+      "active": true,
+      "_id": "28b91a59e2af4250fb64c43b",
+      "createdAt": "2026-11-20T14:59:59.631Z",
+      "updatedAt": "2026-11-20T14:59:59.631Z"
+    },
+    {
+      "title": "Tournament Operations Manager",
+      "slug": "tournament-operations-manager",
+      "department": "Tournament Management",
+      "employmentType": "Full-time",
+      "location": "Singapore / Hybrid",
+      "workMode": "Hybrid",
+      "description": "Own end-to-end competitive rulebook governance, bracket operations, and team communications for APAC and global circuits.",
+      "qualifications": [
+        "3+ years in competitive tournament administration across FPS or Mobile titles",
+        "Fluent in English; additional regional languages a strong advantage",
+        "Experience with anti-cheat protocols and player dispute resolution"
+      ],
+      "responsibilities": [
+        "Author tournament rulesets and manage team onboarding",
+        "Lead a roster of 12+ match referees during live splits",
+        "Coordinate travel and venue check-ins for LAN playoffs"
+      ],
+      "deadline": "2026-12-20",
+      "active": true,
+      "_id": "1c4955d22be3765ee34ab612",
+      "createdAt": "2026-11-20T14:59:59.632Z",
+      "updatedAt": "2026-11-20T14:59:59.632Z"
+    },
+    {
+      "title": "Real-Time Broadcast Motion Designer (Vizrt / Unreal)",
+      "slug": "realtime-broadcast-motion-designer",
+      "department": "Graphics & Design",
+      "employmentType": "Full-time",
+      "location": "Remote",
+      "workMode": "Remote",
+      "description": "Build real-time data-bound HUD templates, AR arena stingers, and dynamic broadcast graphic systems for YRT Production.",
+      "qualifications": [
+        "Portfolio demonstrating broadcast packages in Unreal Engine, Vizrt, or Singular.live",
+        "Strong typographic discipline and motion timing sensibility",
+        "Comfort binding JSON/WebSocket game telemetry to live templates"
+      ],
+      "responsibilities": [
+        "Design and deploy real-time HUD overlays for tactical shooter and MOBA titles",
+        "Maintain brand-compliant motion toolkits for partner tournaments",
+        "Support graphics operators during major LAN rehearsals"
+      ],
+      "deadline": "2027-01-15",
+      "active": true,
+      "_id": "d9fb4fc82c9616c7d167e901",
+      "createdAt": "2026-11-20T14:59:59.632Z",
+      "updatedAt": "2026-11-20T14:59:59.632Z"
+    },
+    {
+      "title": "Esports Partnerships & Sponsorship Strategist",
+      "slug": "esports-partnerships-strategist",
+      "department": "Marketing",
+      "employmentType": "Full-time",
+      "location": "London / Remote",
+      "workMode": "Hybrid",
+      "description": "Develop commercial sponsorship proposals, valuation frameworks, and brand activation concepts for global enterprise clients.",
+      "qualifications": [
+        "3+ years in sports, gaming, or entertainment sponsorship strategy",
+        "Strong commercial writing and spreadsheet valuation skills",
+        "Proven track record pitching agency capabilities to brand directors"
+      ],
+      "responsibilities": [
+        "Build tailored sponsorship decks and ROI models",
+        "Coordinate post-event media value and brand lift reporting",
+        "Partner with production leads to ensure seamless on-air integrations"
+      ],
+      "deadline": "2026-12-30",
+      "active": true,
+      "_id": "981594fd39f6e50a0073f3d5",
+      "createdAt": "2026-11-20T14:59:59.633Z",
+      "updatedAt": "2026-11-20T14:59:59.633Z"
+    }
+  ],
+  "job_applications": [
+    {
+      "positionId": "28b91a59e2af4250fb64c43b",
+      "positionTitle": "Senior Live Broadcast Director",
+      "fullName": "Julian Vance-Kerr",
+      "email": "julian.vk@example.com",
+      "phone": "+44 7700 900412",
+      "portfolioUrl": "https://vimeo.com",
+      "cvUrl": "/api/public/sample-cv",
+      "cvOriginalName": "Julian_VK_Broadcast_Director_CV.pdf",
+      "coverLetter": "Seven years directing live CS2 and Valorant studio broadcasts with Ross Carbonite and cloud SRT distribution.",
+      "status": "Shortlisted",
+      "internalNotes": "Strong control room reel; scheduled for technical interview with Elena.",
+      "_id": "e764a2a73afd1a90c393706b",
+      "createdAt": "2026-11-20T14:59:59.633Z",
+      "updatedAt": "2026-11-20T14:59:59.633Z"
+    },
+    {
+      "positionId": "28b91a59e2af4250fb64c43b",
+      "positionTitle": "Senior Live Broadcast Director",
+      "fullName": "Nadia Benali",
+      "email": "nadia.benali@example.com",
+      "phone": "+33 6 12 34 56 78",
+      "portfolioUrl": "https://behance.net",
+      "cvUrl": "/api/public/sample-cv",
+      "cvOriginalName": "Nadia_Benali_CV_2026.pdf",
+      "coverLetter": "Broadcast producer and director specializing in multilingual tournament feeds and replay workflows.",
+      "status": "New",
+      "internalNotes": "",
+      "_id": "1eed3419723cad3c8db28514",
+      "createdAt": "2026-11-20T14:59:59.634Z",
+      "updatedAt": "2026-11-20T14:59:59.634Z"
+    }
+  ],
+  "blog_posts": [
+    {
+      "title": "Architecting Sub-Second Redundancy for 4K60 Arena Broadcasts",
+      "slug": "architecting-sub-second-redundancy-4k60-broadcasts",
+      "excerpt": "How YRT Production eliminates single points of failure across dark fiber, SRT cloud ingest, and on-stage player PCs.",
+      "content": "<p>When 11,000 fans fill an arena and 280,000 viewers watch online, thirty seconds of dead air erodes months of partner goodwill. At YRT Esports, every championship broadcast begins with an N+1 redundancy matrix.</p><h3>Dual-Path Signal Transport</h3><p>Every stage camera and observer feed enters redundant fiber multiplexers before hitting our primary and hot-standby switching cores. Should an encoder experience frame drift, downstream distribution switches cleanly within two frames.</p><h3>Telemetry-Synchronized Replays</h3><p>By pairing live game-state APIs with multi-channel EVS replay servers, our directors surface tactical breakdowns within four seconds of a round end without interrupting match cadence.</p>",
+      "coverImageUrl": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "category": "Broadcast Engineering",
+      "tags": [
+        "4K60",
+        "SRT",
+        "Redundancy",
+        "YRT Production"
+      ],
+      "authorName": "Elena Rostova",
+      "authorRole": "VP of YRT Production",
+      "authorAvatar": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "status": "published",
+      "publishedAt": "2026-11-12",
+      "featured": true,
+      "seoTitle": "4K60 Esports Broadcast Redundancy Architecture | YRT Esports",
+      "seoDescription": "Inside the dual-path fiber and SRT architecture powering zero-downtime esports arena broadcasts.",
+      "readTime": "5 min read",
+      "_id": "c54fd11e03756ffb850695a5",
+      "createdAt": "2026-11-20T14:59:59.638Z",
+      "updatedAt": "2026-11-20T14:59:59.638Z"
+    },
+    {
+      "title": "Designing Sponsorship Integrations Viewers Actually Respect",
+      "slug": "designing-sponsorship-integrations-viewers-respect",
+      "excerpt": "Moving beyond static corner logos toward native telemetry segments that deliver measurable brand lift.",
+      "content": "<p>Esports audiences are acutely sensitive to intrusive advertising. The highest-performing partnerships feel woven directly into the analytical storytelling of the match.</p><h3>Telemetry-Linked Segments</h3><p>Instead of interrupting gameplay with banner overlays, our graphics team ties partner branding to tactical moments: economy buy-round predictors, player POV replay sponsorships, and post-map statistical summaries.</p><h3>Verified Attribution</h3><p>Every campaign concludes with audited viewership minute-by-minute reports, social clip velocity, and direct conversion attribution.</p>",
+      "coverImageUrl": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "category": "Brand Strategy",
+      "tags": [
+        "Sponsorships",
+        "ROI",
+        "Broadcast Graphics"
+      ],
+      "authorName": "Hannah Lindqvist",
+      "authorRole": "Director of Brand Partnerships",
+      "authorAvatar": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "status": "published",
+      "publishedAt": "2026-10-28",
+      "featured": false,
+      "seoTitle": "Authentic Esports Sponsorship Integrations | YRT Esports",
+      "seoDescription": "How telemetry-driven broadcast integrations increase sponsor recall without disrupting competitive broadcasts.",
+      "readTime": "4 min read",
+      "_id": "9296967cbf5ad3c57a243621",
+      "createdAt": "2026-11-20T14:59:59.638Z",
+      "updatedAt": "2026-11-20T14:59:59.638Z"
+    },
+    {
+      "title": "Why Swiss Formats Changed Mid-Season League Retention",
+      "slug": "why-swiss-formats-changed-league-retention",
+      "excerpt": "Analyzing viewership stability and competitive parity across 140 sanctioned tournaments.",
+      "content": "<p>Dead-rubber matches are the quiet killer of round-robin esports leagues. Over the past three seasons, transitioning publisher circuits to dynamic Buchholz-seeded Swiss stages increased late-week viewership retention by 34%.</p><p>Every series carries immediate qualification or elimination stakes, keeping fans invested from opening week through playoffs.</p>",
+      "coverImageUrl": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "category": "Tournament Operations",
+      "tags": [
+        "Swiss Format",
+        "League Design",
+        "Viewership"
+      ],
+      "authorName": "Kieran Okafor",
+      "authorRole": "Head of Tournament Operations",
+      "authorAvatar": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "status": "published",
+      "publishedAt": "2026-10-14",
+      "featured": false,
+      "seoTitle": "Swiss Tournament Formats & Viewership Retention | YRT Esports",
+      "seoDescription": "Data-backed insights on how Swiss brackets improve competitive stakes and broadcast retention.",
+      "readTime": "6 min read",
+      "_id": "c09cd3d4cbfbb4a5528f4ab6",
+      "createdAt": "2026-11-20T14:59:59.639Z",
+      "updatedAt": "2026-11-20T14:59:59.639Z"
+    }
+  ],
+  "blog_categories": [
+    {
+      "name": "Broadcast Engineering",
+      "slug": "broadcast-engineering",
+      "description": "Control room & technical case notes",
+      "_id": "264d474d7eb4235e2de485d3",
+      "createdAt": "2026-11-20T14:59:59.635Z",
+      "updatedAt": "2026-11-20T14:59:59.635Z"
+    },
+    {
+      "name": "Tournament Operations",
+      "slug": "tournament-operations",
+      "description": "Competitive integrity & league formats",
+      "_id": "89ea4b6e04cbd657c62da252",
+      "createdAt": "2026-11-20T14:59:59.636Z",
+      "updatedAt": "2026-11-20T14:59:59.636Z"
+    },
+    {
+      "name": "Brand Strategy",
+      "slug": "brand-strategy",
+      "description": "Commercial partnerships & ROI",
+      "_id": "24837441f24188a39fd56ea8",
+      "createdAt": "2026-11-20T14:59:59.636Z",
+      "updatedAt": "2026-11-20T14:59:59.636Z"
+    },
+    {
+      "name": "Company News",
+      "slug": "company-news",
+      "description": "Announcements and milestones",
+      "_id": "29cdc51b91c726130f5e9e3a",
+      "createdAt": "2026-11-20T14:59:59.637Z",
+      "updatedAt": "2026-11-20T14:59:59.637Z"
+    }
+  ],
+  "testimonials": [
+    {
+      "authorName": "Henrik Lindholm",
+      "role": "Head of Competitive Esports",
+      "organization": "Nordic Publishing Group",
+      "quote": "YRT Esports took our regional circuit from fragmented community cups to a cohesive multi-nation broadcast product. YRT Production control room discipline and rulebook execution were flawless.",
+      "outcomeMetric": "+162% Peak Broadcast Viewership in Season 1",
+      "avatarUrl": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "featured": true,
+      "order": 1,
+      "_id": "987ddf4c2006d03a06e6e739",
+      "createdAt": "2026-11-20T14:59:59.640Z",
+      "updatedAt": "2026-11-20T14:59:59.640Z"
+    },
+    {
+      "authorName": "Claire Beaumont",
+      "role": "Global Gaming Marketing Director",
+      "organization": "HyperCore Peripherals",
+      "quote": "Instead of slapping our logo on a static ticker, YRT Production integrated real-time hardware telemetry directly into the broadcast HUD. It became our highest-converting gaming activation of the year.",
+      "outcomeMetric": "$1.8M Tracked Product Launch Revenue",
+      "avatarUrl": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "featured": true,
+      "order": 2,
+      "_id": "cea28d22fd1b75a0efb18744",
+      "createdAt": "2026-11-20T14:59:59.641Z",
+      "updatedAt": "2026-11-20T14:59:59.641Z"
+    },
+    {
+      "authorName": "Daniel Park",
+      "role": "VP of Live Events",
+      "organization": "Meridian Gaming Group",
+      "quote": "Managing 20 international squads on LAN requires relentless operational rigor. Every match started on schedule and our VIP partners experienced five-star hospitality.",
+      "outcomeMetric": "99.98% Broadcast Uptime Across 5 Arena Days",
+      "avatarUrl": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "featured": true,
+      "order": 3,
+      "_id": "7c277acfba7b5b05f4a94e66",
+      "createdAt": "2026-11-20T14:59:59.642Z",
+      "updatedAt": "2026-11-20T14:59:59.642Z"
+    }
+  ],
+  "partners": [
+    {
+      "name": "HyperCore",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3EHYPERCORE%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Hardware Partner",
+      "featured": true,
+      "order": 1,
+      "_id": "b7f70f759a7775009bdbc773",
+      "createdAt": "2026-11-20T14:59:59.642Z",
+      "updatedAt": "2026-11-20T14:59:59.642Z"
+    },
+    {
+      "name": "Nordic Telco",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3ENORDIC%20TELCO%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Connectivity Partner",
+      "featured": true,
+      "order": 2,
+      "_id": "6e5cf81ec2f0ae9fb8abeee9",
+      "createdAt": "2026-11-20T14:59:59.643Z",
+      "updatedAt": "2026-11-20T14:59:59.643Z"
+    },
+    {
+      "name": "Meridian Games",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3EMERIDIAN%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Publisher Partner",
+      "featured": true,
+      "order": 3,
+      "_id": "dcff9479720cd22ed8abc778",
+      "createdAt": "2026-11-20T14:59:59.645Z",
+      "updatedAt": "2026-11-20T14:59:59.645Z"
+    },
+    {
+      "name": "Aegis Monitors",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3EAEGIS%20360HZ%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Display Partner",
+      "featured": true,
+      "order": 4,
+      "_id": "c6e60fdd4cf789db72d4b528",
+      "createdAt": "2026-11-20T14:59:59.646Z",
+      "updatedAt": "2026-11-20T14:59:59.646Z"
+    },
+    {
+      "name": "Kestrel Audio",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3EKESTREL%20PRO%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Audio Partner",
+      "featured": true,
+      "order": 5,
+      "_id": "dfb5d06b0c78dec6a07a759b",
+      "createdAt": "2026-11-20T14:59:59.647Z",
+      "updatedAt": "2026-11-20T14:59:59.647Z"
+    },
+    {
+      "name": "Horizon Cloud",
+      "logoUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20180%2048%22%20fill%3D%22none%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22178%22%20height%3D%2246%22%20rx%3D%224%22%20stroke%3D%22%23F8FAFC%22%20stroke-opacity%3D%220.35%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20fill%3D%22%23F8FAFC%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2216%22%20letter-spacing%3D%223%22%3EHORIZON%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "websiteUrl": "https://example.com",
+      "tier": "Infrastructure",
+      "featured": true,
+      "order": 6,
+      "_id": "65479e67299dcac7cf5e1e7d",
+      "createdAt": "2026-11-20T14:59:59.648Z",
+      "updatedAt": "2026-11-20T14:59:59.648Z"
+    }
+  ],
+  "contact_messages": [
+    {
+      "name": "Oliver Grant",
+      "email": "oliver.grant@globalpublisher.com",
+      "subject": "Q2 2027 Regional Championship RFP",
+      "category": "Tournament Production",
+      "message": "We are preparing our 2027 championship RFP for a 16-team LAN finals in Q2 and would like to schedule a technical capability briefing with YRT Production.",
+      "read": false,
+      "status": "new",
+      "_id": "ce73259ff79f92569b44efcb",
+      "createdAt": "2026-11-20T14:59:59.649Z",
+      "updatedAt": "2026-11-20T14:59:59.649Z"
+    },
+    {
+      "name": "Sophia Chen",
+      "email": "sophia@kestrelaudio.io",
+      "subject": "Broadcast Headset Sponsorship Package",
+      "category": "Brand Partnerships",
+      "message": "Interested in exploring official audio partner inventory for the upcoming YRT Winter Major broadcast.",
+      "read": true,
+      "status": "replied",
+      "_id": "af7d5542706489b4d3d6017d",
+      "createdAt": "2026-11-20T14:59:59.650Z",
+      "updatedAt": "2026-11-20T14:59:59.650Z"
+    }
+  ],
+  "media": [
+    {
+      "title": "YRT Esports / YRT Production Official Logo",
+      "url": "/assets/aistudio/LOGO-Photoroom_0f89e0c2.png",
+      "mimeType": "image/png",
+      "size": 128000,
+      "folder": "logos",
+      "altText": "YRT Esports Official Logo",
+      "_id": "90bcdb751c5f3190e1c790e8",
+      "createdAt": "2026-11-20T14:59:59.651Z",
+      "updatedAt": "2026-11-20T14:59:59.651Z"
+    },
+    {
+      "title": "Championship Arena Stage",
+      "url": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "mimeType": "image/jpeg",
+      "size": 420000,
+      "folder": "events",
+      "altText": "Main arena stage",
+      "_id": "5a859530863895ef6a65d3a1",
+      "createdAt": "2026-11-20T14:59:59.652Z",
+      "updatedAt": "2026-11-20T14:59:59.652Z"
+    },
+    {
+      "title": "Master Control Broadcast Room",
+      "url": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "mimeType": "image/jpeg",
+      "size": 390000,
+      "folder": "portfolio",
+      "altText": "Broadcast control room",
+      "_id": "f108a565866b759f743ac444",
+      "createdAt": "2026-11-20T14:59:59.653Z",
+      "updatedAt": "2026-11-20T14:59:59.653Z"
+    },
+    {
+      "title": "Grand Finals Arena Crowd",
+      "url": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "mimeType": "image/jpeg",
+      "size": 410000,
+      "folder": "events",
+      "altText": "Packed LAN finals crowd",
+      "_id": "88403db03567091dbc48b291",
+      "createdAt": "2026-11-20T14:59:59.654Z",
+      "updatedAt": "2026-11-20T14:59:59.654Z"
+    },
+    {
+      "title": "Executive Portrait — Aarav Shrestha",
+      "url": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "mimeType": "image/jpeg",
+      "size": 210000,
+      "folder": "staff",
+      "altText": "Aarav Shrestha portrait",
+      "_id": "0c37756e5872fb2fe2ce4963",
+      "createdAt": "2026-11-20T14:59:59.655Z",
+      "updatedAt": "2026-11-20T14:59:59.655Z"
+    },
+    {
+      "title": "Executive Portrait — Elena Rostova",
+      "url": "/src/assets/images/portrait_exec_two_1795184429855.jpg",
+      "mimeType": "image/jpeg",
+      "size": 205000,
+      "folder": "staff",
+      "altText": "Elena Rostova portrait",
+      "_id": "ce96dce3a842bb5214c32645",
+      "createdAt": "2026-11-20T14:59:59.655Z",
+      "updatedAt": "2026-11-20T14:59:59.655Z"
+    },
+    {
+      "title": "Executive Portrait — Devon Mercer",
+      "url": "/src/assets/images/portrait_exec_three_1795184429872.jpg",
+      "mimeType": "image/jpeg",
+      "size": 215000,
+      "folder": "staff",
+      "altText": "Devon Mercer portrait",
+      "_id": "45378d205e0120e4ec221023",
+      "createdAt": "2026-11-20T14:59:59.657Z",
+      "updatedAt": "2026-11-20T14:59:59.657Z"
+    }
+  ],
+  "navigation": [
+    {
+      "label": "Services",
+      "path": "/services",
+      "order": 1,
+      "visible": true,
+      "isExternal": false,
+      "location": "header",
+      "_id": "698b74317ae8477392586705",
+      "createdAt": "2026-11-20T14:59:59.595Z",
+      "updatedAt": "2026-11-20T14:59:59.595Z"
+    },
+    {
+      "label": "Work",
+      "path": "/portfolio",
+      "order": 2,
+      "visible": true,
+      "isExternal": false,
+      "location": "header",
+      "_id": "0e9200ef72bff7662f63a93c",
+      "createdAt": "2026-11-20T14:59:59.595Z",
+      "updatedAt": "2026-11-20T14:59:59.595Z"
+    },
+    {
+      "label": "Events",
+      "path": "/events",
+      "order": 3,
+      "visible": true,
+      "isExternal": false,
+      "location": "header",
+      "_id": "6de398e788eb5924d175b5f3",
+      "createdAt": "2026-11-20T14:59:59.595Z",
+      "updatedAt": "2026-11-20T14:59:59.595Z"
+    },
+    {
+      "label": "Team",
+      "path": "/team",
+      "order": 4,
+      "visible": true,
+      "isExternal": false,
+      "location": "header",
+      "_id": "2a6917560b03c1d1616e80c0",
+      "createdAt": "2026-11-20T14:59:59.596Z",
+      "updatedAt": "2026-11-20T14:59:59.596Z"
+    },
+    {
+      "label": "Journal",
+      "path": "/blog",
+      "order": 5,
+      "visible": true,
+      "isExternal": false,
+      "location": "header",
+      "_id": "4640beae9941cf505ee6ed3a",
+      "createdAt": "2026-11-20T14:59:59.596Z",
+      "updatedAt": "2026-11-20T14:59:59.596Z"
+    },
+    {
+      "label": "About Us",
+      "path": "/about",
+      "order": 1,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_company",
+      "_id": "b028a971c3882dbe10ef8fff",
+      "createdAt": "2026-11-20T14:59:59.596Z",
+      "updatedAt": "2026-11-20T14:59:59.596Z"
+    },
+    {
+      "label": "Leadership & Staff",
+      "path": "/team",
+      "order": 2,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_company",
+      "_id": "c408b8da587471cdae078879",
+      "createdAt": "2026-11-20T14:59:59.596Z",
+      "updatedAt": "2026-11-20T14:59:59.596Z"
+    },
+    {
+      "label": "Careers",
+      "path": "/careers",
+      "order": 3,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_company",
+      "_id": "e88861585822a5488c441f11",
+      "createdAt": "2026-11-20T14:59:59.596Z",
+      "updatedAt": "2026-11-20T14:59:59.596Z"
+    },
+    {
+      "label": "News & Editorial",
+      "path": "/blog",
+      "order": 4,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_company",
+      "_id": "3b5c3ee69df5bbca9e857a7f",
+      "createdAt": "2026-11-20T14:59:59.597Z",
+      "updatedAt": "2026-11-20T14:59:59.597Z"
+    },
+    {
+      "label": "Contact",
+      "path": "/contact",
+      "order": 5,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_company",
+      "_id": "3999d65f8d3667f165dd5b78",
+      "createdAt": "2026-11-20T14:59:59.597Z",
+      "updatedAt": "2026-11-20T14:59:59.597Z"
+    },
+    {
+      "label": "Tournament Operations",
+      "path": "/services/esports-tournament-organization",
+      "order": 1,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_services",
+      "_id": "fa8a3ce4c3b5640b1f0b417a",
+      "createdAt": "2026-11-20T14:59:59.597Z",
+      "updatedAt": "2026-11-20T14:59:59.597Z"
+    },
+    {
+      "label": "Live Broadcast Studio",
+      "path": "/services/live-broadcast-production",
+      "order": 2,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_services",
+      "_id": "3bb1e65368eefca41509fb4d",
+      "createdAt": "2026-11-20T14:59:59.597Z",
+      "updatedAt": "2026-11-20T14:59:59.597Z"
+    },
+    {
+      "label": "Broadcast Graphics",
+      "path": "/services/broadcast-graphics",
+      "order": 3,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_services",
+      "_id": "f9f6ae1c96b92ac8ff13bcfd",
+      "createdAt": "2026-11-20T14:59:59.597Z",
+      "updatedAt": "2026-11-20T14:59:59.597Z"
+    },
+    {
+      "label": "Brand Partnerships",
+      "path": "/services/brand-partnerships",
+      "order": 4,
+      "visible": true,
+      "isExternal": false,
+      "location": "footer_services",
+      "_id": "c7de400efc2a213467d2cd95",
+      "createdAt": "2026-11-20T14:59:59.598Z",
+      "updatedAt": "2026-11-20T14:59:59.598Z"
+    }
+  ],
+  "seo_metadata": [
+    {
+      "pageSlug": "home",
+      "metaTitle": "YRT Esports – International Esports Production & Agency",
+      "metaDescription": "YRT Esports & YRT Production: tournament organization, 4K60 live broadcast production, broadcast graphics, and strategic brand partnerships.",
+      "ogImage": "/assets/aistudio/LOGO-Photoroom_0f89e0c2.png",
+      "_id": "23015a406ccb5996e5a6d6a1",
+      "createdAt": "2026-11-20T14:59:59.658Z",
+      "updatedAt": "2026-11-20T14:59:59.658Z"
+    },
+    {
+      "pageSlug": "about",
+      "metaTitle": "About Us – YRT Esports",
+      "metaDescription": "Learn about YRT Esports & YRT Production hubs, leadership team, and competitive values.",
+      "ogImage": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "_id": "572576b3eafb63e36c1aa411",
+      "createdAt": "2026-11-20T14:59:59.659Z",
+      "updatedAt": "2026-11-20T14:59:59.659Z"
+    },
+    {
+      "pageSlug": "services",
+      "metaTitle": "Services – Tournament & Broadcast Production | YRT Esports",
+      "metaDescription": "Explore our 10 specialized esports agency capabilities from LAN production to global brand partnerships.",
+      "ogImage": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "_id": "a99dff29d4a40d6aa5f5ef7a",
+      "createdAt": "2026-11-20T14:59:59.660Z",
+      "updatedAt": "2026-11-20T14:59:59.660Z"
+    },
+    {
+      "pageSlug": "portfolio",
+      "metaTitle": "Our Work & Case Studies | YRT Esports",
+      "metaDescription": "Browse completed arena championships, publisher leagues, and brand activations.",
+      "ogImage": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "_id": "6dbd9cca41f6358f3b604fe8",
+      "createdAt": "2026-11-20T14:59:59.661Z",
+      "updatedAt": "2026-11-20T14:59:59.661Z"
+    },
+    {
+      "pageSlug": "events",
+      "metaTitle": "Events & Tournaments Calendar | YRT Esports",
+      "metaDescription": "Upcoming majors, ongoing circuits, and verified results from completed championships.",
+      "ogImage": "/src/assets/images/event_championship_crowd_1795184429879.jpg",
+      "_id": "341b149e17e01aab0e7f37a5",
+      "createdAt": "2026-11-20T14:59:59.661Z",
+      "updatedAt": "2026-11-20T14:59:59.661Z"
+    },
+    {
+      "pageSlug": "team",
+      "metaTitle": "Leadership & Staff Directory | YRT Esports",
+      "metaDescription": "Meet the broadcast directors, tournament administrators, and creatives powering YRT Esports.",
+      "ogImage": "/src/assets/images/portrait_exec_one_1795184429897.jpg",
+      "_id": "ccd3b431cf25ae0e6a5651f3",
+      "createdAt": "2026-11-20T14:59:59.662Z",
+      "updatedAt": "2026-11-20T14:59:59.662Z"
+    },
+    {
+      "pageSlug": "careers",
+      "metaTitle": "Careers & Open Positions | YRT Esports",
+      "metaDescription": "Join our production, broadcast, tournament operations, and partnership teams.",
+      "ogImage": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "_id": "804d587604f48241d532c423",
+      "createdAt": "2026-11-20T14:59:59.663Z",
+      "updatedAt": "2026-11-20T14:59:59.663Z"
+    },
+    {
+      "pageSlug": "blog",
+      "metaTitle": "Journal & Industry Analysis | YRT Esports",
+      "metaDescription": "Technical broadcast dispatches, tournament design insights, and agency announcements.",
+      "ogImage": "/src/assets/images/studio_broadcast_control_1795184431019.jpg",
+      "_id": "4937bd309de3ac2f8e16c898",
+      "createdAt": "2026-11-20T14:59:59.664Z",
+      "updatedAt": "2026-11-20T14:59:59.664Z"
+    },
+    {
+      "pageSlug": "contact",
+      "metaTitle": "Contact Our Executive Desk | YRT Esports",
+      "metaDescription": "Commission a tournament, live broadcast, or brand sponsorship partnership with YRT Esports.",
+      "ogImage": "/src/assets/images/hero_arena_stage_1795184428898.jpg",
+      "_id": "583b9acf91f832ac35d816ba",
+      "createdAt": "2026-11-20T14:59:59.665Z",
+      "updatedAt": "2026-11-20T14:59:59.665Z"
+    }
+  ],
+  "activity_logs": [
+    {
+      "adminEmail": "admin@yrtesports.gg",
+      "adminName": "Aarav Shrestha",
+      "action": "INITIALIZED",
+      "entityType": "system",
+      "entityTitle": "YRT Esports CMS Database",
+      "details": "Seeded initial themes, YRT branding, pages, services, portfolio, events, staff, and careers.",
+      "_id": "87615ca4defec41c1fd320fa",
+      "createdAt": "2026-11-20T14:59:59.666Z",
+      "updatedAt": "2026-11-20T14:59:59.666Z"
+    },
+    {
+      "adminEmail": "admin@yrtesports.gg",
+      "adminName": "Aarav Shrestha",
+      "action": "LOGIN",
+      "entityType": "auth",
+      "entityTitle": "admin@yrtesports.gg",
+      "details": "Signed in as super_admin",
+      "_id": "e7e6099cddd7d61cbe200795",
+      "createdAt": "2026-11-20T15:00:05.871Z",
+      "updatedAt": "2026-11-20T15:00:05.871Z"
+    },
+    {
+      "adminEmail": "admin@yrtesports.gg",
+      "adminName": "Aarav Shrestha",
+      "action": "LOGIN",
+      "entityType": "auth",
+      "entityTitle": "admin@yrtesports.gg",
+      "details": "Signed in as super_admin",
+      "_id": "e4a564a47a3cd0711c2dcdd2",
+      "createdAt": "2026-11-20T15:01:31.346Z",
+      "updatedAt": "2026-11-20T15:01:31.346Z"
+    },
+    {
+      "adminEmail": "admin@yrtesports.gg",
+      "adminName": "Aarav Shrestha",
+      "action": "LOGIN",
+      "entityType": "auth",
+      "entityTitle": "admin@yrtesports.gg",
+      "details": "Signed in as super_admin",
+      "_id": "47d423d9af3750be6b54c97a",
+      "createdAt": "2026-11-20T15:08:57.838Z",
+      "updatedAt": "2026-11-20T15:08:57.838Z"
+    }
+  ]
+}
