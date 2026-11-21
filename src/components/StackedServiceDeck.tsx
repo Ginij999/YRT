@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { ArrowRight, ChevronLeft, ChevronRight, Layers, RotateCw, Shuffle } from 'lucide-react';
 import { ServiceItem } from '../types/cms';
 import { MediaImage } from './MediaImage';
+import { FillButtonContent } from './FillButtonContent';
 
 const FLASH_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -175,7 +176,7 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
                 >
                   {/* FRONT FACE — Prompt / Flashcard Face */}
                   <div
-                    className={`absolute inset-0 rounded-[2px] border flex flex-col justify-between overflow-hidden shadow-2xl ${
+                    className={`absolute inset-0 rounded-2xl border flex flex-col justify-between overflow-hidden shadow-2xl ${
                       isTop ? 'border-red-500/60' : 'border-white/15'
                     }`}
                     style={{
@@ -187,7 +188,7 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
                     {/* Top Crimson Ruled Index Header */}
                     <div className="px-5 py-3 border-b border-white/10 bg-[#15151e] flex items-center justify-between text-[11px] font-mono-num">
                       <div className="flex items-center gap-2">
-                        <span className="inline-block w-2 h-2 bg-red-600" />
+                        <span className="inline-block w-2 h-2 rounded-full bg-red-600" />
                         <span className="font-bold text-white tracking-wider uppercase">
                           FLASHCARD · UNIT {String(idx + 1).padStart(2, '0')}
                         </span>
@@ -207,7 +208,7 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#101016] via-[#101016]/35 to-transparent" />
                       <div className="absolute bottom-2.5 left-5 right-5 flex items-center justify-between text-[11px] font-mono-num text-neutral-300">
-                        <span className="px-2 py-0.5 bg-black/75 border border-white/15 text-white">
+                        <span className="px-2 py-0.5 rounded-md bg-black/75 border border-white/15 text-white">
                           {card.iconName || 'YRT UNIT'}
                         </span>
                         <span className="text-red-400 font-semibold">FRONT SIDE</span>
@@ -233,7 +234,7 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
 
                   {/* BACK FACE — Deliverables, Process & Direct Action */}
                   <div
-                    className="absolute inset-0 rounded-[2px] border border-red-500/70 flex flex-col justify-between overflow-hidden shadow-2xl"
+                    className="absolute inset-0 rounded-2xl border border-red-500/70 flex flex-col justify-between overflow-hidden shadow-2xl"
                     style={{
                       backfaceVisibility: 'hidden',
                       WebkitBackfaceVisibility: 'hidden',
@@ -290,14 +291,16 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
                         )}
                       </div>
 
-                      <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-3">
+                      <div className="pt-3 border-t border-white/15 flex items-center justify-between gap-3">
                         <Link
                           to={`/services/${card.slug}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold btn-brand"
+                          className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold btn-brand"
                         >
-                          <span>Full Service Brief</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <FillButtonContent className="gap-1.5">
+                            <span>Full Service Brief</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </FillButtonContent>
                         </Link>
                         <button
                           type="button"
@@ -305,7 +308,7 @@ export const StackedServiceDeck: React.FC<{ services: ServiceItem[] }> = ({ serv
                             e.stopPropagation();
                             setIsFlipped(false);
                           }}
-                          className="px-3 py-2 text-[11px] font-mono-num border border-white/15 bg-black/40 text-neutral-300 hover:text-white"
+                          className="px-3 py-2 text-[11px] font-mono-num rounded-[2px] border border-white/20 bg-[#181924] text-neutral-200 hover:text-white"
                         >
                           Flip Back
                         </button>

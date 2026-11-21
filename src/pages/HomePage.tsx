@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Play, MapPin, Calendar, Star } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, MapPin, Calendar, Star, Globe, Trophy, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePageSeo, useSite } from '../context/SiteContext';
 import {
@@ -16,8 +16,12 @@ import {
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
+import { Globe3D } from '../components/Globe3D';
 import { StackedServiceDeck } from '../components/StackedServiceDeck';
+import { StickyServicesStack } from '../components/StickyServicesStack';
 import { BrandLogoCarousel } from '../components/ShowcaseMarquees';
+import { FillButtonContent } from '../components/FillButtonContent';
+import { StickerCard } from '../components/StickerCard';
 import {
   FALLBACK_BLOG_POSTS,
   FALLBACK_EVENTS,
@@ -31,7 +35,7 @@ import {
 } from '../data/fallbackData';
 
 const appleEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const HOME_CACHE_KEY = 'yrt_home_cache_v3';
+const HOME_CACHE_KEY = 'yrt_home_cache_v4';
 
 interface HomeCachePayload {
   sections: PageSection[];
@@ -70,7 +74,8 @@ function readHomeCache(): HomeCachePayload | null {
 }
 
 export const HomePage: React.FC = () => {
-  const { settings, apiFetch } = useSite();
+  const { settings, apiFetch, stickyNotes } = useSite();
+  const [focusedStickerId, setFocusedStickerId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const isPreview = searchParams.get('preview') === 'true';
 
@@ -149,96 +154,114 @@ export const HomePage: React.FC = () => {
     switch (sec.sectionKey) {
       case 'hero':
         return (
-          <section key={sec._id} className="relative min-h-[90vh] flex items-end pt-32 pb-20 overflow-hidden">
-            {/* Background Image or Video + Wise Ambient Light */}
-            <div className="absolute inset-0 z-0">
-              {sec.videoUrl ? (
-                <video
-                  src={sec.videoUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="w-full h-full object-cover opacity-65"
-                />
-              ) : (
-                <MediaImage
-                  src={sec.imageUrl}
-                  alt={sec.title}
-                  loading="eager"
-                  className="w-full h-full object-cover scale-[1.03] opacity-65"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08080A] via-[#08080A]/65 to-[#08080A]/35" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#08080A]/90 via-[#08080A]/50 to-transparent" />
-              <div
-                className="pointer-events-none absolute -bottom-24 -left-24 w-[460px] h-[460px] rounded-full blur-[140px] opacity-25 animate-float-slow"
-                style={{ backgroundColor: 'var(--brand-accent)' }}
-              />
+          <section
+            key={sec._id}
+            className="relative min-h-[100dvh] flex items-center pt-28 md:pt-32 pb-16 overflow-x-clip bg-transparent"
+          >
+            {/* Vertical "YRT ESPORTS" Top-to-Down Side Rail */}
+            <div
+              aria-hidden="true"
+              className="hidden md:flex flex-col items-center justify-between py-24 px-1.5 absolute left-3 xl:left-6 inset-y-0 z-10 pointer-events-none select-none"
+            >
+              <span className="w-px h-16 bg-gradient-to-b from-transparent via-red-500/70 to-transparent" />
+              <span
+                className="font-display text-sm xl:text-base font-black tracking-[0.42em] uppercase text-white/55"
+                style={{ writingMode: 'vertical-rl' }}
+              >
+                {settings?.organizationName || 'YRT ESPORTS'}
+              </span>
+              <span className="w-px h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
             </div>
 
-            <div className="relative z-10 max-w-[1280px] w-full mx-auto px-6">
-              <motion.div
-                initial={{ opacity: 0, y: 26, filter: 'blur(8px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: 0.72, ease: appleEase }}
-                className="max-w-3xl space-y-6"
-              >
+            <div className="relative z-10 max-w-[1280px] w-full mx-auto px-6 md:pl-16 md:pr-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                {/* Left Column: Agency Headlines, CTAs (1.5s bottom-to-top fill), KPIs */}
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.94, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.45, delay: 0.1, ease: appleEase }}
-                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] border border-red-500/40 bg-black/60 backdrop-blur-md text-xs font-semibold text-white"
-                >
-                  <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--brand-accent)' }} />
-                  <span>{sec.subtitle || 'Kathmandu, Nepal (KTM HQ) · Global Esports Studio'}</span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                  initial={{ opacity: 0, y: 22, filter: 'blur(6px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.65, delay: 0.15, ease: appleEase }}
-                  className="font-display font-bold tracking-tight text-white text-balance leading-[1.01]"
-                  style={{ fontSize: 'clamp(2.65rem, 5.5vw, 4.75rem)' }}
+                  transition={{ duration: 0.65, ease: appleEase }}
+                  className="lg:col-span-6 flex flex-col justify-center gap-6"
                 >
-                  {sec.title}
-                </motion.h1>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] border border-red-500/50 bg-[#141520] text-xs font-semibold text-white w-fit">
+                    <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--brand-accent)' }} />
+                    <span>{sec.subtitle || 'Kathmandu, Nepal (KTM HQ) · Global Esports Studio'}</span>
+                  </div>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 16, filter: 'blur(6px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.6, delay: 0.22, ease: appleEase }}
-                  className="text-base md:text-lg leading-relaxed max-w-2xl text-neutral-200"
-                >
-                  {sec.description}
-                </motion.p>
+                  <h1
+                    className="font-display font-bold tracking-tight text-white text-balance leading-[1.02]"
+                    style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}
+                  >
+                    {sec.title}
+                  </h1>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.3, ease: appleEase }}
-                  className="pt-2 flex flex-wrap items-center gap-4"
-                >
-                  {sec.ctaText && (
+                  <p className="text-base md:text-lg leading-relaxed max-w-2xl text-neutral-300">
+                    {sec.description}
+                  </p>
+
+                  <div className="pt-1 flex flex-wrap items-center gap-4">
                     <Link
                       to={sec.ctaLink || '/contact'}
-                      className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand whitespace-nowrap"
+                      className="inline-flex items-center justify-center px-7 py-4 text-sm font-semibold btn-brand whitespace-nowrap"
                     >
-                      <span>{sec.ctaText}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <FillButtonContent className="gap-2">
+                        <span>{sec.ctaText || 'Start a Project'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </FillButtonContent>
                     </Link>
-                  )}
-                  {sec.secondaryCtaText && (
+
                     <Link
-                      to={sec.secondaryCtaLink || '/portfolio'}
-                      className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand-outline whitespace-nowrap"
+                      to="/services"
+                      className="inline-flex items-center justify-center px-7 py-4 text-sm font-semibold btn-brand-outline whitespace-nowrap"
                     >
-                      <Play className="w-3.5 h-3.5" />
-                      <span>{sec.secondaryCtaText}</span>
+                      <FillButtonContent className="gap-2">
+                        <Zap className="w-4 h-4 text-red-500" />
+                        <span>Our Services</span>
+                      </FillButtonContent>
                     </Link>
-                  )}
+                  </div>
+
+                  {/* Hero KPI Strip with Distinct Surface Contrast */}
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-6 border-t border-white/15">
+                    <div className="p-4 rounded-[2px] bg-[#141520] border border-white/15 hover:border-red-500/50 transition-colors">
+                      <Globe className="w-4 h-4 text-red-500 mb-1.5 hidden sm:block" />
+                      <p className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
+                        140+
+                      </p>
+                      <p className="font-display text-[10px] sm:text-xs text-neutral-300 uppercase tracking-widest font-semibold">
+                        Global Events
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-[2px] bg-[#141520] border border-white/15 hover:border-red-500/50 transition-colors">
+                      <Trophy className="w-4 h-4 text-red-500 mb-1.5 hidden sm:block" />
+                      <p className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
+                        68M+
+                      </p>
+                      <p className="font-display text-[10px] sm:text-xs text-neutral-300 uppercase tracking-widest font-semibold">
+                        Broadcast Hours
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-[2px] bg-[#141520] border border-white/15 hover:border-red-500/50 transition-colors">
+                      <MapPin className="w-4 h-4 text-red-500 mb-1.5 hidden sm:block" />
+                      <p className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
+                        KTM HQ
+                      </p>
+                      <p className="font-display text-[10px] sm:text-xs text-neutral-300 uppercase tracking-widest font-semibold">
+                        32 Countries Reached
+                      </p>
+                    </div>
+                  </div>
                 </motion.div>
-              </motion.div>
+
+                {/* Right Column: Interactive 3D Globe on Top Landing Hero */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.7, delay: 0.12, ease: appleEase }}
+                  className="lg:col-span-6 relative w-full flex items-center justify-center"
+                >
+                  <Globe3D heroMode />
+                </motion.div>
+              </div>
             </div>
           </section>
         );
@@ -247,9 +270,8 @@ export const HomePage: React.FC = () => {
         return (
           <section
             key={sec._id}
-            className="py-24 border-t relative overflow-hidden"
+            className="py-24 border-t relative overflow-hidden bg-transparent"
             style={{
-              backgroundColor: 'rgba(10, 10, 14, 0.45)',
               borderColor: 'var(--brand-border)',
             }}
           >
@@ -275,10 +297,12 @@ export const HomePage: React.FC = () => {
                 <div className="pt-2 flex items-center gap-6">
                   <Link
                     to={sec.ctaLink || '/about'}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold btn-brand-outline"
+                    className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold btn-brand-outline"
                   >
-                    <span>{sec.ctaText || 'Learn About Our Agency'}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <FillButtonContent className="gap-2">
+                      <span>{sec.ctaText || 'Learn About Our Agency'}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </FillButtonContent>
                   </Link>
                 </div>
               </motion.div>
@@ -305,47 +329,26 @@ export const HomePage: React.FC = () => {
       case 'services_showcase':
         return (
           <React.Fragment key={sec._id}>
+            {/* Sticky-Stacking Overlapping Core Services Cards (Production -> Esports Marketing -> Event Execution -> Jersey Printing) */}
+            <StickyServicesStack
+              services={services}
+              mode="home"
+              eyebrow={sec.subtitle || 'What we do'}
+              description={sec.description}
+              ctaText={sec.ctaText || 'See all esports services'}
+              ctaLink={sec.ctaLink || '/services'}
+            />
+
+            {/* Interactive 3D Flippable Capability Flashcards & Extended Directory */}
             <section
-              className="py-24 relative overflow-hidden border-t"
+              className="py-20 relative border-t bg-transparent"
               style={{
-                backgroundColor: 'rgba(14, 14, 20, 0.58)',
                 borderColor: 'var(--brand-border)',
               }}
             >
               <div className="max-w-[1280px] mx-auto px-6 relative z-10">
-                <motion.div
-                  initial={{ opacity: 0, y: 18, filter: 'blur(6px)' }}
-                  whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.5, ease: appleEase }}
-                  className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
-                >
-                  <div className="max-w-2xl space-y-3">
-                    {sec.subtitle && (
-                      <p className="text-xs font-semibold tracking-wider" style={{ color: 'var(--brand-accent)' }}>
-                        {sec.subtitle}
-                      </p>
-                    )}
-                    <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-white text-balance">
-                      {sec.title}
-                    </h2>
-                    <p className="text-sm md:text-base" style={{ color: 'var(--brand-muted)' }}>
-                      {sec.description}
-                    </p>
-                  </div>
-                  <Link
-                    to={sec.ctaLink || '/services'}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
-                  >
-                    <span>{sec.ctaText || 'View All Services'}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </motion.div>
-
-                {/* Authentic 3D Flippable Flashcard Deck */}
                 <StackedServiceDeck services={services} />
 
-                {/* Full Service Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {services.slice(0, 6).map((svc, idx) => (
                     <motion.div
@@ -411,10 +414,12 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to={sec.ctaLink || '/events'}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
                 >
-                  <span>{sec.ctaText || 'Full Event Calendar'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Full Event Calendar'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </FillButtonContent>
                 </Link>
               </div>
 
@@ -482,9 +487,8 @@ export const HomePage: React.FC = () => {
         return (
           <section
             key={sec._id}
-            className="py-24 border-t"
+            className="py-24 border-t bg-transparent"
             style={{
-              backgroundColor: 'rgba(14, 14, 20, 0.56)',
               borderColor: 'var(--brand-border)',
             }}
           >
@@ -505,10 +509,12 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to={sec.ctaLink || '/portfolio'}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
                 >
-                  <span>{sec.ctaText || 'Browse Full Portfolio'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Browse Full Portfolio'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </FillButtonContent>
                 </Link>
               </div>
 
@@ -604,9 +610,8 @@ export const HomePage: React.FC = () => {
         return (
           <section
             key={sec._id}
-            className="py-24 border-t"
+            className="py-24 border-t bg-transparent"
             style={{
-              backgroundColor: 'rgba(14, 14, 20, 0.56)',
               borderColor: 'var(--brand-border)',
             }}
           >
@@ -624,10 +629,12 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to={sec.ctaLink || '/team'}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
                 >
-                  <span>{sec.ctaText || 'Meet Full Directory'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Meet Full Directory'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </FillButtonContent>
                 </Link>
               </div>
 
@@ -668,9 +675,86 @@ export const HomePage: React.FC = () => {
           </section>
         );
 
-      case 'testimonials_section':
+      case 'testimonials_section': {
+        const pinboardNotes = stickyNotes
+          .filter(
+            (n) =>
+              n.visible &&
+              (n.pageSlug === 'home' || n.pageSlug === 'all') &&
+              (n.displayMode === 'pinboard' || n.displayMode === 'both' || !n.displayMode)
+          )
+          .sort((a, b) => (a.zIndex || 20) - (b.zIndex || 20));
+
         return (
-          <section key={sec._id} className="py-24 border-t" style={{ borderColor: 'var(--brand-border)' }}>
+          <React.Fragment key={sec._id}>
+            {pinboardNotes.length > 0 && (
+              <section
+                className="py-24 border-t relative overflow-hidden bg-transparent"
+                style={{ borderColor: 'var(--brand-border)' }}
+              >
+                <div className="max-w-[1100px] mx-auto px-6">
+                  <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+                    <p
+                      className="text-xs font-semibold uppercase tracking-[0.2em]"
+                      style={{ color: 'var(--brand-accent)' }}
+                    >
+                      Studio Culture &amp; Notes
+                    </p>
+                    <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-white text-balance">
+                      Pinned From Our Production Floor
+                    </h2>
+                    <p className="text-sm text-neutral-400">
+                      Notes, guiding principles, and snapshots pinned directly by the YRT Esports team.
+                    </p>
+                  </div>
+
+                  {/* Desktop Overlapping Collage Board (Matches Reference Pinboard) */}
+                  <div className="hidden md:block relative w-full max-w-[920px] h-[580px] mx-auto">
+                    {pinboardNotes.map((note) => {
+                      const isFocused = focusedStickerId === note._id;
+                      return (
+                        <motion.div
+                          key={note._id}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, amount: 0.15 }}
+                          transition={{ duration: 0.7, ease: appleEase }}
+                          whileHover={{ scale: 1.04, y: -6 }}
+                          onClick={() =>
+                            setFocusedStickerId((prev) => (prev === note._id ? null : note._id))
+                          }
+                          style={{
+                            left: `${Math.min(72, Math.max(1, note.x))}%`,
+                            top: `${Math.min(62, Math.max(2, note.y))}%`,
+                            width: `${note.width || 245}px`,
+                            rotate: `${note.rotation || 0}deg`,
+                            zIndex: isFocused ? 50 : note.zIndex || 20,
+                          }}
+                          className="absolute cursor-pointer transition-shadow"
+                        >
+                          <StickerCard note={note} />
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Mobile Responsive Grid */}
+                  <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+                    {pinboardNotes.map((note) => (
+                      <div
+                        key={note._id}
+                        className="mx-auto w-full max-w-[290px]"
+                        style={{ transform: `rotate(${Math.max(-4, Math.min(4, note.rotation || 0))}deg)` }}
+                      >
+                        <StickerCard note={note} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            <section className="py-24 border-t" style={{ borderColor: 'var(--brand-border)' }}>
             <div className="max-w-[1280px] mx-auto px-6">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                 <div className="max-w-2xl space-y-3">
@@ -685,11 +769,13 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to="/reviews"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
                 >
-                  <Star className="w-3.5 h-3.5" />
-                  <span>Read &amp; Post Reviews</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <FillButtonContent className="gap-2">
+                    <Star className="w-3.5 h-3.5" />
+                    <span>Read &amp; Post Reviews</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </FillButtonContent>
                 </Link>
               </div>
 
@@ -722,15 +808,16 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
           </section>
+          </React.Fragment>
         );
+      }
 
       case 'latest_blog':
         return (
           <section
             key={sec._id}
-            className="py-24 border-t"
+            className="py-24 border-t bg-transparent"
             style={{
-              backgroundColor: 'rgba(14, 14, 20, 0.56)',
               borderColor: 'var(--brand-border)',
             }}
           >
@@ -748,10 +835,12 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to={sec.ctaLink || '/blog'}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand-outline whitespace-nowrap shrink-0"
                 >
-                  <span>{sec.ctaText || 'Read All Articles'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Read All Articles'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </FillButtonContent>
                 </Link>
               </div>
 
@@ -827,10 +916,12 @@ export const HomePage: React.FC = () => {
                 </div>
                 <Link
                   to={sec.ctaLink || '/careers'}
-                  className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand whitespace-nowrap shrink-0 self-start lg:self-center"
+                  className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold btn-brand whitespace-nowrap shrink-0 self-start lg:self-center"
                 >
-                  <span>{sec.ctaText || 'Explore Open Positions'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Explore Open Positions'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </FillButtonContent>
                 </Link>
               </motion.div>
             </div>
@@ -839,7 +930,7 @@ export const HomePage: React.FC = () => {
 
       case 'contact_cta':
         return (
-          <section key={sec._id} className="py-24 border-t" style={{ borderColor: 'var(--brand-border)' }}>
+          <section key={sec._id} className="py-24 border-t bg-transparent" style={{ borderColor: 'var(--brand-border)' }}>
             <div className="max-w-[900px] mx-auto px-6 text-center space-y-6">
               {sec.subtitle && (
                 <p className="text-xs font-semibold tracking-wider" style={{ color: 'var(--brand-accent)' }}>
@@ -855,10 +946,12 @@ export const HomePage: React.FC = () => {
               <div className="pt-2 flex flex-wrap justify-center gap-4">
                 <Link
                   to={sec.ctaLink || '/contact'}
-                  className="inline-flex items-center gap-2 px-7 py-4 text-sm font-semibold btn-brand"
+                  className="inline-flex items-center justify-center px-7 py-4 text-sm font-semibold btn-brand"
                 >
-                  <span>{sec.ctaText || 'Request Production Proposal'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <FillButtonContent className="gap-2">
+                    <span>{sec.ctaText || 'Request Production Proposal'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </FillButtonContent>
                 </Link>
               </div>
             </div>

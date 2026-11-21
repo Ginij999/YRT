@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSite } from '../context/SiteContext';
+import { FillButtonContent } from './FillButtonContent';
 
 export const Navbar: React.FC = () => {
   const { settings, navigation } = useSite();
@@ -105,10 +106,12 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-2 shrink-0">
           <Link
             to="/contact"
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold tracking-wide btn-brand whitespace-nowrap shrink-0"
+            className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-semibold tracking-wide btn-brand whitespace-nowrap shrink-0"
           >
-            <span>Start a Project</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            <FillButtonContent className="gap-1.5">
+              <span>Start a Project</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </FillButtonContent>
           </Link>
 
           <button
@@ -158,10 +161,12 @@ export const Navbar: React.FC = () => {
             <div className="pt-4 border-t border-white/10">
               <Link
                 to="/contact"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold btn-brand"
+                className="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-semibold btn-brand"
               >
-                <span>Start a Project</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <FillButtonContent className="gap-2">
+                  <span>Start a Project</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </FillButtonContent>
               </Link>
             </div>
           </motion.div>

@@ -34,7 +34,7 @@ const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   return (
     <div
-      className="min-h-screen flex flex-col relative bg-[#08080A]"
+      className="min-h-screen flex flex-col relative bg-transparent"
       style={{ color: 'var(--brand-text)' }}
     >
       <StarfieldBackground />

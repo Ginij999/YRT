@@ -38,7 +38,7 @@ interface SiteContextValue {
 const SiteContext = createContext<SiteContextValue | undefined>(undefined);
 
 const TOKEN_STORAGE_KEY = 'yrt_admin_token';
-const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v3';
+const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v4';
 
 function readBootstrapCache(): BootstrapCachePayload | null {
   try {
@@ -68,15 +68,20 @@ function writeBootstrapCache(payload: Omit<BootstrapCachePayload, 'cachedAt'>) {
 function applyThemeCssVariables(theme: ThemeConfig | null) {
   if (!theme) return;
   const root = document.documentElement;
-  root.style.setProperty('--brand-bg', theme.bgColor || '#08080A');
-  root.style.setProperty('--brand-surface', theme.surfaceColor || '#111115');
-  root.style.setProperty('--brand-surface-elevated', theme.surfaceElevatedColor || '#18181D');
+  root.style.setProperty('--brand-bg', theme.bgColor || '#050507');
+  root.style.setProperty('--brand-surface', theme.surfaceColor || '#13141C');
+  root.style.setProperty('--brand-surface-elevated', theme.surfaceElevatedColor || '#1B1D28');
   root.style.setProperty('--brand-text', theme.textColor || '#F8FAFC');
-  root.style.setProperty('--brand-muted', theme.mutedTextColor || '#94A3B8');
+  root.style.setProperty('--brand-muted', theme.mutedTextColor || '#9AA6B8');
   root.style.setProperty('--brand-accent', theme.primaryColor || '#DC2626');
   root.style.setProperty('--brand-accent-hover', theme.primaryHoverColor || '#B91C1C');
   root.style.setProperty('--brand-accent-secondary', theme.secondaryColor || '#EF4444');
-  root.style.setProperty('--brand-border', theme.borderColor || 'rgba(255,255,255,0.09)');
+  root.style.setProperty(
+    '--brand-border',
+    !theme.borderColor || theme.borderColor === 'rgba(255, 255, 255, 0.09)'
+      ? 'rgba(255,255,255,0.16)'
+      : theme.borderColor
+  );
   root.style.setProperty('--font-display', `"${theme.headingFont || 'Barlow Condensed'}", sans-serif`);
   root.style.setProperty('--font-body', `"${theme.bodyFont || 'Plus Jakarta Sans'}", sans-serif`);
 

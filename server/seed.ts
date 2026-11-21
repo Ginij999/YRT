@@ -66,14 +66,20 @@ export async function seedDatabase() {
     if (existingSettings.reviewPerSessionLimit === undefined) patch.reviewPerSessionLimit = 2;
     if (!existingSettings.homepageBackground) {
       patch.homepageBackground = {
-        mode: 'stars',
-        primaryColor: '#08080A',
-        secondaryColor: '#18090D',
+        mode: 'solid',
+        primaryColor: '#050507',
+        secondaryColor: '#14090D',
         imageUrl: '',
-        starsEnabled: true,
+        starsEnabled: false,
         starColor: '#FFFFFF',
-        starDensity: 110,
+        starDensity: 0,
         overlayOpacity: 0.72,
+      };
+    } else if (existingSettings.homepageBackground.starsEnabled || existingSettings.homepageBackground.mode === 'stars') {
+      patch.homepageBackground = {
+        ...existingSettings.homepageBackground,
+        mode: existingSettings.homepageBackground.mode === 'stars' ? 'solid' : existingSettings.homepageBackground.mode,
+        starsEnabled: false,
       };
     }
     if (Object.keys(patch).length > 0 && existingSettings._id) {
@@ -1775,36 +1781,148 @@ export async function seedDatabase() {
     ]);
   }
 
-  // 20. Sticky Notes (Movable & Layer-Organized)
-  if ((await db.sticky_notes.countDocuments()) === 0) {
+  // 20. Sticky Notes & Polaroid Pinboard Collage
+  const existingSticky = await db.sticky_notes.find({});
+  const isLegacyDefaultSticky =
+    existingSticky.length > 0 &&
+    existingSticky.length <= 2 &&
+    existingSticky.every(
+      (n) =>
+        !n.noteType &&
+        !n.pinStyle &&
+        ['Kathmandu HQ Live', 'Supported Circuits'].includes(String(n.title))
+    );
+
+  if (existingSticky.length === 0 || isLegacyDefaultSticky) {
+    if (isLegacyDefaultSticky) {
+      await db.sticky_notes.deleteMany({});
+    }
     await db.sticky_notes.insertMany([
       {
-        title: 'Kathmandu HQ Live',
-        content: 'Broadcast MCR & Tournament Desk open for Q4 championships and custom jersey orders.',
-        color: 'crimson',
-        x: 74,
-        y: 20,
-        width: 235,
-        rotation: -1.5,
+        title: 'Studio Ethos',
+        content: 'We treat every event we do like it is ours.',
+        author: 'YRT Founder',
+        color: 'yellow',
+        customColor: '#FFE066',
+        imageUrl: '',
+        noteType: 'note',
+        pinStyle: 'pin',
+        pinColor: 'red',
+        displayMode: 'pinboard',
+        x: 6,
+        y: 7,
+        width: 255,
+        rotation: -2.2,
+        zIndex: 20,
+        layer: 'mid',
+        pageSlug: 'home',
+        visible: true,
+        pinned: true,
+      },
+      {
+        title: 'Championship Craft',
+        content: 'Hard work is the common language of every championship.',
+        author: 'YRT Esports',
+        color: 'sky',
+        customColor: '#9EE6FF',
+        imageUrl: '',
+        noteType: 'note',
+        pinStyle: 'pin',
+        pinColor: 'blue',
+        displayMode: 'pinboard',
+        x: 42,
+        y: 5,
+        width: 245,
+        rotation: 2.5,
+        zIndex: 21,
+        layer: 'mid',
+        pageSlug: 'home',
+        visible: true,
+        pinned: true,
+      },
+      {
+        title: 'Broadcast Obsession',
+        content: 'The details nobody else notices are the ones we obsess over.',
+        author: 'YRT Team',
+        color: 'mint',
+        customColor: '#C7FF9E',
+        imageUrl: '',
+        noteType: 'note',
+        pinStyle: 'pin',
+        pinColor: 'emerald',
+        displayMode: 'pinboard',
+        x: 64,
+        y: 12,
+        width: 245,
+        rotation: -6.5,
+        zIndex: 25,
+        layer: 'front',
+        pageSlug: 'home',
+        visible: true,
+        pinned: true,
+      },
+      {
+        title: 'Standard Floor',
+        content: 'Perfect is not a standard we aim for, it is the floor we start from.',
+        author: 'YRT Team',
+        color: 'pink',
+        customColor: '#F9C5BD',
+        imageUrl: '',
+        noteType: 'note',
+        pinStyle: 'pin',
+        pinColor: 'amber',
+        displayMode: 'pinboard',
+        x: 10,
+        y: 52,
+        width: 240,
+        rotation: 3.2,
+        zIndex: 18,
+        layer: 'back',
+        pageSlug: 'home',
+        visible: true,
+        pinned: true,
+      },
+      {
+        title: 'Kathmandu LAN MCR',
+        content: 'Live Control Room & LAN Staging',
+        author: 'YRT Production',
+        color: 'slate',
+        customColor: '#FFFFFF',
+        imageUrl: IMG_STUDIO,
+        noteType: 'polaroid',
+        pinStyle: 'tape',
+        pinColor: 'amber',
+        displayMode: 'pinboard',
+        x: 28,
+        y: 30,
+        width: 265,
+        rotation: -5.5,
+        zIndex: 28,
+        layer: 'front',
+        pageSlug: 'home',
+        visible: true,
+        pinned: true,
+      },
+      {
+        title: 'Main Arena Finals',
+        content: 'Kathmandu Championship Stage',
+        author: 'YRT Events',
+        color: 'slate',
+        customColor: '#FFFFFF',
+        imageUrl: IMG_HERO,
+        noteType: 'polaroid',
+        pinStyle: 'pin',
+        pinColor: 'red',
+        displayMode: 'pinboard',
+        x: 52,
+        y: 50,
+        width: 240,
+        rotation: 4.5,
         zIndex: 32,
         layer: 'front',
         pageSlug: 'home',
         visible: true,
-        pinned: false,
-      },
-      {
-        title: 'Supported Circuits',
-        content: 'PUBG Mobile · Mobile Legends · LoL · Valorant · CS2 · FIFA · eFootball.',
-        color: 'amber',
-        x: 78,
-        y: 52,
-        width: 225,
-        rotation: 1.5,
-        zIndex: 28,
-        layer: 'mid',
-        pageSlug: 'home',
-        visible: false,
-        pinned: false,
+        pinned: true,
       },
     ]);
   }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { MapPin, RotateCcw, Globe as GlobeIcon } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 export interface WorldCountryFeature {
   id: string;
@@ -15,6 +15,29 @@ export interface WorldCountriesDataset {
   height: number;
   geoViewBox: [number, number, number, number];
   countries: WorldCountryFeature[];
+}
+
+let cachedWorldDataset: WorldCountriesDataset | null = null;
+let worldDatasetPromise: Promise<WorldCountriesDataset | null> | null = null;
+
+export function getCachedWorldDataset(): WorldCountriesDataset | null {
+  return cachedWorldDataset;
+}
+
+export function loadWorldDataset(): Promise<WorldCountriesDataset | null> {
+  if (cachedWorldDataset) return Promise.resolve(cachedWorldDataset);
+  if (!worldDatasetPromise) {
+    worldDatasetPromise = fetch('/world-countries.json', { cache: 'force-cache' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: WorldCountriesDataset | null) => {
+        if (data && Array.isArray(data.countries)) {
+          cachedWorldDataset = data;
+        }
+        return cachedWorldDataset;
+      })
+      .catch(() => null);
+  }
+  return worldDatasetPromise;
 }
 
 export interface CapitalCityMarker {
@@ -70,117 +93,161 @@ function mercY(latDeg: number): number {
   return Math.log(Math.tan(Math.PI / 4 + (clamped * Math.PI) / 360));
 }
 
-function buildEquirectangularGlobeCanvas(dataset: WorldCountriesDataset): HTMLCanvasElement {
+function inverseMercLat(my: number): number {
+  return (2 * Math.atan(Math.exp(my)) - Math.PI / 2) * (180 / Math.PI);
+}
+
+interface GlobeDotBuffers {
+  interiorPositions: Float32Array;
+  interiorColors: Float32Array;
+  borderPositions: Float32Array;
+  borderColors: Float32Array;
+}
+
+function createDotSpriteTexture(): THREE.CanvasTexture {
+  const size = 64;
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d')!;
+  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0.0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.55, 'rgba(255,255,255,0.95)');
+  grad.addColorStop(0.85, 'rgba(255,255,255,0.35)');
+  grad.addColorStop(1.0, 'rgba(255,255,255,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function buildUnifiedLandDotBuffers(
+  dataset: WorldCountriesDataset,
+  radius: number
+): GlobeDotBuffers {
   const srcW = Math.round(dataset.width);
   const srcH = Math.round(dataset.height);
+
+  // Merge all countries seamlessly into continuous landmasses (zero internal country dividers)
   const mercCanvas = document.createElement('canvas');
   mercCanvas.width = srcW;
   mercCanvas.height = srcH;
   const mctx = mercCanvas.getContext('2d')!;
+  mctx.fillStyle = '#000000';
+  mctx.fillRect(0, 0, srcW, srcH);
 
-  mctx.clearRect(0, 0, srcW, srcH);
-  mctx.fillStyle = '#31333d';
-  mctx.strokeStyle = '#dc2626';
-  mctx.lineWidth = 0.8;
+  mctx.fillStyle = '#ffffff';
+  mctx.strokeStyle = '#ffffff';
+  mctx.lineWidth = 1.8;
   mctx.lineJoin = 'round';
-
   for (const country of dataset.countries) {
     const path = new Path2D(country.d);
-    if (country.id === 'NP') {
-      mctx.fillStyle = '#7f1d1d';
-      mctx.fill(path);
-      mctx.strokeStyle = '#f87171';
-      mctx.lineWidth = 1.4;
-      mctx.stroke(path);
-      mctx.fillStyle = '#31333d';
-      mctx.strokeStyle = '#dc2626';
-      mctx.lineWidth = 0.8;
-    } else {
-      mctx.fill(path);
-      mctx.stroke(path);
-    }
+    mctx.fill(path);
+    mctx.stroke(path);
   }
 
-  // Reproject Mercator canvas -> Equirectangular 2048x1024 canvas for Three.js SphereGeometry
-  const dstW = 2048;
-  const dstH = 1024;
-  const dstCanvas = document.createElement('canvas');
-  dstCanvas.width = dstW;
-  dstCanvas.height = dstH;
-  const dctx = dstCanvas.getContext('2d')!;
-
-  // Deep obsidian ocean background
-  dctx.fillStyle = '#090a0f';
-  dctx.fillRect(0, 0, dstW, dstH);
-
-  // Subtle lat/lon grid lines
-  dctx.strokeStyle = 'rgba(255, 255, 255, 0.045)';
-  dctx.lineWidth = 1;
-  for (let lon = -150; lon <= 150; lon += 30) {
-    const gx = ((lon + 180) / 360) * dstW;
-    dctx.beginPath();
-    dctx.moveTo(gx, 0);
-    dctx.lineTo(gx, dstH);
-    dctx.stroke();
-  }
-  for (let lat = -60; lat <= 60; lat += 30) {
-    const gy = ((90 - lat) / 180) * dstH;
-    dctx.beginPath();
-    dctx.moveTo(0, gy);
-    dctx.lineTo(dstW, gy);
-    dctx.stroke();
-  }
-
+  const img = mctx.getImageData(0, 0, srcW, srcH).data;
   const [leftLon, topLat, rightLon, bottomLat] = dataset.geoViewBox;
   const lonSpan = rightLon - leftLon;
   const yTop = mercY(topLat);
-  const yBottom = mercY(bottomLat);
-  const mercSpan = yTop - yBottom;
+  const yBot = mercY(bottomLat);
+  const mercSpan = yTop - yBot;
 
-  // Map each equirectangular scanline to its Mercator source scanline
-  for (let py = 0; py < dstH; py++) {
-    const lat = 90 - ((py + 0.5) / dstH) * 180;
-    if (lat > topLat || lat < bottomLat) continue;
-    const myNorm = (yTop - mercY(lat)) / mercSpan;
-    const sy = Math.max(0, Math.min(srcH - 1, Math.floor(myNorm * srcH)));
+  const isLandPixel = (px: number, py: number): boolean => {
+    if (px < 0 || px >= srcW || py < 0 || py >= srcH) return false;
+    return img[(py * srcW + px) * 4] > 120;
+  };
 
-    // Map horizontal wrap cleanly because geoViewBox spans from -169.11 to +190.48 (359.6 deg)
-    // Slice 1: [leftLon .. 180] maps to right portion of dstW
-    // Slice 2: [-180 .. leftLon] corresponds to SVG's [180 .. rightLon]
-    const splitPx = ((180 - leftLon) / lonSpan) * srcW;
-    const dstStartPx = ((leftLon + 180) / 360) * dstW;
-    const dstFirstWidth = dstW - dstStartPx;
+  const latLonToMercPixel = (lat: number, lon: number): [number, number] | null => {
+    if (lat > topLat || lat < bottomLat) return null;
+    let wrappedLon = lon;
+    if (wrappedLon < leftLon) wrappedLon += 360;
+    else if (wrappedLon > rightLon) wrappedLon -= 360;
+    const sx = Math.max(0, Math.min(srcW - 1, Math.floor(((wrappedLon - leftLon) / lonSpan) * srcW)));
+    const sy = Math.max(0, Math.min(srcH - 1, Math.floor(((yTop - mercY(lat)) / mercSpan) * srcH)));
+    return [sx, sy];
+  };
 
-    if (splitPx > 0 && dstFirstWidth > 0) {
-      dctx.drawImage(mercCanvas, 0, sy, splitPx, 1, dstStartPx, py, dstFirstWidth, 1);
-    }
-    const remSrcW = srcW - splitPx;
-    if (remSrcW > 1 && dstStartPx > 0) {
-      dctx.drawImage(mercCanvas, splitPx, sy, remSrcW, 1, 0, py, dstStartPx, 1);
+  const interiorPos: number[] = [];
+  const interiorCol: number[] = [];
+  const borderPos: number[] = [];
+  const borderCol: number[] = [];
+  const tmp = new THREE.Vector3();
+
+  // 1. Uniform Fibonacci Sphere Lattice across unified continents & islands
+  const totalSamples = 26000;
+  const goldenRatio = (1 + Math.sqrt(5)) / 2;
+  for (let i = 0; i < totalSamples; i++) {
+    const t = (i + 0.5) / totalSamples;
+    const lat = 90 - Math.acos(1 - 2 * t) * (180 / Math.PI);
+    const lon = (((i / goldenRatio) % 1) * 360 + 540) % 360 - 180;
+
+    const px = latLonToMercPixel(lat, lon);
+    if (!px) continue;
+    const [sx, sy] = px;
+    if (!isLandPixel(sx, sy)) continue;
+
+    latLonToVector3(lat, lon, radius + 0.006, tmp);
+    interiorPos.push(tmp.x, tmp.y, tmp.z);
+    interiorCol.push(0.86, 0.14, 0.16);
+  }
+
+  // 2. Dense crisp red dots specifically tracing continental & island coastlines (outer borders)
+  const borderStep = 2;
+  for (let sy = 1; sy < srcH - 1; sy += borderStep) {
+    const my = yTop - ((sy + 0.5) / srcH) * mercSpan;
+    const lat = inverseMercLat(my);
+    for (let sx = 1; sx < srcW - 1; sx += borderStep) {
+      if (!isLandPixel(sx, sy)) continue;
+      const isOuterEdge =
+        !isLandPixel(sx - 1, sy) ||
+        !isLandPixel(sx + 1, sy) ||
+        !isLandPixel(sx, sy - 1) ||
+        !isLandPixel(sx, sy + 1);
+      if (!isOuterEdge) continue;
+
+      let lon = leftLon + ((sx + 0.5) / srcW) * lonSpan;
+      if (lon > 180) lon -= 360;
+
+      latLonToVector3(lat, lon, radius + 0.011, tmp);
+      borderPos.push(tmp.x, tmp.y, tmp.z);
+      borderCol.push(1.0, 0.25, 0.25);
     }
   }
 
-  return dstCanvas;
+  return {
+    interiorPositions: new Float32Array(interiorPos),
+    interiorColors: new Float32Array(interiorCol),
+    borderPositions: new Float32Array(borderPos),
+    borderColors: new Float32Array(borderCol),
+  };
 }
 
 export const Globe3D: React.FC<{
-  dataset: WorldCountriesDataset | null;
-}> = ({ dataset }) => {
+  dataset?: WorldCountriesDataset | null;
+  heroMode?: boolean;
+}> = ({ dataset: propDataset, heroMode = false }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const [internalDataset, setInternalDataset] = useState<WorldCountriesDataset | null>(
+    () => propDataset ?? cachedWorldDataset
+  );
+  const dataset = propDataset !== undefined ? propDataset : internalDataset;
+
   const [selectedCity, setSelectedCity] = useState<CapitalCityMarker>(CAPITAL_CITIES[0]);
   const [hoveredCity, setHoveredCity] = useState<CapitalCityMarker | null>(null);
-  const [autoSpin, setAutoSpin] = useState<boolean>(false);
-  const autoSpinRef = useRef<boolean>(false);
   const resetViewFnRef = useRef<(() => void) | null>(null);
   const focusCityFnRef = useRef<((city: CapitalCityMarker) => void) | null>(null);
   const requestRenderRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    autoSpinRef.current = autoSpin;
-    if (autoSpin) {
-      requestRenderRef.current?.();
+    if (propDataset === undefined && !internalDataset) {
+      loadWorldDataset().then((data) => {
+        if (data) setInternalDataset(data);
+      });
     }
-  }, [autoSpin]);
+  }, [propDataset, internalDataset]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -196,22 +263,38 @@ export const Globe3D: React.FC<{
       return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
     })();
 
-    const width = container.clientWidth || 720;
-    const height = container.clientHeight || 460;
+    const width = Math.max(280, container.clientWidth || 520);
+    const height = Math.max(280, container.clientHeight || (heroMode ? 520 : 440));
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    const ktmCamPos = latLonToVector3(27.7172, 85.324, 3.25);
-    camera.position.copy(ktmCamPos);
+    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+    const GLOBE_RADIUS = 1.0;
+    const BOUNDING_RADIUS = GLOBE_RADIUS + 0.18; // accommodates KTM beacon + capital pins cleanly
+
+    const computeFitDistance = (w: number, h: number): number => {
+      const aspect = Math.max(0.55, w / Math.max(1, h));
+      const vHalf = THREE.MathUtils.degToRad(camera.fov * 0.5);
+      const hHalf = Math.atan(Math.tan(vHalf) * aspect);
+      const dV = BOUNDING_RADIUS / Math.sin(vHalf);
+      const dH = BOUNDING_RADIUS / Math.sin(hHalf);
+      return Math.max(dV, dH) * 1.16; // comfortable margin on top, bottom, left & right
+    };
+
+    // Fixed comfortable viewing polar elevation (~18 deg N) facing Kathmandu initially
+    const EQUATORIAL_POLAR_ANGLE = Math.PI / 2 - THREE.MathUtils.degToRad(18);
+    let fitDist = computeFitDistance(width, height);
+    const initialDir = latLonToVector3(18, 85.324, 1).normalize();
+    camera.position.copy(initialDir).multiplyScalar(fitDist);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !isSoftwareGl,
       alpha: true,
       powerPreference: 'high-performance',
     });
+    renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
+    renderer.toneMappingExposure = 1.15;
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     container.innerHTML = '';
@@ -224,84 +307,145 @@ export const Globe3D: React.FC<{
     roomEnv.dispose();
     pmremGenerator.dispose();
 
-    // Three-point warm/cool studio illumination
-    const hemiLight = new THREE.HemisphereLight(0xcbd5e1, 0x18181f, 0.95);
+    const hemiLight = new THREE.HemisphereLight(0xcbd5e1, 0x101016, 0.9);
     scene.add(hemiLight);
-    const keyLight = new THREE.DirectionalLight(0xfff1e6, 1.55);
-    keyLight.position.set(5, 4, 5);
+    const keyLight = new THREE.DirectionalLight(0xfff1e6, 1.35);
+    keyLight.position.set(5, 3, 5);
     scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0xdc2626, 0.65);
-    rimLight.position.set(-5, -2, -4);
+    const rimLight = new THREE.DirectionalLight(0xdc2626, 0.75);
+    rimLight.position.set(-5, -1, -4);
     scene.add(rimLight);
 
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
 
-    const GLOBE_RADIUS = 1.08;
+    const disposableGeos: THREE.BufferGeometry[] = [];
+    const disposableMats: THREE.Material[] = [];
+
+    // 1. Dark solid obsidian globe core (gives clear 3D occlusion so rear dots stay hidden)
     const sphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 48);
-
-    let globeTexture: THREE.CanvasTexture | null = null;
-    if (dataset) {
-      const texCanvas = buildEquirectangularGlobeCanvas(dataset);
-      globeTexture = new THREE.CanvasTexture(texCanvas);
-      globeTexture.colorSpace = THREE.SRGBColorSpace;
-      globeTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    }
-
     const sphereMat = new THREE.MeshStandardMaterial({
-      map: globeTexture,
-      color: globeTexture ? 0xffffff : 0x1e2028,
-      roughness: 0.62,
-      metalness: 0.14,
+      color: 0x0a0b11,
+      roughness: 0.72,
+      metalness: 0.18,
     });
     const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(sphereMesh);
+    disposableGeos.push(sphereGeo);
+    disposableMats.push(sphereMat);
 
-    // Atmosphere subtle shell
-    const atmoGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.035, 48, 32);
+    // Subtle thin crimson rim shell
+    const atmoGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.03, 48, 32);
     const atmoMat = new THREE.MeshStandardMaterial({
       color: 0xdc2626,
       transparent: true,
-      opacity: 0.07,
+      opacity: 0.09,
       roughness: 0.9,
       side: THREE.BackSide,
       depthWrite: false,
     });
-    const atmoMesh = new THREE.Mesh(atmoGeo, atmoMat);
-    globeGroup.add(atmoMesh);
+    globeGroup.add(new THREE.Mesh(atmoGeo, atmoMat));
+    disposableGeos.push(atmoGeo);
+    disposableMats.push(atmoMat);
 
-    // Capital city 3D markers (composite pin: ring + stem + head + raycast hitbox)
-    const hitGeo = new THREE.SphereGeometry(0.048, 10, 10);
+    // 2. Unified Dotted Continents + Dense Border Red Dots
+    const dotSpriteTex = createDotSpriteTexture();
+    if (dataset) {
+      const {
+        interiorPositions,
+        interiorColors,
+        borderPositions,
+        borderColors,
+      } = buildUnifiedLandDotBuffers(dataset, GLOBE_RADIUS);
+
+      const interiorGeo = new THREE.BufferGeometry();
+      interiorGeo.setAttribute('position', new THREE.BufferAttribute(interiorPositions, 3));
+      interiorGeo.setAttribute('color', new THREE.BufferAttribute(interiorColors, 3));
+      interiorGeo.computeBoundingSphere();
+
+      const interiorMat = new THREE.PointsMaterial({
+        size: 0.024,
+        map: dotSpriteTex,
+        vertexColors: true,
+        transparent: true,
+        alphaTest: 0.22,
+        depthWrite: false,
+        sizeAttenuation: true,
+      });
+
+      globeGroup.add(new THREE.Points(interiorGeo, interiorMat));
+      disposableGeos.push(interiorGeo);
+      disposableMats.push(interiorMat);
+
+      const borderGeo = new THREE.BufferGeometry();
+      borderGeo.setAttribute('position', new THREE.BufferAttribute(borderPositions, 3));
+      borderGeo.setAttribute('color', new THREE.BufferAttribute(borderColors, 3));
+      borderGeo.computeBoundingSphere();
+
+      const borderMat = new THREE.PointsMaterial({
+        size: 0.032,
+        map: dotSpriteTex,
+        vertexColors: true,
+        transparent: true,
+        alphaTest: 0.2,
+        depthWrite: false,
+        sizeAttenuation: true,
+      });
+
+      globeGroup.add(new THREE.Points(borderGeo, borderMat));
+      disposableGeos.push(borderGeo);
+      disposableMats.push(borderMat);
+    }
+
+    // 3. Pins for Major Places + EXCLUSIVE Highlighted Beacon for Kathmandu Only
+    const hitGeo = new THREE.SphereGeometry(0.052, 10, 10);
     const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-    const stemGeo = new THREE.CylinderGeometry(0.005, 0.005, 0.06, 8);
-    const headGeo = new THREE.SphereGeometry(0.019, 12, 12);
-    const hqHeadGeo = new THREE.SphereGeometry(0.032, 16, 16);
-    const ringGeo = new THREE.RingGeometry(0.028, 0.038, 24);
+    const stemGeo = new THREE.CylinderGeometry(0.0045, 0.0045, 0.06, 8);
+    const pinHeadGeo = new THREE.SphereGeometry(0.017, 12, 12);
+    const ktmHeadGeo = new THREE.SphereGeometry(0.028, 16, 16);
+    const ktmInnerRingGeo = new THREE.RingGeometry(0.036, 0.052, 32);
+    const ktmOuterRingGeo = new THREE.RingGeometry(0.068, 0.082, 32);
+    const ktmGlowDiscGeo = new THREE.CircleGeometry(0.095, 32);
 
-    const hqMat = new THREE.MeshStandardMaterial({
-      color: 0xef4444,
+    const ktmPinMat = new THREE.MeshStandardMaterial({
+      color: 0xff3b3b,
       emissive: 0xdc2626,
-      emissiveIntensity: 0.85,
+      emissiveIntensity: 1.25,
       roughness: 0.2,
-      metalness: 0.4,
+      metalness: 0.3,
     });
-    const cityMat = new THREE.MeshStandardMaterial({
+    const majorPinMat = new THREE.MeshStandardMaterial({
       color: 0xf8fafc,
-      emissive: 0x991b1b,
-      emissiveIntensity: 0.25,
-      roughness: 0.3,
-      metalness: 0.5,
+      emissive: 0x334155,
+      emissiveIntensity: 0.2,
+      roughness: 0.25,
+      metalness: 0.65,
     });
-    const hqRingMat = new THREE.MeshBasicMaterial({
-      color: 0xef4444,
+    const ktmRingMat = new THREE.MeshBasicMaterial({
+      color: 0xff4444,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.92,
+      depthWrite: false,
+    });
+    const ktmOuterRingMat = new THREE.MeshBasicMaterial({
+      color: 0xdc2626,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false,
+    });
+    const ktmGlowDiscMat = new THREE.MeshBasicMaterial({
+      color: 0xdc2626,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
     });
 
     const hitTargets: THREE.Mesh[] = [];
-    const disposableGeos: THREE.BufferGeometry[] = [sphereGeo, atmoGeo, hitGeo, stemGeo, headGeo, hqHeadGeo, ringGeo];
-    const disposableMats: THREE.Material[] = [sphereMat, atmoMat, hitMat, hqMat, cityMat, hqRingMat];
+    disposableGeos.push(hitGeo, stemGeo, pinHeadGeo, ktmHeadGeo, ktmInnerRingGeo, ktmOuterRingGeo, ktmGlowDiscGeo);
+    disposableMats.push(hitMat, ktmPinMat, majorPinMat, ktmRingMat, ktmOuterRingMat, ktmGlowDiscMat);
 
     for (const city of CAPITAL_CITIES) {
       const normal = latLonToVector3(city.lat, city.lon, 1).normalize();
@@ -311,24 +455,36 @@ export const Globe3D: React.FC<{
       pinGroup.position.copy(surfacePos);
       pinGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
 
-      const stem = new THREE.Mesh(stemGeo, city.isHq ? hqMat : cityMat);
-      stem.position.y = city.isHq ? 0.045 : 0.025;
-      stem.scale.y = city.isHq ? 1.5 : 0.9;
+      // Clean Pin for all major cities + highlighted taller pin for Kathmandu
+      const stem = new THREE.Mesh(stemGeo, city.isHq ? ktmPinMat : majorPinMat);
+      stem.position.y = city.isHq ? 0.048 : 0.025;
+      stem.scale.y = city.isHq ? 1.6 : 0.85;
       pinGroup.add(stem);
 
-      const head = new THREE.Mesh(city.isHq ? hqHeadGeo : headGeo, city.isHq ? hqMat : cityMat);
-      head.position.y = city.isHq ? 0.095 : 0.055;
+      const head = new THREE.Mesh(city.isHq ? ktmHeadGeo : pinHeadGeo, city.isHq ? ktmPinMat : majorPinMat);
+      head.position.y = city.isHq ? 0.1 : 0.054;
       pinGroup.add(head);
 
+      // ONLY Kathmandu gets area/ring highlight
       if (city.isHq) {
-        const ring = new THREE.Mesh(ringGeo, hqRingMat);
-        ring.rotation.x = -Math.PI / 2;
-        ring.position.y = 0.008;
-        pinGroup.add(ring);
+        const glowDisc = new THREE.Mesh(ktmGlowDiscGeo, ktmGlowDiscMat);
+        glowDisc.rotation.x = -Math.PI / 2;
+        glowDisc.position.y = 0.009;
+        pinGroup.add(glowDisc);
+
+        const innerRing = new THREE.Mesh(ktmInnerRingGeo, ktmRingMat);
+        innerRing.rotation.x = -Math.PI / 2;
+        innerRing.position.y = 0.011;
+        pinGroup.add(innerRing);
+
+        const outerRing = new THREE.Mesh(ktmOuterRingGeo, ktmOuterRingMat);
+        outerRing.rotation.x = -Math.PI / 2;
+        outerRing.position.y = 0.012;
+        pinGroup.add(outerRing);
       }
 
       const hitbox = new THREE.Mesh(hitGeo, hitMat);
-      hitbox.position.y = city.isHq ? 0.07 : 0.045;
+      hitbox.position.y = city.isHq ? 0.08 : 0.045;
       hitbox.layers.set(1);
       hitbox.userData.city = city;
       pinGroup.add(hitbox);
@@ -337,16 +493,19 @@ export const Globe3D: React.FC<{
       globeGroup.add(pinGroup);
     }
 
+    // 4. OrbitControls Locked to Horizontal Rotation Only (No Rotating From Top/Bottom Poles)
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-    controls.minDistance = 2.05;
-    controls.maxDistance = 4.8;
-    controls.rotateSpeed = 0.72;
-    controls.zoomSpeed = 0.85;
+    controls.enableZoom = !heroMode;
+    controls.minPolarAngle = EQUATORIAL_POLAR_ANGLE;
+    controls.maxPolarAngle = EQUATORIAL_POLAR_ANGLE;
+    controls.minDistance = fitDist * 0.78;
+    controls.maxDistance = fitDist * 1.35;
+    controls.rotateSpeed = 0.65;
+    controls.zoomSpeed = 0.8;
     controls.enableDamping = !isSoftwareGl;
     controls.dampingFactor = 0.06;
 
-    // Camera transition state
     let transitionTarget: THREE.Vector3 | null = null;
     const cancelTransition = () => {
       transitionTarget = null;
@@ -357,6 +516,7 @@ export const Globe3D: React.FC<{
     let renderBusy = false;
     let renderDirty = false;
     let disposed = false;
+    const clock = new THREE.Clock();
 
     function afterDraw(cb: () => void) {
       if (disposed) return;
@@ -386,6 +546,7 @@ export const Globe3D: React.FC<{
       frameId = requestAnimationFrame(() => {
         if (disposed) return;
         renderDirty = false;
+        const delta = Math.min(clock.getDelta(), 0.1);
 
         if (transitionTarget) {
           camera.position.lerp(transitionTarget, isSoftwareGl ? 0.45 : 0.14);
@@ -395,8 +556,11 @@ export const Globe3D: React.FC<{
           } else {
             renderDirty = true;
           }
-        } else if (autoSpinRef.current && !isSoftwareGl) {
-          globeGroup.rotation.y += 0.0032;
+        }
+
+        // Always stay rotating slowly horizontally around globe's spin axis
+        if (!isSoftwareGl) {
+          globeGroup.rotation.y += delta * 0.16;
           renderDirty = true;
         }
 
@@ -413,24 +577,20 @@ export const Globe3D: React.FC<{
     }
 
     controls.addEventListener('change', () => {
-      if (!isSoftwareGl && (controls.enableDamping || autoSpinRef.current)) {
-        requestRender();
-      } else {
-        requestRender();
-      }
+      requestRender();
     });
 
     resetViewFnRef.current = () => {
       globeGroup.rotation.set(0, 0, 0);
-      transitionTarget = latLonToVector3(27.7172, 85.324, 3.25);
+      transitionTarget = latLonToVector3(18, 85.324, 1).normalize().multiplyScalar(fitDist);
       setSelectedCity(CAPITAL_CITIES[0]);
       requestRender();
     };
 
     focusCityFnRef.current = (city: CapitalCityMarker) => {
       globeGroup.rotation.set(0, 0, 0);
-      const dist = Math.max(2.35, Math.min(3.4, camera.position.length()));
-      transitionTarget = latLonToVector3(city.lat, city.lon, dist);
+      const dist = camera.position.length() || fitDist;
+      transitionTarget = latLonToVector3(18, city.lon, 1).normalize().multiplyScalar(dist);
       setSelectedCity(city);
       requestRender();
     };
@@ -448,7 +608,6 @@ export const Globe3D: React.FC<{
       raycaster.setFromCamera(pointer, camera);
       const hits = raycaster.intersectObjects(hitTargets, false);
       if (hits.length === 0) return null;
-      // Check if point is on visible front hemisphere relative to camera
       hits[0].object.getWorldPosition(_vec3);
       if (_vec3.dot(camera.position) < 0) return null;
       return (hits[0].object.userData.city as CapitalCityMarker) || null;
@@ -467,7 +626,6 @@ export const Globe3D: React.FC<{
       const city = pickCity(e.clientX, e.clientY);
       if (city) {
         setSelectedCity(city);
-        setAutoSpin(false);
       }
     };
 
@@ -475,16 +633,24 @@ export const Globe3D: React.FC<{
     renderer.domElement.addEventListener('pointermove', onPointerMove);
     renderer.domElement.addEventListener('click', onClick);
 
-    const onResize = () => {
+    const handleResize = () => {
       if (!container || disposed) return;
-      const w = container.clientWidth || 720;
-      const h = container.clientHeight || 460;
+      const w = Math.max(280, container.clientWidth || 520);
+      const h = Math.max(280, container.clientHeight || (heroMode ? 520 : 440));
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      const nextFit = computeFitDistance(w, h);
+      fitDist = nextFit;
+      camera.position.normalize().multiplyScalar(nextFit);
+      controls.minDistance = nextFit * 0.78;
+      controls.maxDistance = nextFit * 1.35;
       requestRender();
     };
-    window.addEventListener('resize', onResize);
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+    window.addEventListener('resize', handleResize);
 
     requestRenderRef.current = requestRender;
 
@@ -498,95 +664,46 @@ export const Globe3D: React.FC<{
       requestRenderRef.current = null;
       cancelAnimationFrame(frameId);
       clearTimeout(frameId);
-      window.removeEventListener('resize', onResize);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('pointermove', onPointerMove);
       renderer.domElement.removeEventListener('click', onClick);
       controls.removeEventListener('start', cancelTransition);
       controls.dispose();
       disposableGeos.forEach((g) => g.dispose());
       disposableMats.forEach((m) => m.dispose());
-      if (globeTexture) globeTexture.dispose();
+      dotSpriteTex.dispose();
       envTarget.dispose();
       renderer.dispose();
     };
-  }, [dataset]);
+  }, [dataset, heroMode]);
 
   return (
-    <div className="space-y-4">
-      <div className="relative w-full h-[380px] sm:h-[460px] rounded-[2px] overflow-hidden bg-[#06070c] border border-white/10">
+    <div className={heroMode ? 'relative w-full flex items-center justify-center' : 'w-full'}>
+      <div
+        className={
+          heroMode
+            ? 'relative w-full max-w-[540px] aspect-square mx-auto bg-transparent'
+            : 'relative w-full rounded-2xl overflow-hidden bg-[#07080d] border border-white/15 h-[400px] sm:h-[480px]'
+        }
+      >
         {/* Isolated empty mount ref for Three.js WebGL canvas */}
         <div ref={mountRef} className="w-full h-full" aria-label="Interactive 3D Earth Globe" />
 
-        {/* Solid-opaque HUD bar (zero backdrop-filter over WebGL canvas) */}
-        <div className="absolute top-3 left-3 px-3.5 py-2 rounded-[2px] bg-[#0e0f16] border border-white/15 text-xs text-white flex items-center gap-2.5">
-          <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
-          <div>
+        {/* Minimal floating tooltip shown only when directly hovering a 3D pin */}
+        {hoveredCity && (
+          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-[2px] bg-[#141520] border border-white/20 text-xs text-white flex items-center gap-2 whitespace-nowrap">
+            <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
             <span className="font-bold">
-              {(hoveredCity || selectedCity).city}, {(hoveredCity || selectedCity).country}
+              {hoveredCity.city}, {hoveredCity.country}
             </span>
-            <span className="ml-2 font-mono-num text-[11px] text-red-400">
-              {(hoveredCity || selectedCity).isHq ? 'KTM HQ · Sole Office' : (hoveredCity || selectedCity).region}
-            </span>
+            {hoveredCity.isHq && (
+              <span className="font-mono-num text-[11px] text-red-400">· KTM HQ</span>
+            )}
           </div>
-        </div>
-
-        <div className="absolute top-3 right-3 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setAutoSpin((s) => !s)}
-            className="px-3 py-1.5 rounded-[2px] bg-[#0e0f16] border border-white/15 text-[11px] font-medium text-neutral-200 hover:text-white hover:border-red-500/50 transition-colors inline-flex items-center gap-1.5"
-          >
-            <GlobeIcon className="w-3.5 h-3.5 text-red-500" />
-            <span>{autoSpin ? 'Pause Spin' : 'Spin Globe'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAutoSpin(false);
-              resetViewFnRef.current?.();
-            }}
-            className="px-3 py-1.5 rounded-[2px] bg-[#0e0f16] border border-white/15 text-[11px] font-medium text-neutral-200 hover:text-white hover:border-red-500/50 transition-colors inline-flex items-center gap-1.5"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-red-500" />
-            <span>Focus KTM HQ</span>
-          </button>
-        </div>
-
-        <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-          <div className="px-3 py-1.5 rounded-[2px] bg-[#0e0f16] border border-white/10 text-[11px] text-neutral-300">
-            Drag to rotate globe · Scroll to zoom · Click any capital marker
-          </div>
-          <div className="px-3 py-1.5 rounded-[2px] bg-[#0e0f16] border border-red-500/35 text-[11px] font-mono-num text-white">
-            Sole HQ: Kathmandu, Nepal (27.72° N, 85.32° E)
-          </div>
-        </div>
-      </div>
-
-      {/* Capital City Quick Jump Strip */}
-      <div className="flex flex-wrap gap-2">
-        {CAPITAL_CITIES.map((city) => {
-          const isCurrent = selectedCity.id === city.id;
-          return (
-            <button
-              key={city.id}
-              type="button"
-              onClick={() => {
-                setAutoSpin(false);
-                focusCityFnRef.current?.(city);
-              }}
-              className={`px-3 py-1.5 rounded-[2px] text-xs font-medium border transition-colors ${
-                isCurrent
-                  ? 'bg-red-600 border-red-500 text-white'
-                  : city.isHq
-                  ? 'bg-red-950/50 border-red-500/40 text-red-200 hover:bg-red-900/50'
-                  : 'bg-[#111218] border-white/10 text-neutral-300 hover:text-white hover:border-white/25'
-              }`}
-            >
-              {city.isHq ? 'Kathmandu (HQ)' : `${city.city} · ${city.code}`}
-            </button>
-          );
-        })}
+        )}
       </div>
     </div>
   );
 };
+

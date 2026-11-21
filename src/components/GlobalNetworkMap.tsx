@@ -12,26 +12,13 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
-import { CAPITAL_CITIES, Globe3D, WorldCountriesDataset } from './Globe3D';
-
-let cachedDataset: WorldCountriesDataset | null = null;
-let datasetPromise: Promise<WorldCountriesDataset | null> | null = null;
-
-function loadWorldDataset(): Promise<WorldCountriesDataset | null> {
-  if (cachedDataset) return Promise.resolve(cachedDataset);
-  if (!datasetPromise) {
-    datasetPromise = fetch('/world-countries.json', { cache: 'force-cache' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: WorldCountriesDataset | null) => {
-        if (data && Array.isArray(data.countries)) {
-          cachedDataset = data;
-        }
-        return cachedDataset;
-      })
-      .catch(() => null);
-  }
-  return datasetPromise;
-}
+import {
+  CAPITAL_CITIES,
+  getCachedWorldDataset,
+  Globe3D,
+  loadWorldDataset,
+  WorldCountriesDataset,
+} from './Globe3D';
 
 function mercY(latDeg: number): number {
   const clamped = Math.max(-85, Math.min(85, latDeg));
@@ -67,7 +54,7 @@ function formatKtmTime(): string {
 
 export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const { settings } = useSite();
-  const [dataset, setDataset] = useState<WorldCountriesDataset | null>(() => cachedDataset);
+  const [dataset, setDataset] = useState<WorldCountriesDataset | null>(() => getCachedWorldDataset());
   const [viewMode, setViewMode] = useState<'svg' | 'globe'>('svg');
   const [hoveredCountry, setHoveredCountry] = useState<{ id: string; title: string } | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<{ id: string; title: string }>({
@@ -90,12 +77,12 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
   });
 
   useEffect(() => {
-    if (!cachedDataset) {
+    if (!dataset) {
       loadWorldDataset().then((data) => {
         if (data) setDataset(data);
       });
     }
-  }, []);
+  }, [dataset]);
 
   useEffect(() => {
     const timer = setInterval(() => setKtmTime(formatKtmTime()), 15000);

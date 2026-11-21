@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { PageSection } from '../types/cms';
 import { MediaImage } from './MediaImage';
+import { FillButtonContent } from './FillButtonContent';
 
 export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section }) => {
   const bgStyle = section.backgroundColor ? { backgroundColor: section.backgroundColor } : {};
@@ -11,7 +12,7 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
   if (section.layout === 'stats' && section.items && section.items.length > 0) {
     return (
       <section
-        className="py-20 border-y"
+        className="py-20 border-t bg-transparent"
         style={{ borderColor: 'var(--brand-border)', ...bgStyle }}
       >
         <div className="max-w-[1280px] mx-auto px-6">
@@ -59,7 +60,7 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
 
   if (section.layout === 'split') {
     return (
-      <section className="py-24" style={bgStyle}>
+      <section className="py-24 border-t bg-transparent" style={{ borderColor: 'var(--brand-border)', ...bgStyle }}>
         <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -83,10 +84,12 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
               <div className="pt-2">
                 <Link
                   to={section.ctaLink}
-                  className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold btn-brand"
+                  className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold btn-brand"
                 >
-                  <span>{section.ctaText}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <FillButtonContent className="gap-2">
+                    <span>{section.ctaText}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </FillButtonContent>
                 </Link>
               </div>
             )}
@@ -120,7 +123,7 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
 
   return (
     <section
-      className="py-20 border-t"
+      className="py-20 border-t bg-transparent"
       style={{ borderColor: 'var(--brand-border)', ...bgStyle }}
     >
       <div className="max-w-[1280px] mx-auto px-6">
@@ -142,16 +145,18 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
             <div className="pt-2">
               <Link
                 to={section.ctaLink}
-                className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold btn-brand"
+                className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold btn-brand"
               >
-                <span>{section.ctaText}</span>
-                <ArrowRight className="w-4 h-4" />
+                <FillButtonContent className="gap-2">
+                  <span>{section.ctaText}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </FillButtonContent>
               </Link>
             </div>
           )}
         </div>
         {section.imageUrl && (
-          <div className="mt-10 aspect-[16/9] max-h-[460px] w-full border overflow-hidden" style={{ borderColor: 'var(--brand-border)' }}>
+          <div className="mt-10 aspect-[16/9] max-h-[460px] w-full rounded-[2px] border overflow-hidden" style={{ borderColor: 'var(--brand-border)' }}>
             <MediaImage src={section.imageUrl} alt={section.title} className="w-full h-full object-cover" />
           </div>
         )}

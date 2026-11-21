@@ -19,13 +19,11 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      className="relative overflow-hidden border-t pt-16 pb-10 backdrop-blur-2xl"
+      className="relative overflow-hidden border-t pt-16 pb-10 bg-transparent"
       style={{
-        background: 'linear-gradient(180deg, rgba(16,16,20,0.88) 0%, rgba(8,8,10,0.98) 100%)',
         borderColor: 'var(--brand-border)',
       }}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
       <div className="max-w-[1280px] mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-14 border-b" style={{ borderColor: 'var(--brand-border)' }}>
           {/* Brand Column */}

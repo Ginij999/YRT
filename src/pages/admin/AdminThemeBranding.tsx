@@ -95,13 +95,13 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
   };
 
   const bgConfig = settings?.homepageBackground || {
-    mode: 'stars' as const,
-    primaryColor: '#08080A',
-    secondaryColor: '#18090D',
+    mode: 'solid' as const,
+    primaryColor: '#050507',
+    secondaryColor: '#14090D',
     imageUrl: '',
-    starsEnabled: true,
+    starsEnabled: false,
     starColor: '#FFFFFF',
-    starDensity: 110,
+    starDensity: 0,
     overlayOpacity: 0.72,
   };
 
@@ -109,7 +109,7 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
     if (!settings) return;
     setSettings({
       ...settings,
-      homepageBackground: { ...bgConfig, ...patch },
+      homepageBackground: { ...bgConfig, ...patch, starsEnabled: false },
     });
   };
 
@@ -119,11 +119,11 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
     try {
       const res = await apiFetch('/api/admin/site-settings', {
         method: 'PUT',
-        body: JSON.stringify({ homepageBackground: bgConfig }),
+        body: JSON.stringify({ homepageBackground: { ...bgConfig, starsEnabled: false } }),
       });
       if (res.ok) {
         await refreshBootstrap();
-        notify('Homepage background & moving starfield settings updated.');
+        notify('Homepage background settings updated.');
       } else {
         notify('Failed to update homepage background', 'error');
       }
@@ -196,14 +196,14 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
         })}
       </div>
 
-      {/* Homepage Background & Cursor-Tracking Starfield Studio */}
+      {/* Homepage Background Studio */}
       {settings && (
         <div className="p-6 bg-[#111115] border border-white/10 space-y-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-semibold text-white">Homepage Background &amp; Moving Stars</h2>
+              <h2 className="text-base font-semibold text-white">Homepage Background Studio</h2>
               <p className="text-xs text-neutral-400 mt-0.5">
-                Customize the backdrop style, colors, wallpaper image, and interactive cursor-following star density.
+                Customize the backdrop style, obsidian palette colors, or upload a custom wallpaper image.
               </p>
             </div>
             <button
@@ -217,19 +217,18 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs text-neutral-300 mb-1.5">Background Mode</label>
               <select
-                value={bgConfig.mode}
+                value={bgConfig.mode === 'stars' ? 'solid' : bgConfig.mode}
                 onChange={(e) =>
-                  updateBg({ mode: e.target.value as 'stars' | 'solid' | 'gradient' | 'image' })
+                  updateBg({ mode: e.target.value as 'solid' | 'gradient' | 'image' })
                 }
                 className="w-full px-3 py-2 text-xs bg-black/50 border border-white/10 text-white"
               >
-                <option value="stars" className="bg-neutral-900">Obsidian + Moving Stars</option>
+                <option value="solid" className="bg-neutral-900">Obsidian Solid Color</option>
                 <option value="gradient" className="bg-neutral-900">Radial Gradient</option>
-                <option value="solid" className="bg-neutral-900">Solid Color</option>
                 <option value="image" className="bg-neutral-900">Custom Wallpaper Image</option>
               </select>
             </div>
@@ -269,74 +268,31 @@ export const AdminThemeStudio: React.FC<{ notify: (msg: string, type?: 'success'
                 />
               </div>
             </div>
-
-            <div>
-              <label className="block text-xs text-neutral-300 mb-1.5">Star Particle Color</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={bgConfig.starColor}
-                  onChange={(e) => updateBg({ starColor: e.target.value })}
-                  className="h-9 w-12 bg-transparent border border-white/15 cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={bgConfig.starColor}
-                  onChange={(e) => updateBg({ starColor: e.target.value })}
-                  className="w-full px-2.5 py-2 text-xs font-mono bg-black/50 border border-white/10 text-white"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <label className="flex items-center gap-2.5 text-xs text-neutral-200 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={bgConfig.starsEnabled !== false}
-                onChange={(e) => updateBg({ starsEnabled: e.target.checked })}
-                className="accent-red-600"
-              />
-              <span>Enable Cursor-Tracking Moving Stars</span>
-            </label>
-
-            <div>
-              <label className="block text-xs text-neutral-300 mb-1">
-                Star Density ({bgConfig.starDensity} stars)
-              </label>
-              <input
-                type="range"
-                min={30}
-                max={220}
-                value={bgConfig.starDensity}
-                onChange={(e) => updateBg({ starDensity: Number(e.target.value) })}
-                className="w-full accent-red-600"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs text-neutral-300 mb-1">
-                Backdrop Tint Opacity ({Math.round((bgConfig.overlayOpacity ?? 0.72) * 100)}%)
-              </label>
-              <input
-                type="range"
-                min={0.1}
-                max={0.95}
-                step={0.05}
-                value={bgConfig.overlayOpacity ?? 0.72}
-                onChange={(e) => updateBg({ overlayOpacity: Number(e.target.value) })}
-                className="w-full accent-red-600"
-              />
-            </div>
           </div>
 
           {bgConfig.mode === 'image' && (
-            <ImagePickerField
-              label="Homepage Wallpaper Image"
-              value={bgConfig.imageUrl || ''}
-              onChange={(url) => updateBg({ imageUrl: url })}
-              folder="general"
-            />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-neutral-300 mb-1">
+                  Backdrop Tint Opacity ({Math.round((bgConfig.overlayOpacity ?? 0.72) * 100)}%)
+                </label>
+                <input
+                  type="range"
+                  min={0.1}
+                  max={0.95}
+                  step={0.05}
+                  value={bgConfig.overlayOpacity ?? 0.72}
+                  onChange={(e) => updateBg({ overlayOpacity: Number(e.target.value) })}
+                  className="w-full accent-red-600"
+                />
+              </div>
+              <ImagePickerField
+                label="Homepage Wallpaper Image"
+                value={bgConfig.imageUrl || ''}
+                onChange={(url) => updateBg({ imageUrl: url })}
+                folder="general"
+              />
+            </div>
           )}
         </div>
       )}

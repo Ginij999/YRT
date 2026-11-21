@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, Home, RefreshCw, ShieldAlert, ServerCrash, WifiOff } from 'lucide-react';
+import { FillButtonContent } from '../components/FillButtonContent';
 
 export type ErrorCode = '404' | '403' | '500' | '503';
 
@@ -99,29 +100,35 @@ export const ErrorPage: React.FC<{
               <div className="pt-3 flex flex-wrap items-center gap-3">
                 <Link
                   to="/"
-                  className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold btn-brand"
+                  className="inline-flex items-center justify-center px-5 py-3 text-xs font-semibold btn-brand"
                 >
-                  <Home className="w-4 h-4" />
-                  <span>Back to Home</span>
+                  <FillButtonContent className="gap-2">
+                    <Home className="w-4 h-4" />
+                    <span>Back to Home</span>
+                  </FillButtonContent>
                 </Link>
 
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold btn-brand-outline"
+                  className="inline-flex items-center justify-center px-5 py-3 text-xs font-semibold btn-brand-outline"
                 >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Previous Page</span>
+                  <FillButtonContent className="gap-2">
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Previous Page</span>
+                  </FillButtonContent>
                 </button>
 
                 {onRetry && (
                   <button
                     type="button"
                     onClick={onRetry}
-                    className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold btn-brand-outline"
+                    className="inline-flex items-center justify-center px-5 py-3 text-xs font-semibold btn-brand-outline"
                   >
-                    <RefreshCw className="w-4 h-4" />
-                    <span>Retry Signal</span>
+                    <FillButtonContent className="gap-2">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>Retry Signal</span>
+                    </FillButtonContent>
                   </button>
                 )}
               </div>
@@ -193,18 +200,22 @@ export class AppErrorBoundary extends Component<{ children: ReactNode }, ErrorBo
               <button
                 type="button"
                 onClick={() => window.location.assign('/')}
-                className="px-5 py-3 text-xs font-semibold btn-brand inline-flex items-center gap-2"
+                className="px-5 py-3 text-xs font-semibold btn-brand inline-flex items-center justify-center"
               >
-                <Home className="w-4 h-4" />
-                <span>Return Home</span>
+                <FillButtonContent className="gap-2">
+                  <Home className="w-4 h-4" />
+                  <span>Return Home</span>
+                </FillButtonContent>
               </button>
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="px-5 py-3 text-xs font-semibold btn-brand-outline inline-flex items-center gap-2"
+                className="px-5 py-3 text-xs font-semibold btn-brand-outline inline-flex items-center justify-center"
               >
-                <RefreshCw className="w-4 h-4" />
-                <span>Reload Page</span>
+                <FillButtonContent className="gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Reload Page</span>
+                </FillButtonContent>
               </button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { PageSection, StaffMember } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_PAGE_SECTIONS, FALLBACK_STAFF, safeFetchJson } from '../data/fallbackData';
 
 export const AboutPage: React.FC = () => {
@@ -91,12 +92,16 @@ export const AboutPage: React.FC = () => {
                 {heroSection.description}
               </p>
               <div className="pt-2 flex flex-wrap gap-4">
-                <Link to="/services" className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold btn-brand">
-                  <span>Our Capabilities</span>
-                  <ArrowRight className="w-4 h-4" />
+                <Link to="/services" className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold btn-brand">
+                  <FillButtonContent className="gap-2">
+                    <span>Our Capabilities</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </FillButtonContent>
                 </Link>
-                <Link to="/team" className="inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold btn-brand-outline">
-                  <span>Full Staff Directory</span>
+                <Link to="/team" className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold btn-brand-outline">
+                  <FillButtonContent className="gap-2">
+                    <span>Full Staff Directory</span>
+                  </FillButtonContent>
                 </Link>
               </div>
             </motion.div>
@@ -117,7 +122,7 @@ export const AboutPage: React.FC = () => {
 
       {/* Mission, Vision & Core Values */}
       {missionSection && (
-        <section className="py-24" style={{ backgroundColor: 'var(--brand-surface)' }}>
+        <section className="py-24 border-t bg-transparent" style={{ borderColor: 'var(--brand-border)' }}>
           <div className="max-w-[1280px] mx-auto px-6">
             <div className="max-w-2xl mb-12 space-y-3">
               {missionSection.subtitle && (
@@ -207,8 +212,8 @@ export const AboutPage: React.FC = () => {
       {/* Company Timeline */}
       {timelineSection && (
         <section
-          className="py-24 border-t"
-          style={{ backgroundColor: 'var(--brand-surface)', borderColor: 'var(--brand-border)' }}
+          className="py-24 border-t bg-transparent"
+          style={{ borderColor: 'var(--brand-border)' }}
         >
           <div className="max-w-[1280px] mx-auto px-6">
             <div className="max-w-2xl mb-12 space-y-3">

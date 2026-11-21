@@ -357,11 +357,28 @@ export interface ActivityLog {
   createdAt: string;
 }
 
+export type StickyNoteColor =
+  | 'yellow'
+  | 'sky'
+  | 'mint'
+  | 'pink'
+  | 'amber'
+  | 'crimson'
+  | 'emerald'
+  | 'slate';
+
 export interface StickyNote {
   _id: string;
   title: string;
   content: string;
-  color: 'amber' | 'crimson' | 'emerald' | 'sky' | 'slate';
+  author?: string;
+  color: StickyNoteColor;
+  customColor?: string;
+  imageUrl?: string;
+  noteType?: 'note' | 'polaroid';
+  pinStyle?: 'pin' | 'tape' | 'none';
+  pinColor?: string;
+  displayMode?: 'pinboard' | 'floating' | 'both';
   x: number;
   y: number;
   width: number;
