@@ -6,6 +6,7 @@ import { usePageSeo, useSite } from '../context/SiteContext';
 import { PageSection } from '../types/cms';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 const INQUIRY_CATEGORIES = [
@@ -186,9 +187,11 @@ export const ContactPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setSubmitted(false)}
-                    className="px-6 py-2.5 text-xs font-semibold btn-brand"
+                    className="inline-flex items-center justify-center px-6 py-2.5 text-xs font-semibold btn-brand"
                   >
-                    Send Another Inquiry
+                    <FillButtonContent>
+                      <span>Send Another Inquiry</span>
+                    </FillButtonContent>
                   </button>
                 </div>
               ) : (
@@ -277,9 +280,11 @@ export const ContactPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full sm:w-auto px-7 py-3.5 text-xs font-semibold btn-brand disabled:opacity-50"
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold btn-brand disabled:opacity-50"
                   >
-                    {submitting ? 'Sending Inquiry...' : 'Send Inquiry'}
+                    <FillButtonContent>
+                      <span>{submitting ? 'Sending Inquiry...' : 'Send Inquiry'}</span>
+                    </FillButtonContent>
                   </button>
                 </form>
               )}

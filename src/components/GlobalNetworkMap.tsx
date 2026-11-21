@@ -19,6 +19,7 @@ import {
   loadWorldDataset,
   WorldCountriesDataset,
 } from './Globe3D';
+import { CountryLogo } from './CountryLogo';
 
 function mercY(latDeg: number): number {
   const clamped = Math.max(-85, Math.min(85, latDeg));
@@ -191,11 +192,11 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
             </div>
 
             <div className="apple-glass rounded-[2px] px-4 py-2 flex items-center gap-3.5">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+              <div className="flex items-center gap-2.5">
+                <CountryLogo code="NP" name="Nepal" size="md" />
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-neutral-400">Sole HQ</div>
-                  <div className="text-xs font-bold text-white">Kathmandu (KTM)</div>
+                  <div className="text-xs font-bold text-white">Kathmandu, Nepal</div>
                 </div>
               </div>
               <div className="h-6 w-px bg-white/10" />
@@ -255,12 +256,13 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
                   setHoveredCountry(null);
                 }}
               >
-                {/* Top-Left Selected Country HUD */}
+                {/* Top-Left Selected Country HUD with Real Country Flag Logo */}
                 <div className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-[2px] bg-[#0e0f16]/95 border border-white/15 text-xs text-white flex items-center gap-2 pointer-events-none">
-                  <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                  <span className="font-mono-num text-[11px] text-red-400 font-bold">
-                    {(hoveredCountry || selectedCountry).id}
-                  </span>
+                  <CountryLogo
+                    code={(hoveredCountry || selectedCountry).id}
+                    name={(hoveredCountry || selectedCountry).title}
+                    size="md"
+                  />
                   <span className="font-semibold">{(hoveredCountry || selectedCountry).title}</span>
                   {(hoveredCountry || selectedCountry).id === 'NP' && (
                     <span className="text-[10px] font-mono-num text-red-400">· KTM HQ</span>
@@ -360,35 +362,68 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
                         })}
                       </g>
 
-                      {/* Capital city subtle markers */}
+                      {/* Capital city markers with crisp Country Flag logos */}
                       {capitalDots
                         .filter((c) => !c.isHq)
                         .map((city) => (
                           <g key={city.id} transform={`translate(${city.x}, ${city.y})`} pointerEvents="none">
-                            <circle r="2.2" fill="#e2e8f0" stroke="#09090d" strokeWidth="0.8" opacity="0.72" />
+                            <circle r="7.5" fill="#09090d" stroke="rgba(255,255,255,0.45)" strokeWidth="0.9" />
+                            <clipPath id={`flag-clip-${city.id}`}>
+                              <circle r="6" />
+                            </clipPath>
+                            <image
+                              href={`https://flagcdn.com/w40/${city.code.toLowerCase()}.png`}
+                              x="-6.5"
+                              y="-5"
+                              width="13"
+                              height="10"
+                              preserveAspectRatio="xMidYMid slice"
+                              clipPath={`url(#flag-clip-${city.id})`}
+                            />
                           </g>
                         ))}
 
-                      {/* Sole Headquarters Marker: Kathmandu, Nepal (KTM) */}
+                      {/* Sole Headquarters Marker: Kathmandu, Nepal Flag Badge */}
                       <g transform={`translate(${ktmCoords.x}, ${ktmCoords.y})`} pointerEvents="none">
-                        <circle r="9" fill="rgba(220, 38, 38, 0.28)" stroke="#ef4444" strokeWidth="1.2" />
-                        <circle r="4.2" fill="#ef4444" stroke="#ffffff" strokeWidth="1.4" />
-                        <g transform="translate(0, -16)">
+                        <circle r="11.5" fill="rgba(220, 38, 38, 0.3)" stroke="#ef4444" strokeWidth="1.4" />
+                        <clipPath id="flag-clip-ktm-hq">
+                          <circle r="7.5" />
+                        </clipPath>
+                        <image
+                          href="https://flagcdn.com/w40/np.png"
+                          x="-7.5"
+                          y="-7.5"
+                          width="15"
+                          height="15"
+                          preserveAspectRatio="xMidYMid slice"
+                          clipPath="url(#flag-clip-ktm-hq)"
+                        />
+                        <circle r="7.5" fill="none" stroke="#ffffff" strokeWidth="1.2" />
+                        <g transform="translate(0, -19)">
                           <rect
-                            x="-58"
-                            y="-10"
-                            width="116"
-                            height="18"
-                            rx="1"
+                            x="-64"
+                            y="-11"
+                            width="128"
+                            height="19"
+                            rx="2"
                             fill="#0b0b10"
                             stroke="#dc2626"
                             strokeWidth="1"
                           />
+                          <image
+                            href="https://flagcdn.com/w40/np.png"
+                            x="-58"
+                            y="-7"
+                            width="14"
+                            height="10"
+                            preserveAspectRatio="xMidYMid slice"
+                          />
                           <text
-                            textAnchor="middle"
-                            y="2"
+                            textAnchor="start"
+                            x="-40"
+                            y="1.5"
                             fill="#ffffff"
-                            fontSize="8.5"
+                            fontSize="8.2"
                             fontWeight="700"
                             fontFamily="JetBrains Mono, monospace"
                           >
@@ -400,7 +435,7 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
                   </div>
                 )}
 
-                {/* Cursor Tooltip showing currently hovered country */}
+                {/* Cursor Tooltip showing currently hovered country with Real Country Flag Logo */}
                 {hoveredCountry && !isDragging && (
                   <div
                     className="pointer-events-none absolute z-20 px-3 py-1.5 rounded-[2px] bg-[#0d0e14]/95 border border-red-500/60 shadow-xl text-xs text-white flex items-center gap-2 whitespace-nowrap"
@@ -409,9 +444,7 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
                       top: Math.max(44, pointerPos.y - 36),
                     }}
                   >
-                    <span className="font-mono-num text-[10px] px-1.5 py-0.5 rounded-[2px] bg-red-600/20 text-red-400 border border-red-500/30">
-                      {hoveredCountry.id}
-                    </span>
+                    <CountryLogo code={hoveredCountry.id} name={hoveredCountry.title} size="sm" />
                     <span className="font-semibold">{hoveredCountry.title}</span>
                     {hoveredCountry.id === 'NP' && (
                       <span className="text-[10px] font-semibold text-red-400">· KTM HQ</span>
@@ -427,8 +460,9 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
                       Click or hover any country · Zoom {zoom.toFixed(1)}x ({zoom > 1 ? 'drag to pan' : `${dataset?.countries.length || 256} countries`})
                     </span>
                   </div>
-                  <div className="px-3 py-1.5 rounded-[2px] bg-[#0b0c12]/90 border border-red-500/30 text-[11px] font-mono-num text-white">
-                    HQ: Kathmandu, Nepal (KTM)
+                  <div className="px-3 py-1.5 rounded-[2px] bg-[#0b0c12]/90 border border-red-500/30 text-[11px] font-mono-num text-white inline-flex items-center gap-2">
+                    <CountryLogo code="NP" name="Nepal" size="sm" />
+                    <span>HQ: Kathmandu, Nepal</span>
                   </div>
                 </div>
               </div>

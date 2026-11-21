@@ -5,6 +5,7 @@ import { usePageSeo } from '../context/SiteContext';
 import { EventItem, PageSection } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_EVENTS, FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 export const EventsPage: React.FC = () => {
@@ -106,9 +107,11 @@ export const EventsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSearchParams({ event: featuredEvent.slug })}
-                className="w-full py-3 text-xs font-semibold btn-brand"
+                className="w-full inline-flex items-center justify-center py-3 text-xs font-semibold btn-brand"
               >
-                Inspect Event Details &amp; Standings
+                <FillButtonContent className="gap-2">
+                  <span>Inspect Event Details &amp; Standings</span>
+                </FillButtonContent>
               </button>
             </div>
           </div>

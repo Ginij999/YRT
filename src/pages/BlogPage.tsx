@@ -5,6 +5,7 @@ import { usePageSeo } from '../context/SiteContext';
 import { BlogCategory, BlogPost, PageSection } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { ErrorPage } from './ErrorPage';
 import {
   FALLBACK_BLOG_CATEGORIES,
@@ -130,18 +131,22 @@ export const BlogPage: React.FC = () => {
               <button
                 type="button"
                 onClick={copyShareUrl}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium btn-brand-outline"
+                className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium btn-brand-outline"
               >
-                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-                <span>{copiedLink ? 'Link Copied' : 'Share Link'}</span>
+                <FillButtonContent className="gap-1.5">
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                  <span>{copiedLink ? 'Link Copied' : 'Share Link'}</span>
+                </FillButtonContent>
               </button>
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(activePost.title)}&url=${encodeURIComponent(shareUrl)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1.5 text-xs font-medium btn-brand-outline"
+                className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium btn-brand-outline"
               >
-                Post on X
+                <FillButtonContent>
+                  <span>Post on X</span>
+                </FillButtonContent>
               </a>
             </div>
           </div>

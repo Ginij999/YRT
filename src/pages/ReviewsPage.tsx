@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { CheckCircle2, MessageSquareQuote, ShieldCheck, Star } from 'lucide-react';
 import { usePageSeo } from '../context/SiteContext';
 import { ReviewItem } from '../types/cms';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_REVIEWS, safeFetchJson } from '../data/fallbackData';
 
 const REVIEW_FP_KEY = 'yrt_review_fp';
@@ -372,9 +373,11 @@ export const ReviewsPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3 text-xs font-semibold btn-brand disabled:opacity-50"
+                    className="w-full inline-flex items-center justify-center py-3 text-xs font-semibold btn-brand disabled:opacity-50"
                   >
-                    <span>{submitting ? 'Submitting Review...' : 'Post Review'}</span>
+                    <FillButtonContent>
+                      <span>{submitting ? 'Submitting Review...' : 'Post Review'}</span>
+                    </FillButtonContent>
                   </button>
                 </form>
               )}

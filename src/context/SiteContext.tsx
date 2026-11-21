@@ -38,7 +38,7 @@ interface SiteContextValue {
 const SiteContext = createContext<SiteContextValue | undefined>(undefined);
 
 const TOKEN_STORAGE_KEY = 'yrt_admin_token';
-const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v4';
+const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v5';
 
 function readBootstrapCache(): BootstrapCachePayload | null {
   try {

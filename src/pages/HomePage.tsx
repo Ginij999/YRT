@@ -30,12 +30,13 @@ import {
   FALLBACK_PORTFOLIO,
   FALLBACK_SERVICES,
   FALLBACK_STAFF,
+  FALLBACK_STICKY_NOTES,
   FALLBACK_TESTIMONIALS,
   safeFetchJson,
 } from '../data/fallbackData';
 
 const appleEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const HOME_CACHE_KEY = 'yrt_home_cache_v4';
+const HOME_CACHE_KEY = 'yrt_home_cache_v5';
 
 interface HomeCachePayload {
   sections: PageSection[];
@@ -149,6 +150,83 @@ export const HomePage: React.FC = () => {
       })
       .catch(() => {});
   }, [isPreview, apiFetch]);
+
+  const pinboardNotes = (stickyNotes.length > 0 ? stickyNotes : FALLBACK_STICKY_NOTES)
+    .filter(
+      (n) =>
+        n.visible &&
+        (n.pageSlug === 'home' || n.pageSlug === 'all') &&
+        (n.displayMode === 'pinboard' || n.displayMode === 'both' || !n.displayMode)
+    )
+    .sort((a, b) => (a.zIndex || 20) - (b.zIndex || 20));
+
+  const renderPinboardSection = () =>
+    pinboardNotes.length > 0 ? (
+      <section
+        className="py-24 border-t relative overflow-x-clip bg-transparent"
+        style={{ borderColor: 'var(--brand-border)' }}
+      >
+        <div className="max-w-[1100px] mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{ color: 'var(--brand-accent)' }}
+            >
+              Studio Culture &amp; Notes
+            </p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-white text-balance">
+              Pinned From Our Production Floor
+            </h2>
+            <p className="text-sm text-neutral-400">
+              Notes, guiding principles, and snapshots pinned directly by the YRT Esports team.
+            </p>
+          </div>
+
+          {/* Desktop Overlapping Collage Board (Matches Reference Pinboard) */}
+          <div className="hidden md:block relative w-full max-w-[940px] h-[610px] mx-auto overflow-visible">
+            {pinboardNotes.map((note) => {
+              const isFocused = focusedStickerId === note._id;
+              return (
+                <motion.div
+                  key={note._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.7, ease: appleEase }}
+                  whileHover={{ scale: 1.04, y: -6 }}
+                  onClick={() =>
+                    setFocusedStickerId((prev) => (prev === note._id ? null : note._id))
+                  }
+                  style={{
+                    left: `${Math.min(72, Math.max(1, note.x))}%`,
+                    top: `${Math.min(62, Math.max(2, note.y))}%`,
+                    width: `${note.width || 245}px`,
+                    rotate: `${note.rotation || 0}deg`,
+                    zIndex: isFocused ? 50 : note.zIndex || 20,
+                  }}
+                  className="absolute cursor-pointer transition-shadow"
+                >
+                  <StickerCard note={note} />
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Mobile Responsive Grid */}
+          <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+            {pinboardNotes.map((note) => (
+              <div
+                key={note._id}
+                className="mx-auto w-full max-w-[290px]"
+                style={{ transform: `rotate(${Math.max(-4, Math.min(4, note.rotation || 0))}deg)` }}
+              >
+                <StickerCard note={note} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : null;
 
   const renderSection = (sec: PageSection) => {
     switch (sec.sectionKey) {
@@ -338,6 +416,9 @@ export const HomePage: React.FC = () => {
               ctaText={sec.ctaText || 'See all esports services'}
               ctaLink={sec.ctaLink || '/services'}
             />
+
+            {/* Studio Culture Pinboard Collage (Sticky Notes & Polaroids) Prominently Placed */}
+            {renderPinboardSection()}
 
             {/* Interactive 3D Flippable Capability Flashcards & Extended Directory */}
             <section
@@ -675,86 +756,9 @@ export const HomePage: React.FC = () => {
           </section>
         );
 
-      case 'testimonials_section': {
-        const pinboardNotes = stickyNotes
-          .filter(
-            (n) =>
-              n.visible &&
-              (n.pageSlug === 'home' || n.pageSlug === 'all') &&
-              (n.displayMode === 'pinboard' || n.displayMode === 'both' || !n.displayMode)
-          )
-          .sort((a, b) => (a.zIndex || 20) - (b.zIndex || 20));
-
+      case 'testimonials_section':
         return (
-          <React.Fragment key={sec._id}>
-            {pinboardNotes.length > 0 && (
-              <section
-                className="py-24 border-t relative overflow-hidden bg-transparent"
-                style={{ borderColor: 'var(--brand-border)' }}
-              >
-                <div className="max-w-[1100px] mx-auto px-6">
-                  <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-                    <p
-                      className="text-xs font-semibold uppercase tracking-[0.2em]"
-                      style={{ color: 'var(--brand-accent)' }}
-                    >
-                      Studio Culture &amp; Notes
-                    </p>
-                    <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-white text-balance">
-                      Pinned From Our Production Floor
-                    </h2>
-                    <p className="text-sm text-neutral-400">
-                      Notes, guiding principles, and snapshots pinned directly by the YRT Esports team.
-                    </p>
-                  </div>
-
-                  {/* Desktop Overlapping Collage Board (Matches Reference Pinboard) */}
-                  <div className="hidden md:block relative w-full max-w-[920px] h-[580px] mx-auto">
-                    {pinboardNotes.map((note) => {
-                      const isFocused = focusedStickerId === note._id;
-                      return (
-                        <motion.div
-                          key={note._id}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, amount: 0.15 }}
-                          transition={{ duration: 0.7, ease: appleEase }}
-                          whileHover={{ scale: 1.04, y: -6 }}
-                          onClick={() =>
-                            setFocusedStickerId((prev) => (prev === note._id ? null : note._id))
-                          }
-                          style={{
-                            left: `${Math.min(72, Math.max(1, note.x))}%`,
-                            top: `${Math.min(62, Math.max(2, note.y))}%`,
-                            width: `${note.width || 245}px`,
-                            rotate: `${note.rotation || 0}deg`,
-                            zIndex: isFocused ? 50 : note.zIndex || 20,
-                          }}
-                          className="absolute cursor-pointer transition-shadow"
-                        >
-                          <StickerCard note={note} />
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Mobile Responsive Grid */}
-                  <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
-                    {pinboardNotes.map((note) => (
-                      <div
-                        key={note._id}
-                        className="mx-auto w-full max-w-[290px]"
-                        style={{ transform: `rotate(${Math.max(-4, Math.min(4, note.rotation || 0))}deg)` }}
-                      >
-                        <StickerCard note={note} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            <section className="py-24 border-t" style={{ borderColor: 'var(--brand-border)' }}>
+          <section key={sec._id} className="py-24 border-t" style={{ borderColor: 'var(--brand-border)' }}>
             <div className="max-w-[1280px] mx-auto px-6">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                 <div className="max-w-2xl space-y-3">
@@ -808,9 +812,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
           </section>
-          </React.Fragment>
         );
-      }
 
       case 'latest_blog':
         return (
@@ -972,7 +974,12 @@ export const HomePage: React.FC = () => {
       )}
 
       {sections.map(renderSection)}
-      {!sections.some((s) => s.sectionKey === 'services_showcase') && <GlobalNetworkMap />}
+      {!sections.some((s) => s.sectionKey === 'services_showcase') && (
+        <>
+          {renderPinboardSection()}
+          <GlobalNetworkMap />
+        </>
+      )}
       {!sections.some((s) => s.sectionKey === 'partners_strip') && (
         <section className="py-16 border-t" style={{ borderColor: 'var(--brand-border)' }}>
           <div className="max-w-[1280px] mx-auto px-6 space-y-8">

@@ -5,6 +5,7 @@ import { usePageSeo } from '../context/SiteContext';
 import { PageSection, PortfolioItem } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_PAGE_SECTIONS, FALLBACK_PORTFOLIO, safeFetchJson } from '../data/fallbackData';
 
 export const PortfolioPage: React.FC = () => {
@@ -176,9 +177,11 @@ export const PortfolioPage: React.FC = () => {
                 setYearFilter('All');
                 setTypeFilter('All');
               }}
-              className="px-4 py-2 text-xs font-semibold btn-brand"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold btn-brand"
             >
-              Reset Filters
+              <FillButtonContent className="gap-1.5">
+                <span>Reset Filters</span>
+              </FillButtonContent>
             </button>
           </div>
         ) : (
@@ -347,10 +350,12 @@ export const PortfolioPage: React.FC = () => {
                     href={selectedProject.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold btn-brand"
+                    className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold btn-brand"
                   >
-                    <span>Visit External Project Link</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <FillButtonContent className="gap-2">
+                      <span>Visit External Project Link</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </FillButtonContent>
                   </a>
                 </div>
               )}

@@ -3,6 +3,7 @@ import { Briefcase, Calendar, CheckCircle2, MapPin, Upload, X } from 'lucide-rea
 import { usePageSeo } from '../context/SiteContext';
 import { JobPosition, PageSection } from '../types/cms';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FillButtonContent } from '../components/FillButtonContent';
 import { FALLBACK_JOBS, FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 export const CareersPage: React.FC = () => {
@@ -202,9 +203,11 @@ export const CareersPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => openApplicationForm(selectedJob)}
-                      className="px-5 py-3 text-xs font-semibold btn-brand whitespace-nowrap shrink-0"
+                      className="inline-flex items-center justify-center px-5 py-3 text-xs font-semibold btn-brand whitespace-nowrap shrink-0"
                     >
-                      Apply for This Role
+                      <FillButtonContent>
+                        <span>Apply for This Role</span>
+                      </FillButtonContent>
                     </button>
                   </div>
 
@@ -279,9 +282,11 @@ export const CareersPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setApplyingJob(null)}
-                  className="px-6 py-2.5 text-xs font-semibold btn-brand"
+                  className="inline-flex items-center justify-center px-6 py-2.5 text-xs font-semibold btn-brand"
                 >
-                  Close
+                  <FillButtonContent>
+                    <span>Close</span>
+                  </FillButtonContent>
                 </button>
               </div>
             ) : (
@@ -392,16 +397,20 @@ export const CareersPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setApplyingJob(null)}
-                    className="px-4 py-2.5 text-xs font-semibold btn-brand-outline"
+                    className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-semibold btn-brand-outline"
                   >
-                    Cancel
+                    <FillButtonContent>
+                      <span>Cancel</span>
+                    </FillButtonContent>
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-6 py-2.5 text-xs font-semibold btn-brand disabled:opacity-50"
+                    className="inline-flex items-center justify-center px-6 py-2.5 text-xs font-semibold btn-brand disabled:opacity-50"
                   >
-                    {submitting ? 'Submitting Application...' : 'Submit Application'}
+                    <FillButtonContent>
+                      <span>{submitting ? 'Submitting Application...' : 'Submit Application'}</span>
+                    </FillButtonContent>
                   </button>
                 </div>
               </form>

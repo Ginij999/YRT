@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { MapPin } from 'lucide-react';
+import { CountryLogo } from './CountryLogo';
 
 export interface WorldCountryFeature {
   id: string;
@@ -52,7 +52,7 @@ export interface CapitalCityMarker {
 }
 
 export const CAPITAL_CITIES: CapitalCityMarker[] = [
-  { id: 'ktm', city: 'Kathmandu', country: 'Nepal', code: 'KTM HQ', lat: 27.7172, lon: 85.324, isHq: true, region: 'Global Headquarters' },
+  { id: 'ktm', city: 'Kathmandu', country: 'Nepal', code: 'NP', lat: 27.7172, lon: 85.324, isHq: true, region: 'Global Headquarters' },
   { id: 'del', city: 'New Delhi', country: 'India', code: 'IN', lat: 28.6139, lon: 77.209, region: 'South Asia' },
   { id: 'dac', city: 'Dhaka', country: 'Bangladesh', code: 'BD', lat: 23.8103, lon: 90.4125, region: 'South Asia' },
   { id: 'ruh', city: 'Riyadh', country: 'Saudi Arabia', code: 'SA', lat: 24.7136, lon: 46.6753, region: 'Middle East' },
@@ -692,8 +692,8 @@ export const Globe3D: React.FC<{
 
         {/* Minimal floating tooltip shown only when directly hovering a 3D pin */}
         {hoveredCity && (
-          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-[2px] bg-[#141520] border border-white/20 text-xs text-white flex items-center gap-2 whitespace-nowrap">
-            <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-1.5 rounded-[2px] bg-[#141520] border border-white/20 text-xs text-white flex items-center gap-2 whitespace-nowrap">
+            <CountryLogo code={hoveredCity.code} name={hoveredCity.country} size="sm" />
             <span className="font-bold">
               {hoveredCity.city}, {hoveredCity.country}
             </span>
