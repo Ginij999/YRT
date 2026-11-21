@@ -115,6 +115,11 @@ export const AdminDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.toLowerCase().includes('application/json')) {
+        setLoginError('CMS API backend is unreachable on this deployment. Verify /api/index or server.ts.');
+        return;
+      }
       const data = await res.json();
       if (!res.ok) {
         setLoginError(data.error || 'Authentication failed');

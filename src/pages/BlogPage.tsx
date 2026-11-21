@@ -5,12 +5,19 @@ import { usePageSeo } from '../context/SiteContext';
 import { BlogCategory, BlogPost, PageSection } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { ErrorPage } from './ErrorPage';
+import {
+  FALLBACK_BLOG_CATEGORIES,
+  FALLBACK_BLOG_POSTS,
+  FALLBACK_PAGE_SECTIONS,
+  safeFetchJson,
+} from '../data/fallbackData';
 
 export const BlogPage: React.FC = () => {
   const { slug } = useParams<{ slug?: string }>();
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [categories, setCategories] = useState<BlogCategory[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_BLOG_POSTS);
+  const [categories, setCategories] = useState<BlogCategory[]>(FALLBACK_BLOG_CATEGORIES);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(FALLBACK_PAGE_SECTIONS.blog[0]);
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,14 +25,16 @@ export const BlogPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/blog').then((r) => r.json()),
-      fetch('/api/public/blog-categories').then((r) => r.json()),
-      fetch('/api/public/pages/blog').then((r) => r.json()),
+      safeFetchJson<BlogPost[]>('/api/public/blog', FALLBACK_BLOG_POSTS),
+      safeFetchJson<BlogCategory[]>('/api/public/blog-categories', FALLBACK_BLOG_CATEGORIES),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/blog', {
+        sections: FALLBACK_PAGE_SECTIONS.blog,
+      }),
     ]).then(([postData, catData, pageData]) => {
-      setPosts(Array.isArray(postData) ? postData : []);
-      setCategories(Array.isArray(catData) ? catData : []);
-      const secs: PageSection[] = pageData.sections || [];
-      setHeaderSec(secs.find((s) => s.sectionKey === 'blog_header') || null);
+      setPosts(Array.isArray(postData) && postData.length > 0 ? postData : FALLBACK_BLOG_POSTS);
+      setCategories(Array.isArray(catData) && catData.length > 0 ? catData : FALLBACK_BLOG_CATEGORIES);
+      const secs: PageSection[] = pageData.sections || FALLBACK_PAGE_SECTIONS.blog;
+      setHeaderSec(secs.find((s) => s.sectionKey === 'blog_header') || FALLBACK_PAGE_SECTIONS.blog[0]);
       setExtraSections(secs.filter((s) => s.sectionKey !== 'blog_header'));
     });
   }, []);
@@ -52,6 +61,10 @@ export const BlogPage: React.FC = () => {
       return true;
     });
   }, [posts, categoryFilter, searchQuery]);
+
+  if (slug && !activePost) {
+    return <ErrorPage code="404" />;
+  }
 
   if (slug && activePost) {
     const related = posts.filter((p) => p._id !== activePost._id).slice(0, 2);

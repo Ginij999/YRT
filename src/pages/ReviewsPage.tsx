@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { CheckCircle2, MessageSquareQuote, ShieldCheck, Star } from 'lucide-react';
 import { usePageSeo } from '../context/SiteContext';
 import { ReviewItem } from '../types/cms';
+import { FALLBACK_REVIEWS, safeFetchJson } from '../data/fallbackData';
 
 const REVIEW_FP_KEY = 'yrt_review_fp';
 const REVIEW_SENT_KEY = 'yrt_review_sent_count';
@@ -32,14 +33,14 @@ const SERVICE_OPTIONS = [
 export const ReviewsPage: React.FC = () => {
   usePageSeo('reviews', 'Client Reviews & Testimonials', 'Verified feedback and ratings from tournament partners, teams, and esports brands.');
 
-  const [reviews, setReviews] = useState<ReviewItem[]>([]);
-  const [totalPublished, setTotalPublished] = useState(0);
+  const [reviews, setReviews] = useState<ReviewItem[]>(FALLBACK_REVIEWS);
+  const [totalPublished, setTotalPublished] = useState(FALLBACK_REVIEWS.length);
   const [config, setConfig] = useState({
     reviewsEnabled: true,
     reviewMaxCount: 50,
     reviewPerSessionLimit: 2,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [authorName, setAuthorName] = useState('');
   const [role, setRole] = useState('');
@@ -60,11 +61,14 @@ export const ReviewsPage: React.FC = () => {
 
   const loadReviews = async () => {
     try {
-      const res = await fetch('/api/public/reviews');
-      if (res.ok) {
-        const data = await res.json();
-        setReviews(Array.isArray(data.reviews) ? data.reviews : []);
-        setTotalPublished(Number(data.totalPublished ?? 0));
+      const data = await safeFetchJson<{
+        reviews?: ReviewItem[];
+        totalPublished?: number;
+        config?: typeof config;
+      } | null>('/api/public/reviews', null);
+      if (data) {
+        if (Array.isArray(data.reviews)) setReviews(data.reviews);
+        setTotalPublished(Number(data.totalPublished ?? data.reviews?.length ?? 0));
         if (data.config) setConfig(data.config);
       }
     } finally {
@@ -103,6 +107,11 @@ export const ReviewsPage: React.FC = () => {
           sessionFingerprint: getSessionFingerprint(),
         }),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.toLowerCase().includes('application/json')) {
+        setError('Review service unavailable on static preview without API server.');
+        return;
+      }
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Could not submit review.');
@@ -154,7 +163,7 @@ export const ReviewsPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="apple-glass rounded-2xl px-6 py-4 flex items-center gap-6 self-start lg:self-auto">
+          <div className="apple-glass rounded-[2px] px-6 py-4 flex items-center gap-6 self-start lg:self-auto">
             <div>
               <div className="text-[11px] uppercase tracking-wider text-neutral-400">Average Score</div>
               <div className="font-display text-3xl font-bold text-white flex items-center gap-2 tabular-nums">
@@ -176,11 +185,11 @@ export const ReviewsPage: React.FC = () => {
           {/* Reviews Feed */}
           <div className="lg:col-span-7 space-y-5">
             {loading && reviews.length === 0 ? (
-              <div className="p-8 rounded-2xl apple-glass-card text-xs text-neutral-400">
+              <div className="p-8 rounded-[2px] apple-glass-card text-xs text-neutral-400">
                 Loading client reviews...
               </div>
             ) : reviews.length === 0 ? (
-              <div className="p-8 rounded-2xl apple-glass-card text-sm text-neutral-300">
+              <div className="p-8 rounded-[2px] apple-glass-card text-sm text-neutral-300">
                 No reviews published yet. Be the first partner to leave feedback.
               </div>
             ) : (
@@ -191,7 +200,7 @@ export const ReviewsPage: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ duration: 0.45, delay: Math.min(idx * 0.05, 0.25), ease: [0.22, 1, 0.36, 1] }}
-                  className="p-6 rounded-2xl apple-glass-card wise-card-motion space-y-4"
+                  className="p-6 rounded-[2px] apple-glass-card wise-card-motion space-y-4"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-1">
@@ -207,7 +216,7 @@ export const ReviewsPage: React.FC = () => {
                       ))}
                     </div>
                     {rev.serviceUsed && (
-                      <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-neutral-300">
+                      <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[2px] bg-white/5 border border-white/10 text-neutral-300">
                         {rev.serviceUsed}
                       </span>
                     )}
@@ -238,7 +247,7 @@ export const ReviewsPage: React.FC = () => {
 
           {/* Review Submission Card */}
           <div className="lg:col-span-5">
-            <div className="sticky top-28 p-7 rounded-3xl apple-glass-card space-y-5">
+            <div className="sticky top-28 p-7 rounded-[2px] apple-glass-card space-y-5">
               <div className="flex items-center gap-2.5">
                 <MessageSquareQuote className="w-5 h-5" style={{ color: 'var(--brand-accent)' }} />
                 <h2 className="font-display text-2xl font-bold text-white">Submit a Review</h2>
@@ -250,27 +259,27 @@ export const ReviewsPage: React.FC = () => {
               </p>
 
               {!config.reviewsEnabled ? (
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs text-neutral-300">
+                <div className="p-4 rounded-[2px] bg-white/5 border border-white/10 text-xs text-neutral-300">
                   Public review submissions are currently paused by the administrator.
                 </div>
               ) : totalCapReached ? (
-                <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200">
+                <div className="p-4 rounded-[2px] bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200">
                   The maximum review limit ({config.reviewMaxCount}) has been reached.
                 </div>
               ) : sessionCapReached ? (
-                <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
+                <div className="p-4 rounded-[2px] bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200">
                   Thank you — you have reached your visitor submission limit ({config.reviewPerSessionLimit}).
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {submitted && (
-                    <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-xs text-emerald-200 flex items-center gap-2">
+                    <div className="p-3 rounded-[2px] bg-emerald-950/50 border border-emerald-500/40 text-xs text-emerald-200 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
                       <span>Your review is live!</span>
                     </div>
                   )}
                   {error && (
-                    <div className="p-3 rounded-xl bg-red-950/60 border border-red-600/50 text-xs text-red-200">
+                    <div className="p-3 rounded-[2px] bg-red-950/60 border border-red-600/50 text-xs text-red-200">
                       {error}
                     </div>
                   )}
@@ -284,7 +293,7 @@ export const ReviewsPage: React.FC = () => {
                         value={authorName}
                         onChange={(e) => setAuthorName(e.target.value)}
                         placeholder="Aarav Shrestha"
-                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-lg text-white"
+                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-[2px] text-white"
                       />
                     </div>
                     <div>
@@ -294,7 +303,7 @@ export const ReviewsPage: React.FC = () => {
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
                         placeholder="Marketing Lead"
-                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-lg text-white"
+                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-[2px] text-white"
                       />
                     </div>
                   </div>
@@ -307,7 +316,7 @@ export const ReviewsPage: React.FC = () => {
                         value={organization}
                         onChange={(e) => setOrganization(e.target.value)}
                         placeholder="Team / Brand"
-                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-lg text-white"
+                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-[2px] text-white"
                       />
                     </div>
                     <div>
@@ -315,7 +324,7 @@ export const ReviewsPage: React.FC = () => {
                       <select
                         value={serviceUsed}
                         onChange={(e) => setServiceUsed(e.target.value)}
-                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-lg text-white"
+                        className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-[2px] text-white"
                       >
                         {SERVICE_OPTIONS.map((opt) => (
                           <option key={opt} value={opt} className="bg-neutral-900">
@@ -334,7 +343,7 @@ export const ReviewsPage: React.FC = () => {
                           key={num}
                           type="button"
                           onClick={() => setRating(num)}
-                          className="p-1.5 rounded-lg border border-white/10 bg-black/40 hover:border-amber-400/50 transition-colors"
+                          className="p-1.5 rounded-[2px] border border-white/10 bg-black/40 hover:border-amber-400/50 transition-colors"
                           aria-label={`Rate ${num} out of 5`}
                         >
                           <Star
@@ -356,7 +365,7 @@ export const ReviewsPage: React.FC = () => {
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       placeholder="Share your experience working with YRT Esports..."
-                      className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-lg text-white"
+                      className="w-full px-3 py-2 text-xs bg-black/50 border border-white/15 rounded-[2px] text-white"
                     />
                   </div>
 

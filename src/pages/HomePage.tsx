@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Play, MapPin, Calendar, Sparkles, Star } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Play, MapPin, Calendar, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 import { usePageSeo, useSite } from '../context/SiteContext';
 import {
@@ -17,10 +17,21 @@ import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
 import { StackedServiceDeck } from '../components/StackedServiceDeck';
-import { BrandLogoCarousel, SupportedGamesMarquee } from '../components/ShowcaseMarquees';
+import { BrandLogoCarousel } from '../components/ShowcaseMarquees';
+import {
+  FALLBACK_BLOG_POSTS,
+  FALLBACK_EVENTS,
+  FALLBACK_PAGE_SECTIONS,
+  FALLBACK_PARTNERS,
+  FALLBACK_PORTFOLIO,
+  FALLBACK_SERVICES,
+  FALLBACK_STAFF,
+  FALLBACK_TESTIMONIALS,
+  safeFetchJson,
+} from '../data/fallbackData';
 
 const appleEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const HOME_CACHE_KEY = 'yrt_home_cache_v2';
+const HOME_CACHE_KEY = 'yrt_home_cache_v3';
 
 interface HomeCachePayload {
   sections: PageSection[];
@@ -33,11 +44,26 @@ interface HomeCachePayload {
   posts: BlogPost[];
 }
 
+const DEFAULT_HOME_PAYLOAD: HomeCachePayload = {
+  sections: FALLBACK_PAGE_SECTIONS.home,
+  services: FALLBACK_SERVICES,
+  events: FALLBACK_EVENTS,
+  portfolio: FALLBACK_PORTFOLIO,
+  partners: FALLBACK_PARTNERS,
+  staff: FALLBACK_STAFF,
+  testimonials: FALLBACK_TESTIMONIALS,
+  posts: FALLBACK_BLOG_POSTS,
+};
+
 function readHomeCache(): HomeCachePayload | null {
   try {
     const raw = localStorage.getItem(HOME_CACHE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as HomeCachePayload;
+    const parsed = JSON.parse(raw) as HomeCachePayload;
+    if (parsed && Array.isArray(parsed.sections) && parsed.sections.length > 0) {
+      return parsed;
+    }
+    return null;
   } catch {
     return null;
   }
@@ -50,39 +76,55 @@ export const HomePage: React.FC = () => {
 
   usePageSeo('home');
 
-  const initialCache = !isPreview ? readHomeCache() : null;
-  const [sections, setSections] = useState<PageSection[]>(() => initialCache?.sections || []);
-  const [services, setServices] = useState<ServiceItem[]>(() => initialCache?.services || []);
-  const [events, setEvents] = useState<EventItem[]>(() => initialCache?.events || []);
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => initialCache?.portfolio || []);
-  const [partners, setPartners] = useState<Partner[]>(() => initialCache?.partners || []);
-  const [staff, setStaff] = useState<StaffMember[]>(() => initialCache?.staff || []);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => initialCache?.testimonials || []);
-  const [posts, setPosts] = useState<BlogPost[]>(() => initialCache?.posts || []);
-  const [loading, setLoading] = useState(!initialCache);
+  const initialCache = !isPreview ? readHomeCache() || DEFAULT_HOME_PAYLOAD : DEFAULT_HOME_PAYLOAD;
+  const [sections, setSections] = useState<PageSection[]>(() => initialCache.sections);
+  const [services, setServices] = useState<ServiceItem[]>(() => initialCache.services);
+  const [events, setEvents] = useState<EventItem[]>(() => initialCache.events);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => initialCache.portfolio);
+  const [partners, setPartners] = useState<Partner[]>(() => initialCache.partners);
+  const [staff, setStaff] = useState<StaffMember[]>(() => initialCache.staff);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => initialCache.testimonials);
+  const [posts, setPosts] = useState<BlogPost[]>(() => initialCache.posts);
 
   useEffect(() => {
     const pageUrl = isPreview ? '/api/public/pages/home?preview=true' : '/api/public/pages/home';
+    const fetchPage = async () => {
+      try {
+        const r = await apiFetch(pageUrl);
+        if (!r.ok) return { sections: FALLBACK_PAGE_SECTIONS.home };
+        const ct = r.headers.get('content-type') || '';
+        if (!ct.toLowerCase().includes('application/json')) return { sections: FALLBACK_PAGE_SECTIONS.home };
+        const data = await r.json();
+        return data && Array.isArray(data.sections) && data.sections.length > 0
+          ? data
+          : { sections: FALLBACK_PAGE_SECTIONS.home };
+      } catch {
+        return { sections: FALLBACK_PAGE_SECTIONS.home };
+      }
+    };
+
     Promise.all([
-      apiFetch(pageUrl).then((r) => r.json()),
-      fetch('/api/public/services').then((r) => r.json()),
-      fetch('/api/public/events').then((r) => r.json()),
-      fetch('/api/public/portfolio').then((r) => r.json()),
-      fetch('/api/public/partners').then((r) => r.json()),
-      fetch('/api/public/staff').then((r) => r.json()),
-      fetch('/api/public/testimonials').then((r) => r.json()),
-      fetch('/api/public/blog').then((r) => r.json()),
+      fetchPage(),
+      safeFetchJson<ServiceItem[]>('/api/public/services', FALLBACK_SERVICES),
+      safeFetchJson<EventItem[]>('/api/public/events', FALLBACK_EVENTS),
+      safeFetchJson<PortfolioItem[]>('/api/public/portfolio', FALLBACK_PORTFOLIO),
+      safeFetchJson<Partner[]>('/api/public/partners', FALLBACK_PARTNERS),
+      safeFetchJson<StaffMember[]>('/api/public/staff', FALLBACK_STAFF),
+      safeFetchJson<Testimonial[]>('/api/public/testimonials', FALLBACK_TESTIMONIALS),
+      safeFetchJson<BlogPost[]>('/api/public/blog', FALLBACK_BLOG_POSTS),
     ])
       .then(([pageData, svc, evt, port, part, stf, test, blg]) => {
         const nextPayload: HomeCachePayload = {
-          sections: pageData.sections || [],
-          services: Array.isArray(svc) ? svc : [],
-          events: Array.isArray(evt) ? evt : [],
-          portfolio: Array.isArray(port) ? port : [],
-          partners: Array.isArray(part) ? part : [],
-          staff: Array.isArray(stf) ? stf : [],
-          testimonials: Array.isArray(test) ? test : [],
-          posts: Array.isArray(blg) ? blg : [],
+          sections: Array.isArray(pageData.sections) && pageData.sections.length > 0
+            ? pageData.sections
+            : FALLBACK_PAGE_SECTIONS.home,
+          services: Array.isArray(svc) && svc.length > 0 ? svc : FALLBACK_SERVICES,
+          events: Array.isArray(evt) && evt.length > 0 ? evt : FALLBACK_EVENTS,
+          portfolio: Array.isArray(port) && port.length > 0 ? port : FALLBACK_PORTFOLIO,
+          partners: Array.isArray(part) && part.length > 0 ? part : FALLBACK_PARTNERS,
+          staff: Array.isArray(stf) && stf.length > 0 ? stf : FALLBACK_STAFF,
+          testimonials: Array.isArray(test) && test.length > 0 ? test : FALLBACK_TESTIMONIALS,
+          posts: Array.isArray(blg) && blg.length > 0 ? blg : FALLBACK_BLOG_POSTS,
         };
         setSections(nextPayload.sections);
         setServices(nextPayload.services);
@@ -100,109 +142,105 @@ export const HomePage: React.FC = () => {
           }
         }
       })
-      .catch((err) => console.error('Home data load failed:', err))
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, [isPreview, apiFetch]);
 
   const renderSection = (sec: PageSection) => {
     switch (sec.sectionKey) {
       case 'hero':
         return (
-          <React.Fragment key={sec._id}>
-            <section className="relative min-h-[90vh] flex items-end pt-32 pb-20 overflow-hidden">
-              {/* Background Image or Video + Wise Ambient Light */}
-              <div className="absolute inset-0 z-0">
-                {sec.videoUrl ? (
-                  <video
-                    src={sec.videoUrl}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover opacity-65"
-                  />
-                ) : (
-                  <MediaImage
-                    src={sec.imageUrl}
-                    alt={sec.title}
-                    loading="eager"
-                    className="w-full h-full object-cover scale-[1.03] opacity-65"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#08080A] via-[#08080A]/65 to-[#08080A]/35" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#08080A]/90 via-[#08080A]/50 to-transparent" />
-                <div
-                  className="pointer-events-none absolute -bottom-24 -left-24 w-[460px] h-[460px] rounded-full blur-[140px] opacity-25 animate-float-slow"
-                  style={{ backgroundColor: 'var(--brand-accent)' }}
+          <section key={sec._id} className="relative min-h-[90vh] flex items-end pt-32 pb-20 overflow-hidden">
+            {/* Background Image or Video + Wise Ambient Light */}
+            <div className="absolute inset-0 z-0">
+              {sec.videoUrl ? (
+                <video
+                  src={sec.videoUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-65"
                 />
-              </div>
+              ) : (
+                <MediaImage
+                  src={sec.imageUrl}
+                  alt={sec.title}
+                  loading="eager"
+                  className="w-full h-full object-cover scale-[1.03] opacity-65"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#08080A] via-[#08080A]/65 to-[#08080A]/35" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#08080A]/90 via-[#08080A]/50 to-transparent" />
+              <div
+                className="pointer-events-none absolute -bottom-24 -left-24 w-[460px] h-[460px] rounded-full blur-[140px] opacity-25 animate-float-slow"
+                style={{ backgroundColor: 'var(--brand-accent)' }}
+              />
+            </div>
 
-              <div className="relative z-10 max-w-[1280px] w-full mx-auto px-6">
+            <div className="relative z-10 max-w-[1280px] w-full mx-auto px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 26, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.72, ease: appleEase }}
+                className="max-w-3xl space-y-6"
+              >
                 <motion.div
-                  initial={{ opacity: 0, y: 26, filter: 'blur(8px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ duration: 0.72, ease: appleEase }}
-                  className="max-w-3xl space-y-6"
+                  initial={{ opacity: 0, scale: 0.94, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.45, delay: 0.1, ease: appleEase }}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] border border-red-500/40 bg-black/60 backdrop-blur-md text-xs font-semibold text-white"
                 >
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.94, filter: 'blur(4px)' }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.45, delay: 0.1, ease: appleEase }}
-                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full apple-glass-pill text-xs font-semibold text-white"
-                  >
-                    <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--brand-accent)' }} />
-                    <span>{sec.subtitle || 'Kathmandu, Nepal (KTM HQ) · Global Esports Studio'}</span>
-                  </motion.div>
-
-                  <motion.h1
-                    initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.65, delay: 0.15, ease: appleEase }}
-                    className="font-display font-bold tracking-tight text-white text-balance leading-[1.01]"
-                    style={{ fontSize: 'clamp(2.65rem, 5.5vw, 4.75rem)' }}
-                  >
-                    {sec.title}
-                  </motion.h1>
-
-                  <motion.p
-                    initial={{ opacity: 0, y: 16, filter: 'blur(6px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.6, delay: 0.22, ease: appleEase }}
-                    className="text-base md:text-lg leading-relaxed max-w-2xl text-neutral-200"
-                  >
-                    {sec.description}
-                  </motion.p>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.55, delay: 0.3, ease: appleEase }}
-                    className="pt-2 flex flex-wrap items-center gap-4"
-                  >
-                    {sec.ctaText && (
-                      <Link
-                        to={sec.ctaLink || '/contact'}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand whitespace-nowrap"
-                      >
-                        <span>{sec.ctaText}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    )}
-                    {sec.secondaryCtaText && (
-                      <Link
-                        to={sec.secondaryCtaLink || '/portfolio'}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand-outline whitespace-nowrap"
-                      >
-                        <Play className="w-3.5 h-3.5" />
-                        <span>{sec.secondaryCtaText}</span>
-                      </Link>
-                    )}
-                  </motion.div>
+                  <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--brand-accent)' }} />
+                  <span>{sec.subtitle || 'Kathmandu, Nepal (KTM HQ) · Global Esports Studio'}</span>
                 </motion.div>
-              </div>
-            </section>
-            <SupportedGamesMarquee />
-          </React.Fragment>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.65, delay: 0.15, ease: appleEase }}
+                  className="font-display font-bold tracking-tight text-white text-balance leading-[1.01]"
+                  style={{ fontSize: 'clamp(2.65rem, 5.5vw, 4.75rem)' }}
+                >
+                  {sec.title}
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 16, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.6, delay: 0.22, ease: appleEase }}
+                  className="text-base md:text-lg leading-relaxed max-w-2xl text-neutral-200"
+                >
+                  {sec.description}
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.3, ease: appleEase }}
+                  className="pt-2 flex flex-wrap items-center gap-4"
+                >
+                  {sec.ctaText && (
+                    <Link
+                      to={sec.ctaLink || '/contact'}
+                      className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand whitespace-nowrap"
+                    >
+                      <span>{sec.ctaText}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  )}
+                  {sec.secondaryCtaText && (
+                    <Link
+                      to={sec.secondaryCtaLink || '/portfolio'}
+                      className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold btn-brand-outline whitespace-nowrap"
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      <span>{sec.secondaryCtaText}</span>
+                    </Link>
+                  )}
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
         );
 
       case 'organization_intro':
@@ -237,7 +275,7 @@ export const HomePage: React.FC = () => {
                 <div className="pt-2 flex items-center gap-6">
                   <Link
                     to={sec.ctaLink || '/about'}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold btn-brand-outline rounded-xl"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold btn-brand-outline"
                   >
                     <span>{sec.ctaText || 'Learn About Our Agency'}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -249,7 +287,7 @@ export const HomePage: React.FC = () => {
                 whileInView={{ opacity: 1, x: 0, scale: 1, filter: 'blur(0px)' }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.6, ease: appleEase }}
-                className="lg:col-span-6 min-h-[320px] lg:min-h-[420px] rounded-3xl apple-glass overflow-hidden"
+                className="lg:col-span-6 min-h-[320px] lg:min-h-[420px] rounded-[2px] apple-glass overflow-hidden"
               >
                 <MediaImage
                   src={sec.imageUrl}
@@ -304,10 +342,10 @@ export const HomePage: React.FC = () => {
                   </Link>
                 </motion.div>
 
-                {/* Stacked / Overlapping Flash-Card Capability Deck */}
+                {/* Authentic 3D Flippable Flashcard Deck */}
                 <StackedServiceDeck services={services} />
 
-                {/* Full Service Grid (Esports, Jersey Printing & Design, Gaming, Creative Production) */}
+                {/* Full Service Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {services.slice(0, 6).map((svc, idx) => (
                     <motion.div
@@ -319,7 +357,7 @@ export const HomePage: React.FC = () => {
                     >
                       <Link
                         to={`/services/${svc.slug}`}
-                        className="group h-full p-7 rounded-2xl apple-glass-card wise-card-motion flex flex-col justify-between"
+                        className="group h-full p-7 rounded-[2px] apple-glass-card wise-card-motion flex flex-col justify-between"
                       >
                         <div className="space-y-4">
                           <span className="font-mono-num text-xs" style={{ color: 'var(--brand-accent)' }}>
@@ -391,7 +429,7 @@ export const HomePage: React.FC = () => {
                   >
                     <Link
                       to={`/events?event=${evt.slug}`}
-                      className="group h-full rounded-2xl apple-glass-card wise-card-motion flex flex-col"
+                      className="group h-full rounded-[2px] apple-glass-card wise-card-motion flex flex-col"
                     >
                       <div className="aspect-[16/10] relative overflow-hidden">
                         <MediaImage
@@ -401,7 +439,7 @@ export const HomePage: React.FC = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                         <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-neutral-200 tabular-nums">
-                          <span className="capitalize font-semibold px-2.5 py-0.5 rounded-full apple-glass-pill">
+                          <span className="capitalize font-semibold px-2.5 py-0.5 rounded-[2px] bg-black/75 border border-white/20">
                             {evt.status}
                           </span>
                           <span className="font-mono-num">{evt.prizePool}</span>
@@ -486,7 +524,7 @@ export const HomePage: React.FC = () => {
                   >
                     <Link
                       to={`/portfolio?project=${proj.slug}`}
-                      className={`group h-full rounded-3xl apple-glass-card wise-card-motion flex flex-col ${
+                      className={`group h-full rounded-[2px] apple-glass-card wise-card-motion flex flex-col ${
                         idx === 0 ? 'lg:grid lg:grid-cols-12' : ''
                       }`}
                     >
@@ -604,7 +642,7 @@ export const HomePage: React.FC = () => {
                       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                       viewport={{ once: true, amount: 0.15 }}
                       transition={{ duration: 0.48, delay: idx * 0.08, ease: appleEase }}
-                      className="rounded-2xl apple-glass-card wise-card-motion overflow-hidden"
+                      className="rounded-[2px] apple-glass-card wise-card-motion overflow-hidden"
                     >
                       <div className="aspect-square overflow-hidden">
                         <MediaImage
@@ -663,7 +701,7 @@ export const HomePage: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     viewport={{ once: true, amount: 0.15 }}
                     transition={{ duration: 0.48, delay: idx * 0.08, ease: appleEase }}
-                    className="p-7 rounded-2xl apple-glass-card wise-card-motion flex flex-col justify-between space-y-6"
+                    className="p-7 rounded-[2px] apple-glass-card wise-card-motion flex flex-col justify-between space-y-6"
                   >
                     <p className="text-sm leading-relaxed text-neutral-200">“{item.quote}”</p>
                     <div className="pt-4 border-t space-y-2" style={{ borderColor: 'var(--brand-border)' }}>
@@ -728,7 +766,7 @@ export const HomePage: React.FC = () => {
                   >
                     <Link
                       to={`/blog/${post.slug}`}
-                      className="group h-full rounded-2xl apple-glass-card wise-card-motion flex flex-col"
+                      className="group h-full rounded-[2px] apple-glass-card wise-card-motion flex flex-col"
                     >
                       <div className="aspect-[16/10] overflow-hidden">
                         <MediaImage
@@ -772,7 +810,7 @@ export const HomePage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.55, ease: appleEase }}
-                className="p-8 md:p-12 rounded-3xl apple-glass flex flex-col lg:flex-row lg:items-center justify-between gap-8"
+                className="p-8 md:p-12 rounded-[2px] apple-glass flex flex-col lg:flex-row lg:items-center justify-between gap-8"
               >
                 <div className="max-w-2xl space-y-3">
                   {sec.subtitle && (
@@ -835,70 +873,27 @@ export const HomePage: React.FC = () => {
   return (
     <div>
       {isPreview && (
-        <div className="fixed bottom-4 left-4 z-50 px-4 py-2 bg-amber-500 text-black text-xs font-semibold shadow-lg rounded-lg">
+        <div className="fixed bottom-4 left-4 z-50 px-4 py-2 bg-amber-500 text-black text-xs font-semibold shadow-lg rounded-[2px]">
           Draft Preview Mode Active — Viewing unpublished sections for {settings?.organizationName}
         </div>
       )}
 
-      {loading && sections.length === 0 ? (
-        <div className="min-h-screen pt-32 px-6 max-w-[1280px] mx-auto space-y-6">
-          <div className="h-16 w-2/3 bg-white/5 rounded-xl" />
-          <div className="h-6 w-1/2 bg-white/5 rounded-xl" />
-          <div className="h-96 w-full bg-white/5 rounded-2xl" />
-        </div>
-      ) : sections.length === 0 ? (
-        <>
-          <section className="min-h-[65vh] flex items-center justify-center px-6 pt-32 pb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.55, ease: appleEase }}
-              className="max-w-xl w-full text-center space-y-6 p-10 rounded-3xl apple-glass"
-            >
-              <img
-                src={settings?.logoDarkUrl || settings?.logoLightUrl || '/logo.png'}
-                alt={settings?.organizationName || 'YRT Esports'}
-                className="h-24 w-24 object-contain mx-auto"
-              />
-              <h1 className="font-display text-4xl font-bold text-white">
-                {settings?.organizationName || 'YRT Esports'}
-              </h1>
-              <p className="text-sm text-neutral-300 leading-relaxed">
-                {settings?.tagline ||
-                  'Kathmandu, Nepal (KTM HQ) · Esports Production, Creative Agency & Brand Partnerships.'}
+      {sections.map(renderSection)}
+      {!sections.some((s) => s.sectionKey === 'services_showcase') && <GlobalNetworkMap />}
+      {!sections.some((s) => s.sectionKey === 'partners_strip') && (
+        <section className="py-16 border-t" style={{ borderColor: 'var(--brand-border)' }}>
+          <div className="max-w-[1280px] mx-auto px-6 space-y-8">
+            <div className="text-center max-w-2xl mx-auto">
+              <p className="text-xs font-semibold tracking-wider mb-2" style={{ color: 'var(--brand-accent)' }}>
+                Brands &amp; Ecosystem Partners
               </p>
-              <div className="pt-2 flex flex-wrap justify-center gap-3">
-                <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold btn-brand">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Contact Kathmandu HQ</span>
-                </Link>
-              </div>
-            </motion.div>
-          </section>
-          <SupportedGamesMarquee />
-          <GlobalNetworkMap />
-        </>
-      ) : (
-        <>
-          {sections.map(renderSection)}
-          {!sections.some((s) => s.sectionKey === 'hero') && <SupportedGamesMarquee />}
-          {!sections.some((s) => s.sectionKey === 'services_showcase') && <GlobalNetworkMap />}
-          {!sections.some((s) => s.sectionKey === 'partners_strip') && (
-            <section className="py-16 border-t" style={{ borderColor: 'var(--brand-border)' }}>
-              <div className="max-w-[1280px] mx-auto px-6 space-y-8">
-                <div className="text-center max-w-2xl mx-auto">
-                  <p className="text-xs font-semibold tracking-wider mb-2" style={{ color: 'var(--brand-accent)' }}>
-                    Brands &amp; Ecosystem Partners
-                  </p>
-                  <h2 className="font-display text-2xl md:text-4xl font-bold text-white">
-                    Trusted by Global Brands &amp; Publishers
-                  </h2>
-                </div>
-                <BrandLogoCarousel partners={partners} />
-              </div>
-            </section>
-          )}
-        </>
+              <h2 className="font-display text-2xl md:text-4xl font-bold text-white">
+                Trusted by Global Brands &amp; Publishers
+              </h2>
+            </div>
+            <BrandLogoCarousel partners={partners} />
+          </div>
+        </section>
       )}
     </div>
   );

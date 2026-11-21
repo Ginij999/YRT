@@ -14,7 +14,7 @@
   --font-display: "Barlow Condensed", sans-serif;
   --font-body: "Plus Jakarta Sans", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  --btn-radius: 10px;
+  --btn-radius: 2px;
 }
 
 html {

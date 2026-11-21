@@ -4,12 +4,20 @@ import { usePageSeo } from '../context/SiteContext';
 import { Department, PageSection, StaffMember } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import {
+  FALLBACK_DEPARTMENTS,
+  FALLBACK_PAGE_SECTIONS,
+  FALLBACK_STAFF,
+  safeFetchJson,
+} from '../data/fallbackData';
 
 export const TeamPage: React.FC = () => {
   usePageSeo('team');
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [staff, setStaff] = useState<StaffMember[]>(FALLBACK_STAFF);
+  const [departments, setDepartments] = useState<Department[]>(FALLBACK_DEPARTMENTS);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(
+    FALLBACK_PAGE_SECTIONS.team[0] || null
+  );
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
   const [deptFilter, setDeptFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState<'current' | 'former' | 'alumni'>('current');
@@ -17,13 +25,15 @@ export const TeamPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/staff').then((r) => r.json()),
-      fetch('/api/public/departments').then((r) => r.json()),
-      fetch('/api/public/pages/team').then((r) => r.json()),
+      safeFetchJson<StaffMember[]>('/api/public/staff', FALLBACK_STAFF),
+      safeFetchJson<Department[]>('/api/public/departments', FALLBACK_DEPARTMENTS),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/team', {
+        sections: FALLBACK_PAGE_SECTIONS.team,
+      }),
     ]).then(([staffData, deptData, pageData]) => {
-      setStaff(Array.isArray(staffData) ? staffData : []);
-      setDepartments(Array.isArray(deptData) ? deptData : []);
-      const secs: PageSection[] = pageData.sections || [];
+      if (Array.isArray(staffData) && staffData.length > 0) setStaff(staffData);
+      if (Array.isArray(deptData) && deptData.length > 0) setDepartments(deptData);
+      const secs: PageSection[] = pageData?.sections || FALLBACK_PAGE_SECTIONS.team;
       setHeaderSec(secs.find((s) => s.sectionKey === 'team_header') || null);
       setExtraSections(secs.filter((s) => s.sectionKey !== 'team_header'));
     });

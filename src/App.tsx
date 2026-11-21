@@ -18,6 +18,7 @@ import { BlogPage } from './pages/BlogPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { ContactPage } from './pages/ContactPage';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AppErrorBoundary, ErrorPage } from './pages/ErrorPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -51,117 +52,151 @@ const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 export default function App() {
   return (
-    <SiteProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/admin/*" element={<AdminDashboard />} />
-          <Route
-            path="/"
-            element={
-              <PublicLayout>
-                <HomePage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/about"
-            element={
-              <PublicLayout>
-                <AboutPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/services"
-            element={
-              <PublicLayout>
-                <ServicesPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/services/:slug"
-            element={
-              <PublicLayout>
-                <ServicesPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/portfolio"
-            element={
-              <PublicLayout>
-                <PortfolioPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/events"
-            element={
-              <PublicLayout>
-                <EventsPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/team"
-            element={
-              <PublicLayout>
-                <TeamPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/careers"
-            element={
-              <PublicLayout>
-                <CareersPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/blog"
-            element={
-              <PublicLayout>
-                <BlogPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/blog/:slug"
-            element={
-              <PublicLayout>
-                <BlogPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/reviews"
-            element={
-              <PublicLayout>
-                <ReviewsPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <PublicLayout>
-                <ContactPage />
-              </PublicLayout>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <PublicLayout>
-                <HomePage />
-              </PublicLayout>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </SiteProvider>
+    <AppErrorBoundary>
+      <SiteProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/admin/*" element={<AdminDashboard />} />
+            <Route
+              path="/"
+              element={
+                <PublicLayout>
+                  <HomePage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <PublicLayout>
+                  <AboutPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/services"
+              element={
+                <PublicLayout>
+                  <ServicesPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/services/:slug"
+              element={
+                <PublicLayout>
+                  <ServicesPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/portfolio"
+              element={
+                <PublicLayout>
+                  <PortfolioPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/events"
+              element={
+                <PublicLayout>
+                  <EventsPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/team"
+              element={
+                <PublicLayout>
+                  <TeamPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/careers"
+              element={
+                <PublicLayout>
+                  <CareersPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <PublicLayout>
+                  <BlogPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/blog/:slug"
+              element={
+                <PublicLayout>
+                  <BlogPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/reviews"
+              element={
+                <PublicLayout>
+                  <ReviewsPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <PublicLayout>
+                  <ContactPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/403"
+              element={
+                <PublicLayout>
+                  <ErrorPage code="403" />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/500"
+              element={
+                <PublicLayout>
+                  <ErrorPage code="500" />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/503"
+              element={
+                <PublicLayout>
+                  <ErrorPage code="503" />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/404"
+              element={
+                <PublicLayout>
+                  <ErrorPage code="404" />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <PublicLayout>
+                  <ErrorPage code="404" />
+                </PublicLayout>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </SiteProvider>
+    </AppErrorBoundary>
   );
 }

@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { AdminUser, NavigationItem, SeoMetadata, SiteSettings, StickyNote, ThemeConfig } from '../types/cms';
+import {
+  FALLBACK_NAVIGATION,
+  FALLBACK_SEO,
+  FALLBACK_SETTINGS,
+  FALLBACK_STICKY_NOTES,
+  FALLBACK_THEMES,
+} from '../data/fallbackData';
 
 interface BootstrapCachePayload {
   settings: SiteSettings | null;
@@ -31,14 +38,14 @@ interface SiteContextValue {
 const SiteContext = createContext<SiteContextValue | undefined>(undefined);
 
 const TOKEN_STORAGE_KEY = 'yrt_admin_token';
-const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v2';
+const BOOTSTRAP_CACHE_KEY = 'yrt_bootstrap_cache_v3';
 
 function readBootstrapCache(): BootstrapCachePayload | null {
   try {
     const raw = localStorage.getItem(BOOTSTRAP_CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as BootstrapCachePayload;
-    if (parsed && typeof parsed === 'object') {
+    if (parsed && typeof parsed === 'object' && parsed.settings && Array.isArray(parsed.navigation) && parsed.navigation.length > 0) {
       return parsed;
     }
     return null;
@@ -74,7 +81,7 @@ function applyThemeCssVariables(theme: ThemeConfig | null) {
   root.style.setProperty('--font-body', `"${theme.bodyFont || 'Plus Jakarta Sans'}", sans-serif`);
 
   const radius =
-    theme.buttonStyle === 'rounded' ? '8px' : theme.buttonStyle === 'editorial' ? '0px' : '2px';
+    theme.buttonStyle === 'rounded' ? '4px' : theme.buttonStyle === 'editorial' ? '0px' : '2px';
   root.style.setProperty('--btn-radius', radius);
 }
 
@@ -90,18 +97,24 @@ function updateFavicon(url?: string) {
 }
 
 const initialCache = typeof window !== 'undefined' ? readBootstrapCache() : null;
-if (initialCache?.activeTheme && typeof document !== 'undefined') {
-  applyThemeCssVariables(initialCache.activeTheme);
+if (typeof document !== 'undefined') {
+  applyThemeCssVariables(initialCache?.activeTheme || FALLBACK_THEMES[0]);
 }
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<SiteSettings | null>(() => initialCache?.settings || null);
-  const [activeTheme, setActiveTheme] = useState<ThemeConfig | null>(() => initialCache?.activeTheme || null);
-  const [themes, setThemes] = useState<ThemeConfig[]>(() => initialCache?.themes || []);
-  const [navigation, setNavigation] = useState<NavigationItem[]>(() => initialCache?.navigation || []);
-  const [seoList, setSeoList] = useState<SeoMetadata[]>(() => initialCache?.seo || []);
-  const [stickyNotes, setStickyNotes] = useState<StickyNote[]>(() => initialCache?.stickyNotes || []);
-  const [loading, setLoading] = useState<boolean>(() => !initialCache?.settings);
+  const [settings, setSettings] = useState<SiteSettings | null>(() => initialCache?.settings || FALLBACK_SETTINGS);
+  const [activeTheme, setActiveTheme] = useState<ThemeConfig | null>(() => initialCache?.activeTheme || FALLBACK_THEMES[0]);
+  const [themes, setThemes] = useState<ThemeConfig[]>(() => initialCache?.themes || FALLBACK_THEMES);
+  const [navigation, setNavigation] = useState<NavigationItem[]>(() =>
+    initialCache?.navigation && initialCache.navigation.length > 0 ? initialCache.navigation : FALLBACK_NAVIGATION
+  );
+  const [seoList, setSeoList] = useState<SeoMetadata[]>(() =>
+    initialCache?.seo && initialCache.seo.length > 0 ? initialCache.seo : FALLBACK_SEO
+  );
+  const [stickyNotes, setStickyNotes] = useState<StickyNote[]>(() =>
+    initialCache?.stickyNotes || FALLBACK_STICKY_NOTES
+  );
+  const [loading, setLoading] = useState<boolean>(false);
   const [adminToken, setAdminToken] = useState<string | null>(() => {
     try {
       return sessionStorage.getItem(TOKEN_STORAGE_KEY);
@@ -115,25 +128,37 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await fetch('/api/public/bootstrap');
       if (!res.ok) return;
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.toLowerCase().includes('application/json')) return;
       const data = await res.json();
-      setSettings(data.settings);
-      setActiveTheme(data.activeTheme);
-      setThemes(data.themes || []);
-      setNavigation(data.navigation || []);
-      setSeoList(data.seo || []);
-      setStickyNotes(data.stickyNotes || []);
-      applyThemeCssVariables(data.activeTheme);
-      updateFavicon(data.settings?.faviconUrl);
+      if (!data || typeof data !== 'object') return;
+
+      const nextSettings = data.settings || FALLBACK_SETTINGS;
+      const nextThemes = Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_THEMES;
+      const nextTheme = data.activeTheme || nextThemes[0] || FALLBACK_THEMES[0];
+      const nextNav =
+        Array.isArray(data.navigation) && data.navigation.length > 0 ? data.navigation : FALLBACK_NAVIGATION;
+      const nextSeo = Array.isArray(data.seo) && data.seo.length > 0 ? data.seo : FALLBACK_SEO;
+      const nextSticky = Array.isArray(data.stickyNotes) ? data.stickyNotes : FALLBACK_STICKY_NOTES;
+
+      setSettings(nextSettings);
+      setActiveTheme(nextTheme);
+      setThemes(nextThemes);
+      setNavigation(nextNav);
+      setSeoList(nextSeo);
+      setStickyNotes(nextSticky);
+      applyThemeCssVariables(nextTheme);
+      updateFavicon(nextSettings?.faviconUrl);
       writeBootstrapCache({
-        settings: data.settings,
-        activeTheme: data.activeTheme,
-        themes: data.themes || [],
-        navigation: data.navigation || [],
-        seo: data.seo || [],
-        stickyNotes: data.stickyNotes || [],
+        settings: nextSettings,
+        activeTheme: nextTheme,
+        themes: nextThemes,
+        navigation: nextNav,
+        seo: nextSeo,
+        stickyNotes: nextSticky,
       });
-    } catch (err) {
-      console.error('Bootstrap fetch error:', err);
+    } catch {
+      // Keep fallback/cached state seamlessly
     } finally {
       setLoading(false);
     }
@@ -141,7 +166,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     refreshBootstrap();
-    // Preload world map geometry in background cache for instant map/globe render
     try {
       if (!sessionStorage.getItem('yrt_map_preloaded')) {
         sessionStorage.setItem('yrt_map_preloaded', '1');

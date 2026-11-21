@@ -37,7 +37,7 @@ export const Navbar: React.FC = () => {
       <div
         className={`mx-auto flex items-center justify-between gap-3 pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled
-            ? 'max-w-[1180px] px-4 sm:px-5 h-[62px] rounded-2xl apple-glass-nav border border-white/15'
+            ? 'max-w-[1180px] px-4 sm:px-5 h-[62px] rounded-md apple-glass-nav border border-white/15'
             : 'max-w-full px-5 sm:px-8 h-[70px] rounded-none bg-[#08080A]/80 backdrop-blur-md border-b border-white/10'
         }`}
       >
@@ -73,7 +73,7 @@ export const Navbar: React.FC = () => {
                     href={item.path}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap shrink-0 transition-colors hover:text-white hover:bg-white/[0.06]"
+                    className="px-3 py-1.5 rounded-[2px] text-sm font-medium whitespace-nowrap shrink-0 transition-colors hover:text-white hover:bg-white/[0.06]"
                     style={{ color: 'var(--brand-muted)' }}
                   >
                     {item.label}
@@ -84,14 +84,14 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={item._id}
                   to={item.path}
-                  className="relative px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap shrink-0 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                  className="relative px-3 py-1.5 rounded-[2px] text-sm font-medium whitespace-nowrap shrink-0 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                   style={{ color: isActive ? '#ffffff' : 'var(--brand-muted)' }}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="nav-active-pill"
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                      className="absolute inset-0 rounded-lg bg-white/[0.1] border border-white/15 -z-10"
+                      className="absolute inset-0 rounded-[2px] bg-white/[0.1] border border-white/15 -z-10"
                     />
                   )}
                   {item.label}
@@ -114,7 +114,7 @@ export const Navbar: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl text-white apple-glass-pill"
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-[2px] text-white apple-glass"
             aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -130,7 +130,7 @@ export const Navbar: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.98 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden max-w-[1180px] mx-auto mt-2 rounded-2xl apple-glass px-6 py-6 space-y-4 pointer-events-auto"
+            className="md:hidden max-w-[1180px] mx-auto mt-2 rounded-[2px] apple-glass px-6 py-6 space-y-4 pointer-events-auto"
           >
             <div className="flex flex-col space-y-2.5">
               <Link to="/about" className="text-base font-medium text-white py-1">

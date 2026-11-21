@@ -3,14 +3,17 @@ import { Briefcase, Calendar, CheckCircle2, MapPin, Upload, X } from 'lucide-rea
 import { usePageSeo } from '../context/SiteContext';
 import { JobPosition, PageSection } from '../types/cms';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FALLBACK_JOBS, FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 export const CareersPage: React.FC = () => {
   usePageSeo('careers');
-  const [jobs, setJobs] = useState<JobPosition[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [jobs, setJobs] = useState<JobPosition[]>(FALLBACK_JOBS);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(
+    FALLBACK_PAGE_SECTIONS.careers[0] || null
+  );
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
   const [deptFilter, setDeptFilter] = useState('All');
-  const [selectedJob, setSelectedJob] = useState<JobPosition | null>(null);
+  const [selectedJob, setSelectedJob] = useState<JobPosition | null>(FALLBACK_JOBS[0] || null);
   const [applyingJob, setApplyingJob] = useState<JobPosition | null>(null);
 
   // Application form state
@@ -27,13 +30,15 @@ export const CareersPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/careers').then((r) => r.json()),
-      fetch('/api/public/pages/careers').then((r) => r.json()),
+      safeFetchJson<JobPosition[]>('/api/public/careers', FALLBACK_JOBS),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/careers', {
+        sections: FALLBACK_PAGE_SECTIONS.careers,
+      }),
     ]).then(([jobsData, pageData]) => {
-      const list = Array.isArray(jobsData) ? jobsData : [];
+      const list = Array.isArray(jobsData) && jobsData.length > 0 ? jobsData : FALLBACK_JOBS;
       setJobs(list);
       if (list.length > 0) setSelectedJob(list[0]);
-      const secs: PageSection[] = pageData.sections || [];
+      const secs: PageSection[] = pageData?.sections || FALLBACK_PAGE_SECTIONS.careers;
       setHeaderSec(secs.find((s) => s.sectionKey === 'careers_header') || null);
       setExtraSections(secs.filter((s) => s.sectionKey !== 'careers_header'));
     });
@@ -76,7 +81,8 @@ export const CareersPage: React.FC = () => {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
+      const ct = res.headers.get('content-type') || '';
+      const data = ct.toLowerCase().includes('application/json') ? await res.json() : {};
       if (!res.ok) {
         setSubmitError(data.error || 'Failed to submit application.');
       } else {

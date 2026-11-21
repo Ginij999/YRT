@@ -38,7 +38,7 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.45, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                className="p-6 rounded-2xl apple-glass-card"
+                className="p-6 rounded-[2px] apple-glass-card"
               >
                 <div className="font-display text-4xl md:text-5xl font-bold text-white tabular-nums">
                   {item.value}
@@ -96,7 +96,7 @@ export const CustomSectionBlock: React.FC<{ section: PageSection }> = ({ section
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6 min-h-[320px] lg:min-h-[420px] rounded-3xl apple-glass overflow-hidden"
+            className="lg:col-span-6 min-h-[320px] lg:min-h-[420px] rounded-[2px] apple-glass overflow-hidden"
           >
             {section.videoUrl ? (
               <video

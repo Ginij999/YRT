@@ -1,6 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Globe, Map as MapIcon, MapPin, Clock, Navigation2 } from 'lucide-react';
+import {
+  Clock,
+  Crosshair,
+  Globe,
+  Map as MapIcon,
+  MapPin,
+  Minus,
+  Navigation2,
+  Plus,
+  RotateCcw,
+} from 'lucide-react';
 import { useSite } from '../context/SiteContext';
 import { CAPITAL_CITIES, Globe3D, WorldCountriesDataset } from './Globe3D';
 
@@ -60,8 +70,24 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
   const [dataset, setDataset] = useState<WorldCountriesDataset | null>(() => cachedDataset);
   const [viewMode, setViewMode] = useState<'svg' | 'globe'>('svg');
   const [hoveredCountry, setHoveredCountry] = useState<{ id: string; title: string } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<{ id: string; title: string }>({
+    id: 'NP',
+    title: 'Nepal',
+  });
   const [pointerPos, setPointerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [ktmTime, setKtmTime] = useState<string>(() => formatKtmTime());
+
+  // 2D Interactive Map Zoom & Pan Controls
+  const [zoom, setZoom] = useState<number>(1);
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{ clientX: number; clientY: number; panX: number; panY: number; moved: boolean }>({
+    clientX: 0,
+    clientY: 0,
+    panX: 0,
+    panY: 0,
+    moved: false,
+  });
 
   useEffect(() => {
     if (!cachedDataset) {
@@ -92,6 +118,35 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
     }));
   }, [dataset]);
 
+  const clampPan = (nx: number, ny: number, z: number) => {
+    const maxPanX = ((z - 1) * 48);
+    const maxPanY = ((z - 1) * 48);
+    return {
+      x: Math.max(-maxPanX, Math.min(maxPanX, nx)),
+      y: Math.max(-maxPanY, Math.min(maxPanY, ny)),
+    };
+  };
+
+  const adjustZoom = (delta: number) => {
+    setZoom((prev) => {
+      const next = Math.max(1, Math.min(4.5, Number((prev + delta).toFixed(2))));
+      setPan((p) => (next === 1 ? { x: 0, y: 0 } : clampPan(p.x, p.y, next)));
+      return next;
+    });
+  };
+
+  const resetMap = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+    setSelectedCountry({ id: 'NP', title: 'Nepal' });
+  };
+
+  const focusKathmandu2D = () => {
+    setZoom(2.6);
+    setPan({ x: -18, y: -6 });
+    setSelectedCountry({ id: 'NP', title: 'Nepal' });
+  };
+
   return (
     <section
       className={`relative overflow-hidden ${compact ? 'py-14' : 'py-24 border-t'}`}
@@ -107,7 +162,7 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl space-y-3"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full apple-glass-pill text-xs font-semibold text-white">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] border border-red-500/40 bg-red-950/25 text-xs font-semibold text-white">
               <MapPin className="w-3.5 h-3.5 text-red-500" />
               <span>Kathmandu, Nepal (KTM) · Sole Headquarters</span>
             </div>
@@ -121,11 +176,11 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
 
           {/* Controls: SVG World Map vs 3D Globe + KTM HQ Time */}
           <div className="flex flex-wrap items-center gap-3 self-start lg:self-auto">
-            <div className="inline-flex rounded-xl p-1 bg-[#121218] border border-white/15">
+            <div className="inline-flex rounded-[2px] p-1 bg-[#121218] border border-white/15">
               <button
                 type="button"
                 onClick={() => setViewMode('svg')}
-                className={`px-3.5 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
+                className={`px-3.5 py-2 rounded-[2px] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
                   viewMode === 'svg'
                     ? 'bg-red-600 text-white'
                     : 'text-neutral-300 hover:text-white'
@@ -137,7 +192,7 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
               <button
                 type="button"
                 onClick={() => setViewMode('globe')}
-                className={`px-3.5 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
+                className={`px-3.5 py-2 rounded-[2px] text-xs font-semibold inline-flex items-center gap-1.5 transition-colors ${
                   viewMode === 'globe'
                     ? 'bg-red-600 text-white'
                     : 'text-neutral-300 hover:text-white'
@@ -148,7 +203,7 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
               </button>
             </div>
 
-            <div className="apple-glass rounded-xl px-4 py-2 flex items-center gap-3.5">
+            <div className="apple-glass rounded-[2px] px-4 py-2 flex items-center gap-3.5">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-red-500 shrink-0" />
                 <div>
@@ -171,127 +226,223 @@ export const GlobalNetworkMap: React.FC<{ compact?: boolean }> = ({ compact = fa
           whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="apple-glass rounded-3xl p-4 sm:p-6 md:p-7 relative overflow-hidden"
+          className="apple-glass rounded-[2px] p-4 sm:p-6 relative overflow-hidden"
         >
           {viewMode === 'globe' ? (
             <Globe3D dataset={dataset} />
           ) : (
-            <div
-              className="relative w-full aspect-[1010/666] min-h-[260px] rounded-2xl overflow-hidden bg-[#09090d] border border-white/10"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                setPointerPos({
-                  x: e.clientX - rect.left,
-                  y: e.clientY - rect.top,
-                });
-              }}
-              onMouseLeave={() => setHoveredCountry(null)}
-            >
-              {!dataset ? (
-                <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">
-                  Loading world map geometry...
-                </div>
-              ) : (
-                <svg
-                  viewBox={`0 0 ${svgW} ${svgH}`}
-                  className="w-full h-full select-none"
-                  role="img"
-                  aria-label="Interactive vector world map with country boundaries highlighted in red and Kathmandu HQ pin"
-                >
-                  {/* Every individually separated country polygon */}
-                  <g>
-                    {dataset.countries.map((country) => {
-                      const isHovered = hoveredCountry?.id === country.id;
-                      const isNepal = country.id === 'NP';
-                      return (
-                        <path
-                          key={country.id}
-                          d={country.d}
-                          fill={
-                            isHovered
-                              ? '#991b1b'
-                              : isNepal
-                              ? '#5c1419'
-                              : '#2b2d36'
-                          }
-                          stroke={isHovered || isNepal ? '#f87171' : '#dc2626'}
-                          strokeWidth={isHovered || isNepal ? '1.35' : '0.55'}
-                          strokeLinejoin="round"
-                          className="cursor-pointer transition-colors duration-150"
-                          onMouseEnter={() =>
-                            setHoveredCountry({ id: country.id, title: country.title })
-                          }
-                        />
-                      );
-                    })}
-                  </g>
-
-                  {/* Capital city subtle markers (non-HQ reference cities) */}
-                  {capitalDots
-                    .filter((c) => !c.isHq)
-                    .map((city) => (
-                      <g key={city.id} transform={`translate(${city.x}, ${city.y})`} pointerEvents="none">
-                        <circle r="2.2" fill="#e2e8f0" stroke="#09090d" strokeWidth="0.8" opacity="0.72" />
-                      </g>
-                    ))}
-
-                  {/* Sole Headquarters Marker: Kathmandu, Nepal (KTM) */}
-                  <g transform={`translate(${ktmCoords.x}, ${ktmCoords.y})`}>
-                    <circle r="9" fill="rgba(220, 38, 38, 0.28)" stroke="#ef4444" strokeWidth="1.2" />
-                    <circle r="4.2" fill="#ef4444" stroke="#ffffff" strokeWidth="1.4" />
-                    <g transform="translate(0, -16)">
-                      <rect
-                        x="-58"
-                        y="-10"
-                        width="116"
-                        height="18"
-                        rx="4"
-                        fill="#0b0b10"
-                        stroke="#dc2626"
-                        strokeWidth="1"
-                      />
-                      <text
-                        textAnchor="middle"
-                        y="2"
-                        fill="#ffffff"
-                        fontSize="8.5"
-                        fontWeight="700"
-                        fontFamily="JetBrains Mono, monospace"
-                      >
-                        KATHMANDU · HQ
-                      </text>
-                    </g>
-                  </g>
-                </svg>
-              )}
-
-              {/* Cursor Tooltip showing currently hovered country */}
-              {hoveredCountry && (
-                <div
-                  className="pointer-events-none absolute z-20 px-3 py-1.5 rounded-lg bg-[#0d0e14]/95 border border-red-500/60 shadow-xl text-xs text-white flex items-center gap-2 whitespace-nowrap"
-                  style={{
-                    left: Math.min(pointerPos.x + 14, 760),
-                    top: Math.max(8, pointerPos.y - 36),
-                  }}
-                >
-                  <span className="font-mono-num text-[10px] px-1.5 py-0.5 rounded bg-red-600/20 text-red-400 border border-red-500/30">
-                    {hoveredCountry.id}
+            <div className="space-y-3">
+              {/* Interactive 2D Map Container */}
+              <div
+                className={`relative w-full aspect-[1010/666] min-h-[280px] rounded-[2px] overflow-hidden bg-[#09090d] border border-white/10 ${
+                  zoom > 1 ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-crosshair'
+                }`}
+                onMouseDown={(e) => {
+                  dragStartRef.current = {
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    panX: pan.x,
+                    panY: pan.y,
+                    moved: false,
+                  };
+                  if (zoom > 1) setIsDragging(true);
+                }}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setPointerPos({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                  });
+                  if (isDragging && zoom > 1) {
+                    const dxPct = ((e.clientX - dragStartRef.current.clientX) / rect.width) * 100;
+                    const dyPct = ((e.clientY - dragStartRef.current.clientY) / rect.height) * 100;
+                    if (Math.abs(dxPct) > 0.5 || Math.abs(dyPct) > 0.5) {
+                      dragStartRef.current.moved = true;
+                    }
+                    setPan(clampPan(dragStartRef.current.panX + dxPct, dragStartRef.current.panY + dyPct, zoom));
+                  }
+                }}
+                onMouseUp={() => setIsDragging(false)}
+                onMouseLeave={() => {
+                  setIsDragging(false);
+                  setHoveredCountry(null);
+                }}
+              >
+                {/* Top-Left Selected Country HUD */}
+                <div className="absolute top-3 left-3 z-20 px-3 py-1.5 rounded-[2px] bg-[#0e0f16]/95 border border-white/15 text-xs text-white flex items-center gap-2 pointer-events-none">
+                  <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                  <span className="font-mono-num text-[11px] text-red-400 font-bold">
+                    {(hoveredCountry || selectedCountry).id}
                   </span>
-                  <span className="font-semibold">{hoveredCountry.title}</span>
-                  {hoveredCountry.id === 'NP' && (
-                    <span className="text-[10px] font-semibold text-red-400">· KTM HQ</span>
+                  <span className="font-semibold">{(hoveredCountry || selectedCountry).title}</span>
+                  {(hoveredCountry || selectedCountry).id === 'NP' && (
+                    <span className="text-[10px] font-mono-num text-red-400">· KTM HQ</span>
                   )}
                 </div>
-              )}
 
-              {/* Bottom Map Legend */}
-              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-                <div className="px-3 py-1.5 rounded-lg bg-[#0b0c12]/90 border border-white/10 text-[11px] text-neutral-300 flex items-center gap-2">
-                  <Navigation2 className="w-3 h-3 text-red-500" />
-                  <span>Hover any country to inspect · {dataset?.countries.length || 256} countries mapped</span>
+                {/* Top-Right 2D Map Zoom & Focus Controls */}
+                <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => adjustZoom(0.5)}
+                    className="w-8 h-8 rounded-[2px] bg-[#0e0f16]/95 border border-white/15 hover:border-red-500/60 text-white inline-flex items-center justify-center transition-colors"
+                    aria-label="Zoom in map"
+                    title="Zoom In"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => adjustZoom(-0.5)}
+                    className="w-8 h-8 rounded-[2px] bg-[#0e0f16]/95 border border-white/15 hover:border-red-500/60 text-white inline-flex items-center justify-center transition-colors"
+                    aria-label="Zoom out map"
+                    title="Zoom Out"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={focusKathmandu2D}
+                    className="h-8 px-2.5 rounded-[2px] bg-[#0e0f16]/95 border border-red-500/45 hover:bg-red-600 text-white text-[11px] font-medium inline-flex items-center gap-1 transition-colors"
+                  >
+                    <Crosshair className="w-3 h-3" />
+                    <span className="hidden sm:inline">Focus KTM HQ</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetMap}
+                    className="h-8 px-2.5 rounded-[2px] bg-[#0e0f16]/95 border border-white/15 hover:border-white/40 text-neutral-300 hover:text-white text-[11px] font-medium inline-flex items-center gap-1 transition-colors"
+                    title="Reset map zoom and pan"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span className="hidden sm:inline">Reset</span>
+                  </button>
                 </div>
-                <div className="px-3 py-1.5 rounded-lg bg-[#0b0c12]/90 border border-red-500/30 text-[11px] font-mono-num text-white">
-                  HQ: Kathmandu, Nepal (KTM)
+
+                {!dataset ? (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-neutral-400">
+                    Loading world map geometry...
+                  </div>
+                ) : (
+                  <div
+                    className="w-full h-full transition-transform duration-200 ease-out"
+                    style={{
+                      transform: `translate(${pan.x}%, ${pan.y}%) scale(${zoom})`,
+                      transformOrigin: 'center center',
+                    }}
+                  >
+                    <svg
+                      viewBox={`0 0 ${svgW} ${svgH}`}
+                      className="w-full h-full select-none"
+                      role="img"
+                      aria-label="Interactive vector world map with country boundaries highlighted in red and Kathmandu HQ pin"
+                    >
+                      {/* Every individually separated country polygon */}
+                      <g>
+                        {dataset.countries.map((country) => {
+                          const isHovered = hoveredCountry?.id === country.id;
+                          const isSelected = selectedCountry?.id === country.id;
+                          const isNepal = country.id === 'NP';
+                          return (
+                            <path
+                              key={country.id}
+                              d={country.d}
+                              fill={
+                                isHovered
+                                  ? '#b91c1c'
+                                  : isSelected
+                                  ? '#7f1d1d'
+                                  : isNepal
+                                  ? '#5c1419'
+                                  : '#2b2d36'
+                              }
+                              stroke={isHovered || isSelected || isNepal ? '#fca5a5' : '#dc2626'}
+                              strokeWidth={isHovered || isSelected || isNepal ? '1.35' : '0.55'}
+                              strokeLinejoin="round"
+                              className="cursor-pointer transition-colors duration-150"
+                              onMouseEnter={() =>
+                                setHoveredCountry({ id: country.id, title: country.title })
+                              }
+                              onClick={() => {
+                                if (!dragStartRef.current.moved) {
+                                  setSelectedCountry({ id: country.id, title: country.title });
+                                }
+                              }}
+                            />
+                          );
+                        })}
+                      </g>
+
+                      {/* Capital city subtle markers */}
+                      {capitalDots
+                        .filter((c) => !c.isHq)
+                        .map((city) => (
+                          <g key={city.id} transform={`translate(${city.x}, ${city.y})`} pointerEvents="none">
+                            <circle r="2.2" fill="#e2e8f0" stroke="#09090d" strokeWidth="0.8" opacity="0.72" />
+                          </g>
+                        ))}
+
+                      {/* Sole Headquarters Marker: Kathmandu, Nepal (KTM) */}
+                      <g transform={`translate(${ktmCoords.x}, ${ktmCoords.y})`} pointerEvents="none">
+                        <circle r="9" fill="rgba(220, 38, 38, 0.28)" stroke="#ef4444" strokeWidth="1.2" />
+                        <circle r="4.2" fill="#ef4444" stroke="#ffffff" strokeWidth="1.4" />
+                        <g transform="translate(0, -16)">
+                          <rect
+                            x="-58"
+                            y="-10"
+                            width="116"
+                            height="18"
+                            rx="1"
+                            fill="#0b0b10"
+                            stroke="#dc2626"
+                            strokeWidth="1"
+                          />
+                          <text
+                            textAnchor="middle"
+                            y="2"
+                            fill="#ffffff"
+                            fontSize="8.5"
+                            fontWeight="700"
+                            fontFamily="JetBrains Mono, monospace"
+                          >
+                            KATHMANDU · HQ
+                          </text>
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                )}
+
+                {/* Cursor Tooltip showing currently hovered country */}
+                {hoveredCountry && !isDragging && (
+                  <div
+                    className="pointer-events-none absolute z-20 px-3 py-1.5 rounded-[2px] bg-[#0d0e14]/95 border border-red-500/60 shadow-xl text-xs text-white flex items-center gap-2 whitespace-nowrap"
+                    style={{
+                      left: Math.min(pointerPos.x + 14, 760),
+                      top: Math.max(44, pointerPos.y - 36),
+                    }}
+                  >
+                    <span className="font-mono-num text-[10px] px-1.5 py-0.5 rounded-[2px] bg-red-600/20 text-red-400 border border-red-500/30">
+                      {hoveredCountry.id}
+                    </span>
+                    <span className="font-semibold">{hoveredCountry.title}</span>
+                    {hoveredCountry.id === 'NP' && (
+                      <span className="text-[10px] font-semibold text-red-400">· KTM HQ</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Bottom Map Legend */}
+                <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                  <div className="px-3 py-1.5 rounded-[2px] bg-[#0b0c12]/90 border border-white/10 text-[11px] text-neutral-300 flex items-center gap-2">
+                    <Navigation2 className="w-3 h-3 text-red-500" />
+                    <span>
+                      Click or hover any country · Zoom {zoom.toFixed(1)}x ({zoom > 1 ? 'drag to pan' : `${dataset?.countries.length || 256} countries`})
+                    </span>
+                  </div>
+                  <div className="px-3 py-1.5 rounded-[2px] bg-[#0b0c12]/90 border border-red-500/30 text-[11px] font-mono-num text-white">
+                    HQ: Kathmandu, Nepal (KTM)
+                  </div>
                 </div>
               </div>
             </div>

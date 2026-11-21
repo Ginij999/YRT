@@ -7,6 +7,7 @@ import { PageSection, StaffMember } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
+import { FALLBACK_PAGE_SECTIONS, FALLBACK_STAFF, safeFetchJson } from '../data/fallbackData';
 
 export const AboutPage: React.FC = () => {
   const { apiFetch } = useSite();
@@ -15,22 +16,40 @@ export const AboutPage: React.FC = () => {
 
   usePageSeo('about');
 
-  const [sections, setSections] = useState<PageSection[]>([]);
-  const [homeStats, setHomeStats] = useState<PageSection | null>(null);
-  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [sections, setSections] = useState<PageSection[]>(FALLBACK_PAGE_SECTIONS.about);
+  const [homeStats, setHomeStats] = useState<PageSection | null>(
+    FALLBACK_PAGE_SECTIONS.home.find((s) => s.sectionKey === 'company_stats') || null
+  );
+  const [staff, setStaff] = useState<StaffMember[]>(FALLBACK_STAFF);
 
   useEffect(() => {
     const url = isPreview ? '/api/public/pages/about?preview=true' : '/api/public/pages/about';
+    const fetchAbout = async () => {
+      try {
+        const r = await apiFetch(url);
+        if (!r.ok) return { sections: FALLBACK_PAGE_SECTIONS.about };
+        const ct = r.headers.get('content-type') || '';
+        if (!ct.toLowerCase().includes('application/json')) return { sections: FALLBACK_PAGE_SECTIONS.about };
+        return await r.json();
+      } catch {
+        return { sections: FALLBACK_PAGE_SECTIONS.about };
+      }
+    };
+
     Promise.all([
-      apiFetch(url).then((r) => r.json()),
-      fetch('/api/public/pages/home').then((r) => r.json()),
-      fetch('/api/public/staff').then((r) => r.json()),
+      fetchAbout(),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/home', {
+        sections: FALLBACK_PAGE_SECTIONS.home,
+      }),
+      safeFetchJson<StaffMember[]>('/api/public/staff', FALLBACK_STAFF),
     ])
       .then(([aboutData, homeData, staffData]) => {
-        setSections(aboutData.sections || []);
+        if (Array.isArray(aboutData.sections) && aboutData.sections.length > 0) {
+          setSections(aboutData.sections);
+        }
         const statsSec = (homeData.sections || []).find((s: PageSection) => s.sectionKey === 'company_stats');
-        setHomeStats(statsSec || null);
-        setStaff(Array.isArray(staffData) ? staffData : []);
+        if (statsSec) setHomeStats(statsSec);
+        if (Array.isArray(staffData) && staffData.length > 0) setStaff(staffData);
       })
       .catch(() => {});
   }, [isPreview, apiFetch]);
@@ -85,7 +104,7 @@ export const AboutPage: React.FC = () => {
               initial={{ opacity: 0, x: 20, scale: 0.98 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:col-span-6 min-h-[340px] rounded-3xl apple-glass overflow-hidden"
+              className="lg:col-span-6 min-h-[340px] rounded-[2px] apple-glass overflow-hidden"
             >
               <MediaImage src={heroSection.imageUrl} alt={heroSection.title} loading="eager" />
             </motion.div>
@@ -121,7 +140,7 @@ export const AboutPage: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.45, delay: idx * 0.06 }}
-                  className="p-8 rounded-2xl apple-glass-card space-y-3"
+                  className="p-8 rounded-[2px] apple-glass-card space-y-3"
                 >
                   <span className="font-mono-num text-xs" style={{ color: 'var(--brand-accent)' }}>
                     {String(idx + 1).padStart(2, '0')}.

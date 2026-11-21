@@ -5,23 +5,27 @@ import { usePageSeo } from '../context/SiteContext';
 import { PageSection, ServiceItem } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { ErrorPage } from './ErrorPage';
+import { FALLBACK_PAGE_SECTIONS, FALLBACK_SERVICES, safeFetchJson } from '../data/fallbackData';
 
 export const ServicesPage: React.FC = () => {
   const { slug } = useParams<{ slug?: string }>();
-  const [services, setServices] = useState<ServiceItem[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [services, setServices] = useState<ServiceItem[]>(FALLBACK_SERVICES);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(FALLBACK_PAGE_SECTIONS.services[0]);
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/services').then((r) => r.json()),
-      fetch('/api/public/pages/services').then((r) => r.json()),
+      safeFetchJson<ServiceItem[]>('/api/public/services', FALLBACK_SERVICES),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/services', {
+        sections: FALLBACK_PAGE_SECTIONS.services,
+      }),
     ])
       .then(([svcData, pageData]) => {
-        setServices(Array.isArray(svcData) ? svcData : []);
-        const secs: PageSection[] = pageData.sections || [];
-        setHeaderSec(secs.find((s) => s.sectionKey === 'services_header') || null);
+        setServices(Array.isArray(svcData) && svcData.length > 0 ? svcData : FALLBACK_SERVICES);
+        const secs: PageSection[] = pageData.sections || FALLBACK_PAGE_SECTIONS.services;
+        setHeaderSec(secs.find((s) => s.sectionKey === 'services_header') || FALLBACK_PAGE_SECTIONS.services[0]);
         setExtraSections(secs.filter((s) => s.sectionKey !== 'services_header'));
       })
       .finally(() => setLoading(false));
@@ -33,6 +37,10 @@ export const ServicesPage: React.FC = () => {
     activeService ? `${activeService.title} – Services` : undefined,
     activeService ? activeService.shortDescription : undefined
   );
+
+  if (slug && !loading && !activeService) {
+    return <ErrorPage code="404" />;
+  }
 
   if (slug && activeService) {
     return (

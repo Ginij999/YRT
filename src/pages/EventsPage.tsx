@@ -5,23 +5,30 @@ import { usePageSeo } from '../context/SiteContext';
 import { EventItem, PageSection } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FALLBACK_EVENTS, FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 export const EventsPage: React.FC = () => {
   usePageSeo('events');
   const [searchParams, setSearchParams] = useSearchParams();
-  const [events, setEvents] = useState<EventItem[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [events, setEvents] = useState<EventItem[]>(FALLBACK_EVENTS);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(
+    FALLBACK_PAGE_SECTIONS.events[0] || null
+  );
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'ongoing' | 'completed'>('all');
   const [gameFilter, setGameFilter] = useState('All');
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/events').then((r) => r.json()),
-      fetch('/api/public/pages/events').then((r) => r.json()),
+      safeFetchJson<EventItem[]>('/api/public/events', FALLBACK_EVENTS),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/events', {
+        sections: FALLBACK_PAGE_SECTIONS.events,
+      }),
     ]).then(([evtData, pageData]) => {
-      setEvents(Array.isArray(evtData) ? evtData : []);
-      const secs: PageSection[] = pageData.sections || [];
+      if (Array.isArray(evtData) && evtData.length > 0) {
+        setEvents(evtData);
+      }
+      const secs: PageSection[] = pageData?.sections || FALLBACK_PAGE_SECTIONS.events;
       setHeaderSec(secs.find((s) => s.sectionKey === 'events_header') || null);
       setExtraSections(secs.filter((s) => s.sectionKey !== 'events_header'));
     });

@@ -5,14 +5,17 @@ import { usePageSeo } from '../context/SiteContext';
 import { PageSection, PortfolioItem } from '../types/cms';
 import { MediaImage } from '../components/MediaImage';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
+import { FALLBACK_PAGE_SECTIONS, FALLBACK_PORTFOLIO, safeFetchJson } from '../data/fallbackData';
 
 export const PortfolioPage: React.FC = () => {
   usePageSeo('portfolio');
   const [searchParams, setSearchParams] = useSearchParams();
-  const [projects, setProjects] = useState<PortfolioItem[]>([]);
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [projects, setProjects] = useState<PortfolioItem[]>(FALLBACK_PORTFOLIO);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(
+    FALLBACK_PAGE_SECTIONS.portfolio[0] || null
+  );
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [gameFilter, setGameFilter] = useState('All');
@@ -21,12 +24,16 @@ export const PortfolioPage: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/public/portfolio').then((r) => r.json()),
-      fetch('/api/public/pages/portfolio').then((r) => r.json()),
+      safeFetchJson<PortfolioItem[]>('/api/public/portfolio', FALLBACK_PORTFOLIO),
+      safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/portfolio', {
+        sections: FALLBACK_PAGE_SECTIONS.portfolio,
+      }),
     ])
       .then(([portData, pageData]) => {
-        setProjects(Array.isArray(portData) ? portData : []);
-        const secs: PageSection[] = pageData.sections || [];
+        if (Array.isArray(portData) && portData.length > 0) {
+          setProjects(portData);
+        }
+        const secs: PageSection[] = pageData?.sections || FALLBACK_PAGE_SECTIONS.portfolio;
         setHeaderSec(secs.find((s) => s.sectionKey === 'portfolio_header') || null);
         setExtraSections(secs.filter((s) => s.sectionKey !== 'portfolio_header'));
       })

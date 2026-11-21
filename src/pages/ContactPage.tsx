@@ -6,6 +6,7 @@ import { usePageSeo, useSite } from '../context/SiteContext';
 import { PageSection } from '../types/cms';
 import { CustomSectionBlock } from '../components/DynamicExtraSections';
 import { GlobalNetworkMap } from '../components/GlobalNetworkMap';
+import { FALLBACK_PAGE_SECTIONS, safeFetchJson } from '../data/fallbackData';
 
 const INQUIRY_CATEGORIES = [
   'Tournament Production',
@@ -22,7 +23,7 @@ export const ContactPage: React.FC = () => {
   const { settings } = useSite();
   const [searchParams] = useSearchParams();
 
-  const [headerSec, setHeaderSec] = useState<PageSection | null>(null);
+  const [headerSec, setHeaderSec] = useState<PageSection | null>(FALLBACK_PAGE_SECTIONS.contact[0]);
   const [extraSections, setExtraSections] = useState<PageSection[]>([]);
 
   const [name, setName] = useState('');
@@ -37,13 +38,13 @@ export const ContactPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    fetch('/api/public/pages/contact')
-      .then((r) => r.json())
-      .then((data) => {
-        const secs: PageSection[] = data.sections || [];
-        setHeaderSec(secs.find((s) => s.sectionKey === 'contact_header') || null);
-        setExtraSections(secs.filter((s) => s.sectionKey !== 'contact_header'));
-      });
+    safeFetchJson<{ sections?: PageSection[] }>('/api/public/pages/contact', {
+      sections: FALLBACK_PAGE_SECTIONS.contact,
+    }).then((data) => {
+      const secs: PageSection[] = data.sections || FALLBACK_PAGE_SECTIONS.contact;
+      setHeaderSec(secs.find((s) => s.sectionKey === 'contact_header') || FALLBACK_PAGE_SECTIONS.contact[0]);
+      setExtraSections(secs.filter((s) => s.sectionKey !== 'contact_header'));
+    });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,6 +57,11 @@ export const ContactPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, category, subject, message }),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.toLowerCase().includes('application/json')) {
+        setError('Contact API unavailable. Please email us directly at partnerships@yrtesports.gg.');
+        return;
+      }
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Could not send message.');
@@ -99,8 +105,8 @@ export const ContactPage: React.FC = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 space-y-6"
           >
-            <div className="p-8 rounded-3xl apple-glass-card space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full apple-glass-pill text-[11px] font-semibold text-white">
+            <div className="p-8 rounded-[2px] apple-glass-card space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[2px] border border-red-500/40 bg-red-950/25 text-[11px] font-semibold text-white">
                 <MapPin className="w-3.5 h-3.5" style={{ color: 'var(--brand-accent)' }} />
                 <span>Kathmandu, Nepal (KTM HQ)</span>
               </div>
@@ -169,7 +175,7 @@ export const ContactPage: React.FC = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7"
           >
-            <div className="p-8 rounded-3xl apple-glass-card">
+            <div className="p-8 rounded-[2px] apple-glass-card">
               {submitted ? (
                 <div className="py-12 text-center space-y-4">
                   <CheckCircle2 className="w-12 h-12 mx-auto text-emerald-500" />

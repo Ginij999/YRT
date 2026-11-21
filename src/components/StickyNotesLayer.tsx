@@ -121,7 +121,7 @@ export const StickyNotesLayer: React.FC<{ pageSlug: string }> = ({ pageSlug }) =
               setDragOffset({ dx: e.clientX - target.left, dy: e.clientY - target.top });
               setDraggingId(note._id);
             }}
-            className="pointer-events-auto fixed rounded-xl border backdrop-blur-xl shadow-2xl p-3.5 cursor-grab active:cursor-grabbing select-none transition-shadow hover:shadow-[0_18px_40px_rgba(0,0,0,0.55)]"
+            className="pointer-events-auto fixed rounded-[2px] border backdrop-blur-xl shadow-2xl p-3.5 cursor-grab active:cursor-grabbing select-none transition-shadow hover:shadow-[0_18px_40px_rgba(0,0,0,0.55)]"
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-white/10">
               <div className="flex items-center gap-1.5 min-w-0">

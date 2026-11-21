@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import express, { Request, Response } from 'express';
 import multer from 'multer';
@@ -16,16 +17,44 @@ import {
   extractToken,
 } from './auth.ts';
 
-const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads');
+const IS_SERVERLESS = Boolean(
+  process.env.VERCEL || process.env.VERCEL_ENV || process.env.AWS_LAMBDA_FUNCTION_NAME
+);
+
+function resolveUploadsDir(): string {
+  if (!IS_SERVERLESS) {
+    const localUploads = path.resolve(process.cwd(), 'uploads');
+    try {
+      if (!fs.existsSync(localUploads)) fs.mkdirSync(localUploads, { recursive: true });
+      fs.accessSync(localUploads, fs.constants.W_OK);
+      return localUploads;
+    } catch {
+      // Fall back to /tmp if read-only
+    }
+  }
+  return path.join(os.tmpdir(), 'yrt-uploads');
+}
+
+const UPLOADS_DIR = resolveUploadsDir();
 const MEDIA_DIR = path.join(UPLOADS_DIR, 'media');
 const CVS_DIR = path.join(UPLOADS_DIR, 'cvs');
 
-[UPLOADS_DIR, MEDIA_DIR, CVS_DIR].forEach((dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
+function ensureUploadDirs() {
+  try {
+    [UPLOADS_DIR, MEDIA_DIR, CVS_DIR].forEach((dir) => {
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    });
+  } catch (err) {
+    console.warn('[Uploads] Directory setup warning:', (err as Error).message);
+  }
+}
+ensureUploadDirs();
 
 const mediaStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, MEDIA_DIR),
+  destination: (_req, _file, cb) => {
+    ensureUploadDirs();
+    cb(null, MEDIA_DIR);
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase() || '.bin';
     const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
@@ -34,7 +63,10 @@ const mediaStorage = multer.diskStorage({
 });
 
 const cvStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, CVS_DIR),
+  destination: (_req, _file, cb) => {
+    ensureUploadDirs();
+    cb(null, CVS_DIR);
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase() || '.pdf';
     const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);

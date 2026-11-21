@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
@@ -7,8 +8,29 @@ import { CollectionName, MongooseModels } from './models.ts';
 type FilterQuery = Record<string, unknown>;
 type SortSpec = Record<string, 1 | -1>;
 
-const DATA_DIR = path.resolve(process.cwd(), 'data');
-const DB_FILE = path.join(DATA_DIR, 'cms-db.json');
+const BUNDLED_DATA_DIR = path.resolve(process.cwd(), 'data');
+const BUNDLED_DB_FILE = path.join(BUNDLED_DATA_DIR, 'cms-db.json');
+const IS_SERVERLESS = Boolean(
+  process.env.VERCEL || process.env.VERCEL_ENV || process.env.AWS_LAMBDA_FUNCTION_NAME
+);
+
+function resolveDataPaths(): { dataDir: string; dbFile: string } {
+  if (!IS_SERVERLESS) {
+    try {
+      if (!fs.existsSync(BUNDLED_DATA_DIR)) {
+        fs.mkdirSync(BUNDLED_DATA_DIR, { recursive: true });
+      }
+      fs.accessSync(BUNDLED_DATA_DIR, fs.constants.W_OK);
+      return { dataDir: BUNDLED_DATA_DIR, dbFile: BUNDLED_DB_FILE };
+    } catch {
+      // Fall back to OS temp dir if workspace filesystem is read-only
+    }
+  }
+  const tmpDir = path.join(os.tmpdir(), 'yrt-data');
+  return { dataDir: tmpDir, dbFile: path.join(tmpDir, 'cms-db.json') };
+}
+
+const { dataDir: DATA_DIR, dbFile: DB_FILE } = resolveDataPaths();
 
 type LocalStoreData = Record<CollectionName, Record<string, unknown>[]>;
 
@@ -22,20 +44,23 @@ function generateObjectId(): string {
 
 function ensureLocalStore(): LocalStoreData {
   if (localStore) return localStore;
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (fs.existsSync(DB_FILE)) {
+  const sourceFile = fs.existsSync(DB_FILE)
+    ? DB_FILE
+    : fs.existsSync(BUNDLED_DB_FILE)
+    ? BUNDLED_DB_FILE
+    : null;
+
+  if (sourceFile) {
     try {
-      const raw = fs.readFileSync(DB_FILE, 'utf-8');
+      const raw = fs.readFileSync(sourceFile, 'utf-8');
       localStore = JSON.parse(raw) as LocalStoreData;
     } catch {
       localStore = createEmptyStore();
     }
   } else {
     localStore = createEmptyStore();
-    persistLocalStore();
   }
+
   // Ensure every collection key exists
   const empty = createEmptyStore();
   for (const key of Object.keys(empty) as CollectionName[]) {
@@ -43,6 +68,7 @@ function ensureLocalStore(): LocalStoreData {
       localStore[key] = [];
     }
   }
+  persistLocalStore();
   return localStore;
 }
 
@@ -77,12 +103,16 @@ function createEmptyStore(): LocalStoreData {
 
 function persistLocalStore() {
   if (!localStore) return;
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    const tmpFile = `${DB_FILE}.tmp`;
+    fs.writeFileSync(tmpFile, JSON.stringify(localStore, null, 2), 'utf-8');
+    fs.renameSync(tmpFile, DB_FILE);
+  } catch (err) {
+    console.warn('[DB] Local filesystem persistence skipped:', (err as Error).message);
   }
-  const tmpFile = `${DB_FILE}.tmp`;
-  fs.writeFileSync(tmpFile, JSON.stringify(localStore, null, 2), 'utf-8');
-  fs.renameSync(tmpFile, DB_FILE);
 }
 
 function matchesFilter(doc: Record<string, unknown>, filter: FilterQuery): boolean {
